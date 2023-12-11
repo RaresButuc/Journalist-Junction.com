@@ -26,12 +26,12 @@ public class UserController {
     }
 
     @PostMapping
-    public void postNewUser(User user) {
+    public void postNewUser(@RequestBody User user) {
         userService.addUser(user);
     }
 
     @PutMapping("/{id}")
-    public void editUser(@PathVariable("id") Long id, User user) {
+    public void editUser(@PathVariable("id") Long id, @RequestBody User user) {
         userService.updateUserById(id, user);
     }
 

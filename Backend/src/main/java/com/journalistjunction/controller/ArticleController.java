@@ -27,12 +27,12 @@ public class ArticleController {
     }
 
     @PostMapping
-    public void postNewArticle(Article article) {
+    public void postNewArticle(@RequestBody Article article) {
         articleService.addArticle(article);
     }
 
     @PutMapping("/{id}")
-    public void editArticle(@PathVariable("id") Long id, Article articleEdited) {
+    public void editArticle(@PathVariable("id") Long id, @RequestBody Article articleEdited) {
         articleService.updateArticleById(id, articleEdited);
     }
 
