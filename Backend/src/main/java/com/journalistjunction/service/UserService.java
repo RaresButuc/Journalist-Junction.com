@@ -2,9 +2,12 @@ package com.journalistjunction.service;
 
 import com.journalistjunction.model.User;
 import com.journalistjunction.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class UserService {
     private final UserRepository userRepository;
 

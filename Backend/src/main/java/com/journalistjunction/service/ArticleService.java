@@ -2,9 +2,13 @@ package com.journalistjunction.service;
 
 import com.journalistjunction.model.Article;
 import com.journalistjunction.repository.ArticleRepository;
+import io.swagger.v3.oas.annotations.servers.Server;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class ArticleService {
     private final ArticleRepository articleRepository;
 

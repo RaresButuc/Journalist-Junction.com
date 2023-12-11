@@ -1,6 +1,7 @@
 package com.journalistjunction.model;
 
 import jakarta.persistence.Embeddable;
+import jakarta.persistence.OneToMany;
 import lombok.*;
 
 @Getter
@@ -11,7 +12,7 @@ import lombok.*;
 @Embeddable
 public class Notification {
 
-    private User from;
+    private Long idUser;
 
     private String message;
 }

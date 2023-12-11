@@ -4,11 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.journalistjunction.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.List;
-import java.util.Collection;
+import java.util.*;
 
 @Getter
 @Setter
@@ -17,7 +14,7 @@ import java.util.Collection;
 @Builder
 @Entity
 @Table(name = "users")
-public class User implements UserDetails {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -42,7 +39,7 @@ public class User implements UserDetails {
     private List<Article> articlesOwned;
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "rejectedContributors")
+    @ManyToMany(mappedBy = "rejectedWorkers")
     private List<Article> articlesRejected;
 
     @JsonIgnore
@@ -55,34 +52,4 @@ public class User implements UserDetails {
 
     @ElementCollection
     private List<Notification> notifications;
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
-    }
-
-    @Override
-    public String getUsername() {
-        return null;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return false;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return false;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return false;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return false;
-    }
 }

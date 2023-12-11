@@ -2,9 +2,12 @@ package com.journalistjunction.service;
 
 import com.journalistjunction.model.Category;
 import com.journalistjunction.repository.CategoryRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class CategoryService {
     private final CategoryRepository categoryRepository;
 
@@ -12,7 +15,7 @@ public class CategoryService {
         this.categoryRepository = categoryRepository;
     }
 
-    public List<Category> getAllTypesOfAds() {
+    public List<Category> getAllCategories() {
         return categoryRepository.findAll();
     }
 
@@ -20,7 +23,7 @@ public class CategoryService {
         categoryRepository.save(category);
     }
 
-    public void deleteTypeOfAdById(Long id) {
+    public void deleteCategoryById(Long id) {
         categoryRepository.deleteById(id);
     }
 }
