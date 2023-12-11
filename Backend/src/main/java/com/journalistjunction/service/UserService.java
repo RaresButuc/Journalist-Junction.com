@@ -21,6 +21,10 @@ public class UserService {
         return userRepository.findById(id).orElse(null);
     }
 
+    public void addUser(User user) {
+        userRepository.save(user);
+    }
+
     public void updateUserById(Long id, User updatedUser) {
         User userFromDb = userRepository.findById(id).orElse(null);
         assert userFromDb != null;
