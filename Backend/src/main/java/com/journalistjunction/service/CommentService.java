@@ -4,6 +4,7 @@ import com.journalistjunction.model.Comment;
 import com.journalistjunction.repository.CommentRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -20,6 +21,7 @@ public class CommentService {
     }
 
     public void addComment(Comment comment) {
+        comment.setPostTime(LocalDateTime.now());
         commentRepository.save(comment);
     }
 

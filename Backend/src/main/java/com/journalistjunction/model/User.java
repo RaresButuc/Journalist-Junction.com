@@ -50,9 +50,11 @@ public class User {
     @OneToMany
     private List<User> subscribedTo;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "to")
     private List<Notification> notifications;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "from")
     private List<Comment> comments;
 }

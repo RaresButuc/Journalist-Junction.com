@@ -1,5 +1,6 @@
 package com.journalistjunction.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -49,6 +50,7 @@ public class Article {
     @OneToMany
     private List<Photo> photos;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "to")
     private List<Comment> comments;
 

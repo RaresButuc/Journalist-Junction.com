@@ -4,6 +4,7 @@ import com.journalistjunction.model.Notification;
 import com.journalistjunction.repository.NotificationRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -20,6 +21,8 @@ public class NotificationService {
     }
 
     public void addNotification(Notification notification) {
+        notification.setPostTime(LocalDateTime.now());
+        notification.setRead(false);
         notificationRepository.save(notification);
     }
 

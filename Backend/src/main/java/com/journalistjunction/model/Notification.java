@@ -3,6 +3,8 @@ package com.journalistjunction.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -22,6 +24,8 @@ public class Notification {
     private User from;
 
     private String message;
+
+    private LocalDateTime postTime;
 
     private boolean read;
 }
