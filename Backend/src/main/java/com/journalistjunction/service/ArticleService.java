@@ -22,6 +22,8 @@ public class ArticleService {
 
     public void addArticle(Article article) {
         article.setReadyToBePosted(false);
+        article.setPostTime(null);
+        article.setViews(0L);
         articleRepository.save(article);
     }
 

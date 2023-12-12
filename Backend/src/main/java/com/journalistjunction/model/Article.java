@@ -47,10 +47,12 @@ public class Article {
     @ManyToMany
     private List<User> rejectedWorkers;
 
-    @ElementCollection
-    private List<String> photoDescriptions;
+    @OneToMany
+    private List<Photo> photos;
 
-    @ElementCollection
+    @OneToMany(mappedBy = "to")
     private List<Comment> comments;
+
+    private Long views;
 }
 

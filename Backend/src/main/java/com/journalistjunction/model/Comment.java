@@ -8,11 +8,19 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Embeddable
+@Entity
+@Table(name = "comments")
 public class Comment {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @ManyToOne
+    @JoinColumn
     private User from;
+
+    @ManyToOne
+    private Article to;
 
     @Column(length = 1000)
     private String comment;

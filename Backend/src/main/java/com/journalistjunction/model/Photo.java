@@ -9,19 +9,13 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "notifications")
-public class Notification {
+@Table(name = "photos")
+public class Photo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    private User to;
+    private String link;
 
-    @ManyToOne
-    private User from;
-
-    private String message;
-
-    private boolean read;
+    private String description;
 }

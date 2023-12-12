@@ -50,6 +50,9 @@ public class User {
     @OneToMany
     private List<User> subscribedTo;
 
-    @ElementCollection
+    @OneToMany(mappedBy = "to")
     private List<Notification> notifications;
+
+    @OneToMany(mappedBy = "from")
+    private List<Comment> comments;
 }
