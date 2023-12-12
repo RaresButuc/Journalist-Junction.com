@@ -25,7 +25,6 @@ public class Article {
 
     private String shortDescription;
 
-    //@Column(length = 1000)
     @Lob
     private String body;
 
