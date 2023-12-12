@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/photo")
+@RequestMapping(value = "/comment")
 public class CommentController {
     private final CommentService commentService;
 
