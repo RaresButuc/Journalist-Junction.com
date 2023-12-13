@@ -9,7 +9,7 @@ function App() {
   return (
     <div className="App">
       <Navbar />
-      <div style={{ minHeight: "81vh",backgroundColor:"black"}}>
+      <div style={{ minHeight: "84vh", backgroundColor: "black" }}>
         <Router>
           <Routes>
             {/* <Route path="/" element={<HomePage />} />
