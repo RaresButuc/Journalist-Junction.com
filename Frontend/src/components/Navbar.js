@@ -4,7 +4,7 @@ export default function Navbar() {
   return (
     <div className="container">
       <nav
-        className="navbar navbar-custom fixed-top  navbar-expand-md navbar-dark shadow-5-strong border-bottom border-danger"
+        className="navbar navbar-custom fixed-top  navbar-expand-md navbar-light shadow-5-strong border-bottom border-danger "
         style={{ backgroundColor: "rgba(255, 255, 255)" }}
       >
         <div className="container-xl">
