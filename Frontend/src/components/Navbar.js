@@ -1,10 +1,10 @@
-import navbarlogo from "../images/navbarlogo.png";
+import navbarlogo from "../photos/websitelogo.png";
 
 export default function Navbar() {
   return (
-    <div>
+    <div className="container">
       <nav
-        className="navbar navbar-custom navbar-expand-md navbar-dark shadow-5-strong"
+        className="navbar navbar-custom fixed-top  navbar-expand-md navbar-light shadow-5-strong border-bottom border-danger "
         style={{ backgroundColor: "rgba(255, 255, 255)" }}
       >
         <div className="container-xl">
@@ -22,7 +22,7 @@ export default function Navbar() {
             data-bs-toggle="collapse"
             data-bs-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent"
-            aria-expanded="false"
+            aria-expanded="true"
             aria-label="Toggle navigation"
           >
             <span className="navbar-toggler-icon"></span>
