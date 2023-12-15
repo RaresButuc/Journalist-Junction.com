@@ -1,18 +1,7 @@
 import FirstLetterUppercase from "../usefull/FirstLetterUppercase";
+import LocalDateTimeToString from "../usefull/LocalDateTimeToString";
 
 export default function News({ news }) {
-  const testObject = {
-    id: 1,
-    title: "Titlu de Articol",
-    short:
-      "The decision to freeze the case came as former President Trump’s lawyers asked a court to move slowly in reviewing his claims of presidential immunity.The decision to freeze the case came as former President Trump’s lawyers asked a court to move slowly in reviewing his claims of presidential immunity.",
-    categories: ["politics", "lifestyle", "gastronomy"],
-    location: "International",
-    language: "Romanian",
-    ownerName: "Rares",
-    views: 100.0,
-  };
-
   return (
     <div className="container-xl">
       {news &&
@@ -49,11 +38,14 @@ export default function News({ news }) {
                     </a>
                   ))}
                   <div className="d-flex justify-content-between mt-2">
-                    <h6 className="d-flex justify-content-start ms-5">
-                      Posted By:
+                    <h6 className="d-flex justify-content-start ms-3">
+                      Author:{" "}
+                      <a href={`/profile/${article.owner.id}`}>
+                        {article.owner.name}
+                      </a>
                     </h6>
-                    <h6 className="d-flex justify-content-end me-5">
-                      Posted at: {article.}
+                    <h6 className="d-flex justify-content-end me-3">
+                      Posted at: {LocalDateTimeToString(article)}
                     </h6>
                   </div>
                 </div>
