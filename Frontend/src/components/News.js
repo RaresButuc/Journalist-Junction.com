@@ -39,8 +39,12 @@ export default function News({ news }) {
                   ))}
                   <div className="d-flex justify-content-between mt-2">
                     <h6 className="d-flex justify-content-start ms-3">
-                      Author:{" "}
-                      <a href={`/profile/${article.owner.id}`}>
+                      Author:
+                      <a
+                        className="ms-2"
+                        href={`/profile/${article.owner.id}`}
+                        style={{ textDecoration: "none" }}
+                      >
                         {article.owner.name}
                       </a>
                     </h6>
