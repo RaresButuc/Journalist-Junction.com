@@ -1,8 +1,38 @@
 import navbarlogo from "../photos/websitelogo.png";
+import { useIsAuthenticated, useSignOut, useAuthUser } from "react-auth-kit";
+import { useEffect, useState } from "react";
+import { Outlet } from "react-router-dom";
+import DefaultURL from "../GlobalVariables";
+import axios from "axios";
 
 export default function Navbar() {
+  const isAuthenticated = useIsAuthenticated();
+  const signOut = useSignOut();
+  const auth = useAuthUser();
+  const [currentUser, setCurrentUser] = useState(null);
+
+  useEffect(() => {
+    const getUserByEmail = async () => {
+      try {
+        const response = await axios.get(
+          `${DefaultURL}/users/email/${auth()?.email}`
+        );
+        const data = response.data;
+        setCurrentUser(data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    getUserByEmail();
+  }, [auth()?.email]);
+
+  const handleLogOut = () => {
+    window.location.href = "/";
+    signOut();
+  };
+
   return (
-    <div className="container" style={{paddingBottom:130}}>
+    <div className="container" style={{ paddingBottom: 130 }}>
       <nav
         className="navbar navbar-custom fixed-top  navbar-expand-md navbar-light shadow-5-strong border-bottom border-danger "
         style={{ backgroundColor: "rgba(255, 255, 255)" }}
@@ -52,25 +82,88 @@ export default function Navbar() {
                 </a>
               </li>
 
-              <li className="nav-item">
-                <a
-                  className="btn btn-primary font-weight-bold mx-2"
-                  aria-current="page"
-                  href="/register"
-                >
-                  Become a member
-                </a>
-              </li>
+              {isAuthenticated() ? (
+                <li className="nav-item">
+                  <div className="dropdown">
+                    <button
+                      className="btn  dropdown-toggle"
+                      type="button"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="30"
+                        height="30"
+                        fill="currentColor"
+                        className="bi bi-person-circle"
+                        viewBox="0 0 16 16"
+                      >
+                        <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
+                        <path
+                          fillRule="evenodd"
+                          d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"
+                        />
+                      </svg>
+                    </button>
+                    <ul className="dropdown-menu dropdown-menu-end">
+                      <li>
+                        <a
+                          className="dropdown-item"
+                          href={`/profile/${currentUser?.id}`}
+                        >
+                          Profile
+                        </a>
+                      </li>
+                      {currentUser?.role === "READER" ? (
+                        <li>
+                          <a className="dropdown-item" href="/post-ads">
+                            Post New Article
+                          </a>
+                        </li>
+                      ) : null}
+                      <li>
+                        <hr className="dropdown-divider" />
+                      </li>
+                      <li>
+                        <a className="dropdown-item" href="/changepassoword">
+                          Change Password
+                        </a>
+                      </li>
+                      <li>
+                        <a className="dropdown-item" onClick={handleLogOut}>
+                          Logout
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </li>
+              ) : (
+                <>
+                  <li className="nav-item">
+                    <a
+                      className="btn btn-primary font-weight-bold mx-2"
+                      aria-current="page"
+                      href="/register"
+                    >
+                      Become a member
+                    </a>
+                  </li>
 
-              <li className="nav-item">
-                <a className="nav-link mx-2 text-dark" href="/login">
-                  Log In
-                </a>
-              </li>
+                  <li className="nav-item">
+                    <a className="nav-link mx-2 text-dark" href="/login">
+                      Log In
+                    </a>
+                  </li>
+                </>
+              )}
             </ul>
           </div>
         </div>
       </nav>
+      <main>
+        <Outlet />
+      </main>
     </div>
   );
 }
