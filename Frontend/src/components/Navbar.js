@@ -2,7 +2,7 @@ import navbarlogo from "../photos/websitelogo.png";
 
 export default function Navbar() {
   return (
-    <div className="container">
+    <div className="container" style={{paddingBottom:130}}>
       <nav
         className="navbar navbar-custom fixed-top  navbar-expand-md navbar-light shadow-5-strong border-bottom border-danger "
         style={{ backgroundColor: "rgba(255, 255, 255)" }}

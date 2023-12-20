@@ -3,18 +3,20 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
+import HomePage from "./pages/HomePage";
+
 import "./App.css";
 
 function App() {
   return (
     <div className="App">
       <Navbar />
-      <div style={{ minHeight: "84vh", backgroundColor: "black" }}>
+      <div style={{ minHeight: "84vh" }}>
         <Router>
           <Routes>
-            {/* <Route path="/" element={<HomePage />} />
-            <Route path="*" element={<ErrorPage />} />
-            <Route path="/login" element={<Login />} />
+            <Route path="/" element={<HomePage />} />
+            {/* <Route path="*" element={<ErrorPage />} /> */}
+            {/* <Route path="/login" element={<Login />} />
             <Route path="/forget-password" element={<ForgetPassword />} />
             <Route
               path="/change-forget-password/:email"
@@ -57,7 +59,7 @@ function App() {
                   <PostOffer />
                 </RequireAuth>
               }
-            ></Route>*/}
+            ></Route> */}
           </Routes>
         </Router>
       </div>

@@ -21,9 +21,19 @@ public class ArticleController {
         return articleService.getAllArticles();
     }
 
+    @GetMapping("/posted")
+    public List<Article> getAllReadyToBePostedArticles() {
+        return articleService.getAllPostedArticles();
+    }
+
     @GetMapping("/{id}")
     public Article getArticleById(@PathVariable("id") Long id) {
         return articleService.getArticleById(id);
+    }
+
+    @GetMapping("/date/{id}")
+    public String getArticleDateInString(@PathVariable("id") Long id) {
+        return articleService.localDateTimeToString(id);
     }
 
     @PostMapping
