@@ -19,8 +19,6 @@ public class CorsConfig {
         config.addAllowedOrigin("http://localhost:3000");
         config.addAllowedMethod("*");
         config.addAllowedHeader("*");
-        // You can also specify other CORS configuration options as needed
-        // For example, you can allow specific HTTP methods, headers, etc.
 
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);

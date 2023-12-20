@@ -1,7 +1,12 @@
 package com.journalistjunction.controller;
 
+import com.journalistjunction.auth.AuthenticationRequest;
+import com.journalistjunction.auth.AuthenticationResponse;
+import com.journalistjunction.auth.AuthenticationService;
+import com.journalistjunction.auth.RegisterRequest;
 import com.journalistjunction.model.User;
 import com.journalistjunction.service.UserService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,9 +16,13 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
 
-    public UserController(UserService userService) {
+    private final AuthenticationService service;
+
+    public UserController(UserService userService, AuthenticationService service) {
         this.userService = userService;
+        this.service = service;
     }
+
 
     @GetMapping
     public List<User> getAllUsers() {
@@ -25,9 +34,16 @@ public class UserController {
         return userService.getUserById(id);
     }
 
-    @PostMapping
-    public void postNewUser(@RequestBody User user) {
-        userService.addUser(user);
+    @CrossOrigin(origins = "http://localhost:3000")
+    @PostMapping("/register")
+    public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest request) {
+        return ResponseEntity.ok(service.register(request));
+    }
+
+    @CrossOrigin(origins = "http://localhost:3000")
+    @PostMapping("/authenticate")
+    public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) {
+        return ResponseEntity.ok(service.authenticate(request));
     }
 
     @PutMapping("/{id}")

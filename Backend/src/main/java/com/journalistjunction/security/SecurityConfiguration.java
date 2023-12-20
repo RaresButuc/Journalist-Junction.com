@@ -28,7 +28,7 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth ->
                         auth
-                                .requestMatchers("/**","/users/**").permitAll()
+                                .requestMatchers("/**", "/users/**").permitAll()
                                 // .requestMatchers("/postofer").hasRole("CUSTOMER")
                                 .anyRequest()
                                 .authenticated()
@@ -38,15 +38,4 @@ public class SecurityConfiguration {
         return http.build();
     }
 
-//    @Bean
-//    public UserDetailsService userDetailsServiceForAdmin() {
-//        PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-//
-//        UserDetails userAdmin = User.withUsername("admin-1")
-//                .password(encoder.encode("passwordadmin1"))
-//                .roles(String.valueOf(Role.ADMIN))
-//                .build();
-//
-//        return new InMemoryUserDetailsManager(userAdmin);
-//    }
 }
