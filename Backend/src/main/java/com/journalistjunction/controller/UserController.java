@@ -46,6 +46,11 @@ public class UserController {
         return ResponseEntity.ok(service.authenticate(request));
     }
 
+    @GetMapping(value = "/email/{email}")
+    public User getUserByEmail(@PathVariable("email") String email) {
+        return userService.getUserByEmail(email);
+    }
+
     @PutMapping("/{id}")
     public void editUser(@PathVariable("id") Long id, @RequestBody User user) {
         userService.updateUserById(id, user);
