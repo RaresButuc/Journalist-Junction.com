@@ -24,8 +24,8 @@ public class UserService {
         return userRepository.findById(id).orElse(null);
     }
 
-    public void addUser(User user) {
-        userRepository.save(user);
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElse(null);
     }
 
     public void updateUserById(Long id, User updatedUser) {

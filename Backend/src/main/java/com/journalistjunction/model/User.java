@@ -30,6 +30,10 @@ public class User {
 
     private String phoneNumber;
 
+    private String country;
+
+    private String shortAutoDescription;
+
     @JsonIgnore
     @ManyToMany(mappedBy = "contributors")
     private List<Article> articlesContributed;
