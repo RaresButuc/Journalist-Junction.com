@@ -28,5 +28,9 @@
   color: #61dafb;
 }
 
-/* Login Inputs Icons */
+/* Login Inputs & Icons */
+
+.form-control {
+  border-radius: 28px; 
+}
 

@@ -2,11 +2,12 @@ import { forwardRef } from "react";
 
 function PasswordInput({ id }, ref) {
   return (
-    <div class="form-floating">
+    <div className="form-floating">
       <input
         ref={ref}
         className="form-control"
         type="password"
+        name="passwordInput"
         id={id}
         placeholder="Password"
         required

@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import DefaultURL from "../GlobalVariables";
 import { useSignIn } from "react-auth-kit";
 import axios, { AxiosError } from "axios";
-import { useState, useRef } from "react";
+import { useState } from "react";
 
 import EmailInput from "../components/formComponents/EmailInput";
 import PasswordInput from "../components/formComponents/PasswordInput";
@@ -11,9 +11,6 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const [error, setError] = useState("");
   const signIn = useSignIn();
-
-  const emailValue = useRef();
-  const passwordValue = useRef();
 
   const onSubmit = async (values) => {
     try {
@@ -38,22 +35,22 @@ export default function LoginPage() {
     e.preventDefault();
     const formData = new FormData(e.target);
     const authenticateData = {
-      email: formData.get("floatingEmailValue"),
-      password: formData.get("floatingPasswordValue"),
+      email: formData.get("emailInput"),
+      password: formData.get("passwordInput"),
     };
     onSubmit(authenticateData);
   };
 
   return (
     <form onSubmit={onSave}>
-      <div className="container py-3 h-100">
-        <div className="row d-flex justify-content-center align-items-center h-100">
+      <div className="container py-2">
+        <div className="row d-flex justify-content-center align-items-center">
           <div className="col-12 col-md-8 col-lg-6 col-xl-5">
-            <div className="card shadow-2-strong">
-              <div className="card-body p-5 text-center">
-                <h1 className="mb-3">Sign In</h1>
-
-                <div className="form-outline mb-4">
+            <div className="border border-danger">
+              <div className="card-body p-4 text-center">
+                <h1 className="mb-4">Log In</h1>
+                <hr style={{ color: "red" }} />
+                <div className="form-outline mb-4 mt-5">
                   {/* <input
                     type="email"
                     className="form-control"
@@ -63,12 +60,12 @@ export default function LoginPage() {
                   /> */}
                   <EmailInput
                     user={null}
-                    ref={emailValue}
+                    ref={null}
                     id={"floatingEmailValue"}
                   />
                 </div>
 
-                <div className="form-outline mb-4">
+                <div className="form-outline mb-5">
                   {/* <input
                     type="password"
                     id="password"
@@ -76,17 +73,14 @@ export default function LoginPage() {
                     name="password"
                     placeholder="Password"
                   /> */}
-                  <PasswordInput
-                    ref={passwordValue}
-                    id={"floatingPasswordValue"}
-                  />
+                  <PasswordInput ref={null} id={"floatingPasswordValue"} />
                 </div>
 
                 <button
                   className="btn btn-primary btn-lg btn-block"
                   type="submit"
                 >
-                  Login
+                  Log in
                 </button>
 
                 <p className="mt-4">
@@ -100,7 +94,7 @@ export default function LoginPage() {
           </div>
         </div>
       </div>
-      <p>
+      <p className="mt-2">
         Not a member yet?{" "}
         <a href="/register" style={{ color: "#f84e45" }}>
           Register NOW
