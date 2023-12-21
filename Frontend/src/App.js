@@ -4,6 +4,7 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
 import HomePage from "./pages/HomePage";
+import LoginPage from "./pages/LoginPage";
 
 import "./App.css";
 
@@ -16,8 +17,8 @@ function App() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             {/* <Route path="*" element={<ErrorPage />} /> */}
-            {/* <Route path="/login" element={<Login />} />
-            <Route path="/forget-password" element={<ForgetPassword />} />
+            <Route path="/login" element={<LoginPage/>} />
+            {/* <Route path="/forget-password" element={<ForgetPassword />} />
             <Route
               path="/change-forget-password/:email"
               element={<ChangePasswordPageNoAuth />}

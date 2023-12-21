@@ -15,7 +15,7 @@ export default function Navbar() {
     const getUserByEmail = async () => {
       try {
         const response = await axios.get(
-          `${DefaultURL}/users/email/${auth()?.email}`
+          `${DefaultURL}/user/email/${auth()?.email}`
         );
         const data = response.data;
         setCurrentUser(data);
