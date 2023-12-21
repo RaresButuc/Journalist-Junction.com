@@ -5,6 +5,7 @@ import axios, { AxiosError } from "axios";
 import { useState, useRef } from "react";
 
 import EmailInput from "../components/formComponents/EmailInput";
+import PasswordInput from "../components/formComponents/PasswordInput";
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -15,11 +16,9 @@ export default function LoginPage() {
   const passwordValue = useRef();
 
   const onSubmit = async (values) => {
-    setError("");
-
     try {
       const response = await axios.post(
-        `${DefaultURL}/users/authenticate`,
+        `${DefaultURL}/user/authenticate`,
         values
       );
       signIn({
@@ -39,8 +38,8 @@ export default function LoginPage() {
     e.preventDefault();
     const formData = new FormData(e.target);
     const authenticateData = {
-      email: formData.get("email"),
-      password: formData.get("password"),
+      email: formData.get("floatingEmailValue"),
+      password: formData.get("floatingPasswordValue"),
     };
     onSubmit(authenticateData);
   };
@@ -52,7 +51,7 @@ export default function LoginPage() {
           <div className="col-12 col-md-8 col-lg-6 col-xl-5">
             <div className="card shadow-2-strong">
               <div className="card-body p-5 text-center">
-                <h1 className="mb-3">Log In</h1>
+                <h1 className="mb-3">Sign In</h1>
 
                 <div className="form-outline mb-4">
                   {/* <input
@@ -70,12 +69,16 @@ export default function LoginPage() {
                 </div>
 
                 <div className="form-outline mb-4">
-                  <input
+                  {/* <input
                     type="password"
                     id="password"
                     className="form-control"
                     name="password"
                     placeholder="Password"
+                  /> */}
+                  <PasswordInput
+                    ref={passwordValue}
+                    id={"floatingPasswordValue"}
                   />
                 </div>
 
@@ -88,7 +91,9 @@ export default function LoginPage() {
 
                 <p className="mt-4">
                   Did you forget the password?{" "}
-                  <a href="/forget-password">Change it NOW</a>
+                  <a href="/forget-password" style={{ color: "#f84e45" }}>
+                    Change it NOW
+                  </a>
                 </p>
               </div>
             </div>
@@ -96,7 +101,10 @@ export default function LoginPage() {
         </div>
       </div>
       <p>
-        Not a member yet? <a href="/register">Register NOW</a>
+        Not a member yet?{" "}
+        <a href="/register" style={{ color: "#f84e45" }}>
+          Register NOW
+        </a>
       </p>
     </form>
   );

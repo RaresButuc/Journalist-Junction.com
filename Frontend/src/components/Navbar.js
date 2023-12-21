@@ -152,7 +152,7 @@ export default function Navbar() {
 
                   <li className="nav-item">
                     <a className="nav-link mx-2 text-dark" href="/login">
-                      Log In
+                      Sign In
                     </a>
                   </li>
                 </>

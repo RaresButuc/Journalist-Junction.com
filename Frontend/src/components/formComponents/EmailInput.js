@@ -9,7 +9,6 @@ function EmailInput({ user, id }, ref) {
         type="email"
         id={id}
         placeholder="Email address"
-        aria-describedby="Email-Help"
         defaultValue={user?.email}
         required
       />
