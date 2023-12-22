@@ -18,6 +18,7 @@ export default function LoginPage() {
         `${DefaultURL}/user/authenticate`,
         values
       );
+
       signIn({
         token: response.data.token,
         expiresIn: 3600,
@@ -43,13 +44,16 @@ export default function LoginPage() {
 
   return (
     <form onSubmit={onSave}>
-      <div className="container py-2">
+      <div className="container py-2 mt-4">
         <div className="row d-flex justify-content-center align-items-center">
           <div className="col-12 col-md-8 col-lg-6 col-xl-5">
             <div className="border border-danger">
-              <div className="card-body p-4 text-center">
+              <div
+                className="card-body p-4 text-center"
+                style={{ backgroundColor: "rgba(255, 255, 255,0.5)" }}
+              >
                 <h1 className="mb-4">Log In</h1>
-                <hr style={{ color: "red" }} />
+                <hr style={{ color: "#dc3545" }} />
                 <div className="form-outline mb-4 mt-5">
                   {/* <input
                     type="email"
@@ -77,7 +81,7 @@ export default function LoginPage() {
                 </div>
 
                 <button
-                  className="btn btn-primary btn-lg btn-block"
+                  className="btn btn-success btn-lg btn-block"
                   type="submit"
                 >
                   Log in

@@ -34,8 +34,8 @@ export default function Navbar() {
   return (
     <div className="container" style={{ paddingBottom: 130 }}>
       <nav
-        className="navbar navbar-custom fixed-top  navbar-expand-md navbar-light shadow-5-strong border-bottom border-danger "
-        style={{ backgroundColor: "rgba(255, 255, 255)" }}
+        className="navbar navbar-custom fixed-top navbar-expand-md navbar-light shadow-5-strong border-bottom border-danger "
+        style={{ backgroundColor: "rgba(255, 255, 255,0.5)" }}
       >
         <div className="container-xl">
           <a className="navbar-brand" href="/">
@@ -142,7 +142,7 @@ export default function Navbar() {
                 <>
                   <li className="nav-item">
                     <a
-                      className="btn btn-primary font-weight-bold mx-2"
+                      className="btn btn-success font-weight-bold mx-2"
                       aria-current="page"
                       href="/register"
                     >
