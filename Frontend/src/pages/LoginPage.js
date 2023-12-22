@@ -2,26 +2,23 @@ import { useNavigate } from "react-router-dom";
 import DefaultURL from "../GlobalVariables";
 import { useSignIn } from "react-auth-kit";
 import axios, { AxiosError } from "axios";
-import { useState, useRef } from "react";
+import { useState } from "react";
 
 import EmailInput from "../components/formComponents/EmailInput";
+import PasswordInput from "../components/formComponents/PasswordInput";
 
 export default function LoginPage() {
   const navigate = useNavigate();
   const [error, setError] = useState("");
   const signIn = useSignIn();
 
-  const emailValue = useRef();
-  const passwordValue = useRef();
-
   const onSubmit = async (values) => {
-    setError("");
-
     try {
       const response = await axios.post(
-        `${DefaultURL}/users/authenticate`,
+        `${DefaultURL}/user/authenticate`,
         values
       );
+
       signIn({
         token: response.data.token,
         expiresIn: 3600,
@@ -39,22 +36,25 @@ export default function LoginPage() {
     e.preventDefault();
     const formData = new FormData(e.target);
     const authenticateData = {
-      email: formData.get("email"),
-      password: formData.get("password"),
+      email: formData.get("emailInput"),
+      password: formData.get("passwordInput"),
     };
     onSubmit(authenticateData);
   };
 
   return (
     <form onSubmit={onSave}>
-      <div className="container py-3 h-100">
-        <div className="row d-flex justify-content-center align-items-center h-100">
+      <div className="container py-2 mt-4">
+        <div className="row d-flex justify-content-center align-items-center">
           <div className="col-12 col-md-8 col-lg-6 col-xl-5">
-            <div className="card shadow-2-strong">
-              <div className="card-body p-5 text-center">
-                <h1 className="mb-3">Log In</h1>
-
-                <div className="form-outline mb-4">
+            <div className="border border-danger">
+              <div
+                className="card-body p-4 text-center"
+                style={{ backgroundColor: "rgba(255, 255, 255,0.5)" }}
+              >
+                <h1 className="mb-4">Log In</h1>
+                <hr style={{ color: "#dc3545" }} />
+                <div className="form-outline mb-4 mt-5">
                   {/* <input
                     type="email"
                     className="form-control"
@@ -64,39 +64,45 @@ export default function LoginPage() {
                   /> */}
                   <EmailInput
                     user={null}
-                    ref={emailValue}
+                    ref={null}
                     id={"floatingEmailValue"}
                   />
                 </div>
 
-                <div className="form-outline mb-4">
-                  <input
+                <div className="form-outline mb-5">
+                  {/* <input
                     type="password"
                     id="password"
                     className="form-control"
                     name="password"
                     placeholder="Password"
-                  />
+                  /> */}
+                  <PasswordInput ref={null} id={"floatingPasswordValue"} />
                 </div>
 
                 <button
-                  className="btn btn-primary btn-lg btn-block"
+                  className="btn btn-success btn-lg btn-block"
                   type="submit"
                 >
-                  Login
+                  Log in
                 </button>
 
                 <p className="mt-4">
                   Did you forget the password?{" "}
-                  <a href="/forget-password">Change it NOW</a>
+                  <a href="/forget-password" style={{ color: "#f84e45" }}>
+                    Change it NOW
+                  </a>
                 </p>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <p>
-        Not a member yet? <a href="/register">Register NOW</a>
+      <p className="mt-2">
+        Not a member yet?{" "}
+        <a href="/register" style={{ color: "#f84e45" }}>
+          Register NOW
+        </a>
       </p>
     </form>
   );

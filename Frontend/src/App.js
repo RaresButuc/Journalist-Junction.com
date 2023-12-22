@@ -17,7 +17,7 @@ function App() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             {/* <Route path="*" element={<ErrorPage />} /> */}
-            <Route path="/login" element={<LoginPage/>} />
+            <Route path="/login" element={<LoginPage />} />
             {/* <Route path="/forget-password" element={<ForgetPassword />} />
             <Route
               path="/change-forget-password/:email"

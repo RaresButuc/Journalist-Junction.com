@@ -6,7 +6,7 @@ import websitelogo from "../photos/websiteLogoSimple.png";
 export default function Footer() {
   return (
     <div className="container-xl">
-      <footer className="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+      <footer className="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top border-danger">
         <div className="col-md-4 d-flex align-items-center">
           <a
             href="/"

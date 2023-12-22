@@ -1,12 +1,11 @@
 package com.journalistjunction.auth;
 
 import com.journalistjunction.model.User;
-import com.journalistjunction.security.JwtService;
 import com.journalistjunction.repository.UserRepository;
+import com.journalistjunction.security.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -22,17 +21,16 @@ public class AuthenticationService {
     public AuthenticationResponse register(RegisterRequest request) {
         if (repository.findByEmailIgnoreCase(request.getEmail()) == null && repository.findByNameIgnoreCase(request.getName()) == null) {
             var user = User.builder()
+                    .role(request.getRole())
                     .name(request.getName())
                     .email(request.getEmail())
-                    .phoneNumber(request.getPhoneNumber())
                     .password(passwordEncoder.encode(request.getPassword()))
-                    .role(request.getRole())
+                    .phoneNumber(request.getPhoneNumber())
                     .country(request.getCountry())
                     .shortAutoDescription(request.getShortAutoDescription())
                     .build();
             repository.save(user);
-//            var jwtToken = jwtService.generateToken(user);
-            var jwtToken = jwtService.generateToken((UserDetails) user);
+            var jwtToken = jwtService.generateToken(user);
             return AuthenticationResponse.builder().token(jwtToken).build();
         }
         return null;
@@ -45,9 +43,8 @@ public class AuthenticationService {
                         request.getPassword()
                 )
         );
-        var user = repository.findByEmail(request.getEmail()).orElseThrow();
-//        var jwtToken = jwtService.generateToken(user);
-        var jwtToken = jwtService.generateToken((UserDetails) user);
+        var user = repository.findByEmailIgnoreCase(request.getEmail());
+        var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder().token(jwtToken).build();
     }
 }

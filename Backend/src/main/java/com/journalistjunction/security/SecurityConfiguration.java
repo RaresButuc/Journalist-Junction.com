@@ -28,7 +28,7 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth ->
                         auth
-                                .requestMatchers("/**", "/users/**").permitAll()
+                                .requestMatchers("/**", "/user/**").permitAll()
                                 // .requestMatchers("/postofer").hasRole("CUSTOMER")
                                 .anyRequest()
                                 .authenticated()
