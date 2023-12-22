@@ -55,13 +55,6 @@ export default function LoginPage() {
                 <h1 className="mb-4">Log In</h1>
                 <hr style={{ color: "#dc3545" }} />
                 <div className="form-outline mb-4 mt-5">
-                  {/* <input
-                    type="email"
-                    className="form-control"
-                    id="email"
-                    name="email"
-                    placeholder="Email"
-                  /> */}
                   <EmailInput
                     user={null}
                     ref={null}
@@ -70,13 +63,6 @@ export default function LoginPage() {
                 </div>
 
                 <div className="form-outline mb-5">
-                  {/* <input
-                    type="password"
-                    id="password"
-                    className="form-control"
-                    name="password"
-                    placeholder="Password"
-                  /> */}
                   <PasswordInput ref={null} id={"floatingPasswordValue"} />
                 </div>
 

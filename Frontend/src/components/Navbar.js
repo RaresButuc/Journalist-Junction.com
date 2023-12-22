@@ -35,7 +35,7 @@ export default function Navbar() {
     <div className="container" style={{ paddingBottom: 130 }}>
       <nav
         className="navbar navbar-custom fixed-top navbar-expand-md navbar-light shadow-5-strong border-bottom border-danger "
-        style={{ backgroundColor: "rgba(255, 255, 255,0.5)" }}
+        style={{ backgroundColor: "rgba(255, 255, 255,0.9)" }}
       >
         <div className="container-xl">
           <a className="navbar-brand" href="/">
