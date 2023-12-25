@@ -9,19 +9,29 @@ export default function ProfilePage() {
   const auth = useAuthUser();
 
   const [currentUser, setCurrentUser] = useState(null);
+  const [currentUserCountry, setCurrentUserCountry] = useState(null);
+  const [readMore,setReadMore] = useState(false);
+
   const { id } = useParams();
 
   useEffect(() => {
     if (id) {
       const fetchCurrentUser = async () => {
         try {
-          const response = await axios.get(`${DefaultURL}/user/${id}`);
-          setCurrentUser(response.data);
-          // setShowEditButtonOrNot(data?.email === auth()?.email);
+          // Fetch user
+          const responseUser = await axios.get(`${DefaultURL}/user/${id}`);
+          setCurrentUser(responseUser.data);
+
+          //Fetch Country Abrev
+          const responseCountry = await axios.get(
+            `https://restcountries.com/v3.1/name/${responseUser.data.country}`
+          );
+          setCurrentUserCountry(responseCountry.data[0].cca2);
         } catch (err) {
           console.log(err);
         }
       };
+
       fetchCurrentUser();
     }
   }, [auth()?.email, id]);
@@ -46,8 +56,30 @@ export default function ProfilePage() {
           </div>
         </div>
       </div>
-      <div className="pcontainer-xl mt-5">
+      <div className="container-xl mt-5">
         <h1>{currentUser?.name}</h1>
+        <img
+          className="mb-3 mx-2"
+          data-toggle="tooltip"
+          src={`https://flagsapi.com/${currentUserCountry}/flat/24.png`}
+          alt={currentUserCountry}
+          title={currentUser?.country}
+        />
+        <div>
+          {currentUser?.shortAutoDescription.length > 500 ? (
+            <>
+              <p className="d-inline">
+                {currentUser?.shortAutoDescription.substr(0, 500)}
+              </p>
+              <button
+                className="bg-transparent text-danger btn btn-outline-light"
+                style={{ outline: "transparent" }}
+              >
+                ... (Read More)
+              </button>
+            </>
+          ) : null}
+        </div>
       </div>
     </div>
   );

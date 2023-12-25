@@ -34,6 +34,7 @@ public class User implements UserDetails {
 
     private String country;
 
+    @Column(length = 1000)
     private String shortAutoDescription;
 
     @OneToOne

@@ -34,6 +34,8 @@ public class UserService {
         userFromDb.setName(updatedUser.getName());
         userFromDb.setEmail(updatedUser.getEmail());
         userFromDb.setPhoneNumber(updatedUser.getPhoneNumber());
+        userFromDb.setCountry(updatedUser.getCountry());
+        userFromDb.setShortAutoDescription(updatedUser.getShortAutoDescription());
         userRepository.save(userFromDb);
     }
 
