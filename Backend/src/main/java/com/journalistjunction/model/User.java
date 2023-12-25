@@ -36,6 +36,12 @@ public class User implements UserDetails {
 
     private String shortAutoDescription;
 
+    @OneToOne
+    private Photo profileBackgroundPhoto;
+
+    @OneToOne
+    private Photo profilPhoto;
+
     @JsonIgnore
     @ManyToMany(mappedBy = "contributors")
     private List<Article> articlesContributed;

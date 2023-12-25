@@ -5,6 +5,7 @@ import Footer from "./components/Footer";
 
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
+import ProfilePage from "./pages/ProfilePage";
 
 import "./App.css";
 
@@ -25,10 +26,10 @@ function App() {
             />
             <Route path="/all-ads" element={<AdsPage />} />
             <Route path="/contact" element={<Contact />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/profile/:id" element={<OtherUserProfile />} />
+            <Route path="/register" element={<Register />} />*/}
+            <Route path="/profile/:id" element={<ProfilePage />} />
 
-            <Route path="/ad/:id" element={<AdDetail />} />
+            {/* <Route path="/ad/:id" element={<AdDetail />} />
             <Route
               path="/terms-and-conditions"
               element={<TermsAndConditions />}
@@ -60,7 +61,7 @@ function App() {
                   <PostOffer />
                 </RequireAuth>
               }
-            ></Route> */}
+            ></Route>  */}
           </Routes>
         </Router>
       </div>
