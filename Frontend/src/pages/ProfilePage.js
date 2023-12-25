@@ -10,7 +10,7 @@ export default function ProfilePage() {
 
   const [currentUser, setCurrentUser] = useState(null);
   const [currentUserCountry, setCurrentUserCountry] = useState(null);
-  const [readMore,setReadMore] = useState(false);
+  const [readMore, setReadMore] = useState(false);
 
   const { id } = useParams();
 
@@ -59,27 +59,51 @@ export default function ProfilePage() {
       <div className="container-xl mt-5">
         <h1>{currentUser?.name}</h1>
         <img
-          className="mb-3 mx-2"
+          className="mx-2"
           data-toggle="tooltip"
           src={`https://flagsapi.com/${currentUserCountry}/flat/24.png`}
           alt={currentUserCountry}
           title={currentUser?.country}
         />
-        <div>
-          {currentUser?.shortAutoDescription.length > 500 ? (
-            <>
-              <p className="d-inline">
-                {currentUser?.shortAutoDescription.substr(0, 500)}
-              </p>
-              <button
-                className="bg-transparent text-danger btn btn-outline-light"
-                style={{ outline: "transparent" }}
-              >
-                ... (Read More)
-              </button>
-            </>
-          ) : null}
+        {/* <div className="mt-4">
+          <p className="d-inline fw-medium">
+            {readMore
+              ? currentUser?.shortAutoDescription
+              : currentUser?.shortAutoDescription.substr(0, 300)}
+          </p>
+          <button
+            className="bg-transparent text-danger btn btn-outline-light"
+            style={{ outline: "transparent" }}
+            onClick={() => {
+              readMore ? setReadMore(false) : setReadMore(true);
+            }}
+          >
+            {readMore ? "(Show Less)" : "... (Read More)"}
+          </button>
+        </div> */}
+        <div className="row mt-4">
+          <div className="col-xl-6 col-md-12">
+            <h3>About</h3>
+            <p className="d-inline fw-medium">
+              {readMore
+                ? currentUser?.shortAutoDescription
+                : currentUser?.shortAutoDescription.substr(0, 300)}
+            </p>
+            <button
+              className="bg-transparent text-danger btn btn-outline-light"
+              style={{ outline: "transparent" }}
+              onClick={() => {
+                readMore ? setReadMore(false) : setReadMore(true);
+              }}
+            >
+              {readMore ? "(Show Less)" : "... (Read More)"}
+            </button>
+          </div>
+          <div className="col-xl-6 col-md-12">
+            <h3>Links</h3>
+          </div>
         </div>
+        <hr/>
       </div>
     </div>
   );
