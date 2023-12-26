@@ -58,32 +58,23 @@ export default function ProfilePage() {
       </div>
       <div className="container-xl mt-5">
         <h1>{currentUser?.name}</h1>
-        <img
-          className="mx-2"
-          data-toggle="tooltip"
-          src={`https://flagsapi.com/${currentUserCountry}/flat/24.png`}
-          alt={currentUserCountry}
-          title={currentUser?.country}
-        />
-        {/* <div className="mt-4">
-          <p className="d-inline fw-medium">
-            {readMore
-              ? currentUser?.shortAutoDescription
-              : currentUser?.shortAutoDescription.substr(0, 300)}
-          </p>
-          <button
-            className="bg-transparent text-danger btn btn-outline-light"
-            style={{ outline: "transparent" }}
-            onClick={() => {
-              readMore ? setReadMore(false) : setReadMore(true);
-            }}
-          >
-            {readMore ? "(Show Less)" : "... (Read More)"}
-          </button>
-        </div> */}
+        <button className="btn btn-danger">Subscribe</button>
         <div className="row mt-4">
           <div className="col-xl-6 col-md-12">
-            <h3>About</h3>
+            <h3>
+              <strong>About</strong>
+            </h3>
+            <h5 className="d-inline">Country: </h5>
+            <img
+              className="mx-2 mb-1"
+              data-toggle="tooltip"
+              src={`https://flagsapi.com/${currentUserCountry}/flat/24.png`}
+              alt={currentUserCountry}
+              title={currentUser?.country}
+            />
+            <p className="d-inline">({currentUser?.country})</p>
+            <br />
+            <br />
             <p className="d-inline fw-medium">
               {readMore
                 ? currentUser?.shortAutoDescription
@@ -100,10 +91,18 @@ export default function ProfilePage() {
             </button>
           </div>
           <div className="col-xl-6 col-md-12">
-            <h3>Links</h3>
+            <h3>
+              <strong>Links</strong>
+            </h3>
+            <h5 className="d-inline">Email:</h5>
+            <h5 className="d-inline ms-3">
+              <em>{currentUser?.email}</em>
+            </h5>
+            <br />
+            <br />
           </div>
         </div>
-        <hr/>
+        <hr />
       </div>
     </div>
   );
