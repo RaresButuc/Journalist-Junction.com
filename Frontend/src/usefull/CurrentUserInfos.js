@@ -1,6 +1,7 @@
 import { useAuthUser } from "react-auth-kit";
 import { useState, useEffect } from "react";
 import DefaultURL from "./DefaultURL";
+import axios from "axios";
 
 export default function CurrentUserInfos() {
   const [user, setUser] = useState(null);

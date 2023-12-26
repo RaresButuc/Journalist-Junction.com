@@ -1,30 +1,13 @@
 import navbarlogo from "../photos/websitelogo.png";
 import { useIsAuthenticated, useSignOut, useAuthUser } from "react-auth-kit";
-import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
-import DefaultURL from "../usefull/DefaultURL";
-import axios from "axios";
+import CurrentUserInfos from "../usefull/CurrentUserInfos";
 
 export default function Navbar() {
   const isAuthenticated = useIsAuthenticated();
   const signOut = useSignOut();
-  const auth = useAuthUser();
-  const [currentUser, setCurrentUser] = useState(null);
 
-  useEffect(() => {
-    const getUserByEmail = async () => {
-      try {
-        const response = await axios.get(
-          `${DefaultURL}/user/email/${auth()?.email}`
-        );
-        const data = response.data;
-        setCurrentUser(data);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    getUserByEmail();
-  }, [auth()?.email]);
+  const currentUser = CurrentUserInfos();
 
   const handleLogOut = () => {
     window.location.href = "/";
