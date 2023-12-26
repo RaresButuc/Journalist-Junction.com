@@ -34,7 +34,14 @@ public class User implements UserDetails {
 
     private String country;
 
+    @Column(length = 500)
     private String shortAutoDescription;
+
+    @OneToOne
+    private Photo profileBackgroundPhoto;
+
+    @OneToOne
+    private Photo profilPhoto;
 
     @JsonIgnore
     @ManyToMany(mappedBy = "contributors")
