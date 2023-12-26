@@ -42,7 +42,7 @@ body {
 /* Subscribe Button */
 
 .Btn {
-  width: 140px;
+  width: 160px;
   height: 35px;
   display: flex;
   align-items: center;
@@ -50,13 +50,13 @@ body {
   border: none;
   border-radius: 5px;
   overflow: hidden;
-  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.089);
+  box-shadow: 5px 5px rgba(0, 0, 0, 0.09);
   cursor: pointer;
-  background-color: transparent;
+  background-color: white;
 }
 
 .leftContainer {
-  width: 60%;
+  width: 100%;
   height: 100%;
   background-color: rgb(238, 0, 0);
   display: flex;
@@ -65,7 +65,7 @@ body {
   gap: 8px;
 }
 
-.leftContainer .like {
+.leftContainersubscribe .subscribe {
   color: white;
   font-weight: 600;
 }
@@ -79,7 +79,7 @@ body {
   color: rgb(238, 0, 0);
   font-weight: 600;
   position: relative;
-  background-color: white;
+  background-color: blac;
 }
 
 .subscribeCount::before {
@@ -92,11 +92,19 @@ body {
   left: -4px;
 }
 
-.Btn:hover .leftContainer {
+.Btnsubscribe:hover .leftContainersubscribe {
+  background-color: rgb(161, 0, 0);
+}
+
+.Btnsubscribe:active .leftContainersubscribe {
+  background-color: rgb(201, 0, 0);
+}
+
+.Btnunsubscribe:hover .leftContainerunsubscribe {
   background-color: rgb(219, 0, 0);
 }
 
-.Btn:active .leftContainer {
+.Btnunsubscribe:active .leftContainerunsubscribe {
   background-color: rgb(201, 0, 0);
 }
 
