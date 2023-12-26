@@ -1,15 +1,16 @@
-import { useState, useEffect } from "react";
 import { useIsAuthenticated, useAuthUser } from "react-auth-kit";
-import { useParams } from "react-router-dom";
-import axios from "axios";
+import CurrentUserInfos from "../usefull/CurrentUserInfos";
 import DefaultURL from "../usefull/DefaultURL";
+import { useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 export default function ProfilePage() {
-  // const isAuthenticated = useIsAuthenticated();
+  const isAuthenticated = useIsAuthenticated();
   const auth = useAuthUser();
 
-  const [currentUser, setCurrentUser] = useState(null);
-  const [currentUserCountry, setCurrentUserCountry] = useState(null);
+  const [profileUser, setProfileUser] = useState(null);
+  const [profileUserCountry, setProfileUserCountry] = useState(null);
   const [readMore, setReadMore] = useState(false);
 
   const [subsCount, setSubsCount] = useState(0);
@@ -18,6 +19,7 @@ export default function ProfilePage() {
     "Subscribe",
   ]);
 
+  const currentUser = CurrentUserInfos();
   const { id } = useParams();
 
   useEffect(() => {
@@ -26,13 +28,13 @@ export default function ProfilePage() {
         try {
           // Fetch user
           const responseUser = await axios.get(`${DefaultURL}/user/${id}`);
-          setCurrentUser(responseUser.data);
+          setProfileUser(responseUser.data);
 
           //Fetch Country Abrev
           const responseCountry = await axios.get(
             `https://restcountries.com/v3.1/name/${responseUser.data.country}`
           );
-          setCurrentUserCountry(responseCountry.data[0].cca2);
+          setProfileUserCountry(responseCountry.data[0].cca2);
 
           // Fetch Subscribers Count
           const responseSubsCount = await axios.get(
@@ -44,7 +46,11 @@ export default function ProfilePage() {
           const responseIsSubscribed = await axios.get(
             `${DefaultURL}/isSubscribed//${id}`
           );
-          setSubsCount(responseSubsCount.data);
+          if (responseIsSubscribed.data) {
+            setSubButtonContent(["subscribe", "Subscribe"]);
+          } else {
+            setSubButtonContent(["unsubscribe", "Unsubscribe"]);
+          }
         } catch (err) {
           console.log(err);
         }
@@ -76,7 +82,7 @@ export default function ProfilePage() {
         </div>
       </div>
       <div className="container-xl mt-5">
-        <h1>{currentUser?.name}</h1>
+        <h1>{profileUser?.name}</h1>
         {/* Subscribe Button */}
         <div className="d-flex justify-content-center">
           <button className="Btn">
@@ -89,9 +95,10 @@ export default function ProfilePage() {
               >
                 <path d="M47.6 300.4L228.3 469.1c7.5 7 17.4 10.9 27.7 10.9s20.2-3.9 27.7-10.9L464.4 300.4c30.4-28.3 47.6-68 47.6-109.5v-5.8c0-69.9-50.5-129.5-119.4-141C347 36.5 300.6 51.4 268 84L256 96 244 84c-32.6-32.6-79-47.5-124.6-39.9C50.5 55.6 0 115.2 0 185.1v5.8c0 41.5 17.2 81.2 47.6 109.5z"></path>
               </svg>
+              {/* <span className={subButtonContent[0]}>{subButtonContent[1]}</span> */}
               <span className="like">Like</span>
             </span>
-            <span className="likeCount">{subsCount}</span>
+            <span className="subscribeCount">{subsCount}</span>
           </button>
         </div>
 
@@ -104,17 +111,17 @@ export default function ProfilePage() {
             <img
               className="mx-2 mb-1"
               data-toggle="tooltip"
-              src={`https://flagsapi.com/${currentUserCountry}/flat/24.png`}
-              alt={currentUserCountry}
-              title={currentUser?.country}
+              src={`https://flagsapi.com/${profileUserCountry}/flat/24.png`}
+              alt={profileUserCountry}
+              title={profileUser?.country}
             />
-            <p className="d-inline">({currentUser?.country})</p>
+            <p className="d-inline">({profileUser?.country})</p>
             <br />
             <br />
             <p className="d-inline fw-medium">
               {readMore
-                ? currentUser?.shortAutoDescription
-                : currentUser?.shortAutoDescription.substr(0, 300)}
+                ? profileUser?.shortAutoDescription
+                : profileUser?.shortAutoDescription.substr(0, 300)}
             </p>
             <button
               className="bg-transparent text-danger btn btn-outline-light"
@@ -132,7 +139,7 @@ export default function ProfilePage() {
             </h3>
             <h5 className="d-inline">Email:</h5>
             <h5 className="d-inline ms-3">
-              <em>{currentUser?.email}</em>
+              <em>{profileUser?.email}</em>
             </h5>
             <br />
             <br />

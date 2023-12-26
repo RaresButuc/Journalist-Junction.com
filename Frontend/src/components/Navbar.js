@@ -1,7 +1,7 @@
-import navbarlogo from "../photos/websitelogo.png";
-import { useIsAuthenticated, useSignOut, useAuthUser } from "react-auth-kit";
-import { Outlet } from "react-router-dom";
+import { useIsAuthenticated, useSignOut } from "react-auth-kit";
 import CurrentUserInfos from "../usefull/CurrentUserInfos";
+import navbarlogo from "../photos/websitelogo.png";
+import { Outlet } from "react-router-dom";
 
 export default function Navbar() {
   const isAuthenticated = useIsAuthenticated();

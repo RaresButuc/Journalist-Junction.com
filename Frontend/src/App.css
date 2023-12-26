@@ -70,7 +70,7 @@ body {
   font-weight: 600;
 }
 
-.likeCount {
+.subscribeCount {
   width: 40%;
   height: 100%;
   display: flex;
@@ -82,7 +82,7 @@ body {
   background-color: white;
 }
 
-.likeCount::before {
+.subscribeCount::before {
   height: 8px;
   width: 8px;
   position: absolute;
