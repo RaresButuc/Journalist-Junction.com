@@ -2,7 +2,7 @@ import navbarlogo from "../photos/websitelogo.png";
 import { useIsAuthenticated, useSignOut, useAuthUser } from "react-auth-kit";
 import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
-import DefaultURL from "../GlobalVariables";
+import DefaultURL from "../usefull/DefaultURL";
 import axios from "axios";
 
 export default function Navbar() {

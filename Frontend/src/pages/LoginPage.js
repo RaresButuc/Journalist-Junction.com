@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import DefaultURL from "../GlobalVariables";
+import DefaultURL from "../usefull/DefaultURL";
 import { useSignIn } from "react-auth-kit";
 import axios, { AxiosError } from "axios";
 import { useState } from "react";

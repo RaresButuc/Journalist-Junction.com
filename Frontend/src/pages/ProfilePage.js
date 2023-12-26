@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useIsAuthenticated, useAuthUser } from "react-auth-kit";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import DefaultURL from "../GlobalVariables";
+import DefaultURL from "../usefull/DefaultURL";
 
 export default function ProfilePage() {
   // const isAuthenticated = useIsAuthenticated();
@@ -11,7 +11,12 @@ export default function ProfilePage() {
   const [currentUser, setCurrentUser] = useState(null);
   const [currentUserCountry, setCurrentUserCountry] = useState(null);
   const [readMore, setReadMore] = useState(false);
+
   const [subsCount, setSubsCount] = useState(0);
+  const [subButtonContent, setSubButtonContent] = useState([
+    "subscribe",
+    "Subscribe",
+  ]);
 
   const { id } = useParams();
 
@@ -32,6 +37,12 @@ export default function ProfilePage() {
           // Fetch Subscribers Count
           const responseSubsCount = await axios.get(
             `${DefaultURL}/subscount/${id}`
+          );
+          setSubsCount(responseSubsCount.data);
+
+          // Fetch Is Current User Subscribed
+          const responseIsSubscribed = await axios.get(
+            `${DefaultURL}/isSubscribed//${id}`
           );
           setSubsCount(responseSubsCount.data);
         } catch (err) {
@@ -81,7 +92,7 @@ export default function ProfilePage() {
               <span className="like">Like</span>
             </span>
             <span className="likeCount">{subsCount}</span>
-          </button>{" "}
+          </button>
         </div>
 
         <div className="row mt-4">
