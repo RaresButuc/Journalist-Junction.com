@@ -35,30 +35,48 @@ export default function ProfilePage() {
             `https://restcountries.com/v3.1/name/${responseUser?.data.country}`
           );
           setProfileUserCountry(responseCountry.data[0].cca2);
-
-          // Fetch Subscribers Count
-          const responseSubsCount = await axios.get(
-            `${DefaultURL}/user/subscount/${id}`
-          );
-          setSubsCount(responseSubsCount.data);
-
-          // Fetch Is Current User Subscribed
-          const responseIsSubscribed = await axios.get(
-            `${DefaultURL}/user/isSubscribed/${currentUser?.id}/${id}`
-          );
-          console.log(responseIsSubscribed.data);
-          if (responseIsSubscribed.data) {
-            setSubButtonContent(["dark", "UnSubscribe"]);
-          } else {
-            setSubButtonContent(["danger", "Subscribe"]);
-          }
         } catch (err) {
           console.log(err);
         }
       };
+
+      // Fetch Subscribers Count
+      const fetchSubsCount = async () => {
+        try {
+          const responseSubsCount = await axios.get(
+            `${DefaultURL}/user/subscount/${id}`
+          );
+          setSubsCount(responseSubsCount.data);
+        } catch (err) {
+          console.log(err);
+        }
+      };
+
+      // Fetch Is Current User Subscribed
+      if (currentUser) {
+        const fetchIsSubscribed = async () => {
+          try {
+            const responseIsSubscribed = await axios.get(
+              `${DefaultURL}/user/issubscribed/${currentUser?.id}/${id}`,
+              {}
+            );
+            if (responseIsSubscribed.data) {
+              setSubButtonContent(["dark", "UnSubscribe"]);
+            } else {
+              setSubButtonContent(["danger", "Subscribe"]);
+            }
+          } catch (err) {
+            console.log(err);
+          }
+        }
+        fetchIsSubscribed();
+      }
+
       fetchCurrentUser();
+      fetchSubsCount();
+      console.log(1);
     }
-  }, [auth()?.email, id, subsCount]);
+  }, [auth()?.email, id]);
 
   function formatNumber(number) {
     if (number < 1000) {

@@ -36,7 +36,7 @@ public class UserService {
         assert currentUser != null;
         assert secondUser != null;
 
-        return secondUser.getSubscribers().stream().anyMatch(e -> e.getId().equals(currentUser.getId()));
+        return secondUser.getSubscribers().stream().anyMatch(e -> Objects.equals(e.getId(), currentUser.getId()));
     }
 
     public void subscribeOrUnsubscribe(Long idCurrentUser, Long idSecondUser, String command) {
@@ -48,7 +48,7 @@ public class UserService {
 
         switch (command) {
             case "subscribe" -> {
-                if (isUserSubscriber(idCurrentUser, idSecondUser)) {
+                if (!isUserSubscriber(idCurrentUser, idSecondUser)) {
 //                    List<User> currentUserSubscribedTo = currentUser.getSubscribedTo();
 //                    List<User> secondUserSubscribers = secondUser.getSubscribers();
 
@@ -63,6 +63,8 @@ public class UserService {
                 }
             }
         }
+        userRepository.save(currentUser);
+        userRepository.save(secondUser);
     }
 
     public int subscribersCount(Long idUser) {

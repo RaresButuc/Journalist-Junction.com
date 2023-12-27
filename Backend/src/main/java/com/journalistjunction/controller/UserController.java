@@ -39,7 +39,7 @@ public class UserController {
         return userService.getUserByEmail(email);
     }
 
-    @GetMapping(value = "/isSubscribed/{idCurrentUser}/{idSecondUser}")
+    @GetMapping(value = "/issubscribed/{idCurrentUser}/{idSecondUser}")
     public boolean isCurrentUserSubscribed(@PathVariable("idCurrentUser") Long idCurrentUser, @PathVariable("idSecondUser") Long idSecondUser) {
         return userService.isUserSubscriber(idCurrentUser, idSecondUser);
     }
