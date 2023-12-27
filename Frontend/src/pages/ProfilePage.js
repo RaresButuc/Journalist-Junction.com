@@ -68,13 +68,12 @@ export default function ProfilePage() {
           } catch (err) {
             console.log(err);
           }
-        }
+        };
         fetchIsSubscribed();
       }
 
       fetchCurrentUser();
       fetchSubsCount();
-      console.log(1);
     }
   }, [auth()?.email, id]);
 
@@ -133,13 +132,23 @@ export default function ProfilePage() {
         <h1>{profileUser?.name}</h1>
         {/* Subscribe Button */}
         <div className="d-flex justify-content-center">
-          <button
-            type="button"
-            className={`btn btn-${subButtonContent[0]} mr-md-3 mb-2 mb-md-0`}
-            onClick={subscribeOrUnsubscribe}
+          <span
+            data-toggle="tooltip"
+            title={
+              currentUser?.id == id
+                ? "You can't subscribe to your own channel"
+                : `Subscribe to ${profileUser?.name}`
+            }
           >
-            {subButtonContent[1]} - {formatNumber(subsCount)}
-          </button>
+            <button
+              type="button"
+              className={`btn btn-${subButtonContent[0]} mr-md-3 mb-2 mb-md-0`}
+              onClick={subscribeOrUnsubscribe}
+              disabled={currentUser?.id == id}
+            >
+              {subButtonContent[1]} - {formatNumber(subsCount)}
+            </button>
+          </span>
         </div>
 
         <div className="row mt-4">

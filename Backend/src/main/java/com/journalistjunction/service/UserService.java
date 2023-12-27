@@ -48,10 +48,7 @@ public class UserService {
 
         switch (command) {
             case "subscribe" -> {
-                if (!isUserSubscriber(idCurrentUser, idSecondUser)) {
-//                    List<User> currentUserSubscribedTo = currentUser.getSubscribedTo();
-//                    List<User> secondUserSubscribers = secondUser.getSubscribers();
-
+                if (!isUserSubscriber(idCurrentUser, idSecondUser) && !idCurrentUser.equals(idSecondUser)) {
                     currentUser.getSubscribedTo().add(secondUser);
                     secondUser.getSubscribers().add(currentUser);
                 }
