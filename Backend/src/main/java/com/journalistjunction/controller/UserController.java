@@ -34,6 +34,21 @@ public class UserController {
         return userService.getUserById(id);
     }
 
+    @GetMapping(value = "/email/{email}")
+    public User getUserByEmail(@PathVariable("email") String email) {
+        return userService.getUserByEmail(email);
+    }
+
+    @GetMapping(value = "/issubscribed/{idCurrentUser}/{idSecondUser}")
+    public boolean isCurrentUserSubscribed(@PathVariable("idCurrentUser") Long idCurrentUser, @PathVariable("idSecondUser") Long idSecondUser) {
+        return userService.isUserSubscriber(idCurrentUser, idSecondUser);
+    }
+
+    @GetMapping(value = "/subscount/{user}")
+    public int userSubsCount(@PathVariable("user") Long user) {
+        return userService.subscribersCount(user);
+    }
+
     @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest request) {
@@ -46,14 +61,15 @@ public class UserController {
         return ResponseEntity.ok(service.authenticate(request));
     }
 
-    @GetMapping(value = "/email/{email}")
-    public User getUserByEmail(@PathVariable("email") String email) {
-        return userService.getUserByEmail(email);
-    }
 
     @PutMapping("/{id}")
     public void editUser(@PathVariable("id") Long id, @RequestBody User user) {
         userService.updateUserById(id, user);
+    }
+
+    @PutMapping("/{action}/{idCurrentUser}/{idSecondUser}")
+    public void subscribeOrUnsubscribe(@PathVariable("action") String action, @PathVariable("idCurrentUser") Long idCurrentUser, @PathVariable("idSecondUser") Long idSecondUser) {
+        userService.subscribeOrUnsubscribe(idCurrentUser, idSecondUser, action);
     }
 
     @DeleteMapping("/{id}")

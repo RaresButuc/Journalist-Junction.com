@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class UserService {
@@ -26,6 +27,45 @@ public class UserService {
 
     public User getUserByEmail(String email) {
         return userRepository.findByEmail(email).orElse(null);
+    }
+
+    public boolean isUserSubscriber(Long idCurrentUser, Long idSecondUser) {
+        User currentUser = userRepository.findById(idCurrentUser).orElse(null);
+        User secondUser = userRepository.findById(idSecondUser).orElse(null);
+
+        assert currentUser != null;
+        assert secondUser != null;
+
+        return secondUser.getSubscribers().stream().anyMatch(e -> Objects.equals(e.getId(), currentUser.getId()));
+    }
+
+    public void subscribeOrUnsubscribe(Long idCurrentUser, Long idSecondUser, String command) {
+        User currentUser = userRepository.findById(idCurrentUser).orElse(null);
+        User secondUser = userRepository.findById(idSecondUser).orElse(null);
+
+        assert currentUser != null;
+        assert secondUser != null;
+
+        switch (command) {
+            case "subscribe" -> {
+                if (!isUserSubscriber(idCurrentUser, idSecondUser) && !idCurrentUser.equals(idSecondUser)) {
+                    currentUser.getSubscribedTo().add(secondUser);
+                    secondUser.getSubscribers().add(currentUser);
+                }
+            }
+            case "unsubscribe" -> {
+                if (isUserSubscriber(idCurrentUser, idSecondUser) && !idCurrentUser.equals(idSecondUser)) {
+                    currentUser.getSubscribedTo().remove(secondUser);
+                    secondUser.getSubscribers().remove(currentUser);
+                }
+            }
+        }
+        userRepository.save(currentUser);
+        userRepository.save(secondUser);
+    }
+
+    public int subscribersCount(Long idUser) {
+        return Objects.requireNonNull(userRepository.findById(idUser).orElse(null)).getSubscribers().size();
     }
 
     public void updateUserById(Long id, User updatedUser) {
