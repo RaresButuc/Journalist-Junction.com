@@ -15,7 +15,7 @@ export default function ProfilePage() {
 
   const [subsCount, setSubsCount] = useState(0);
   const [subButtonContent, setSubButtonContent] = useState([
-    "subscribe",
+    "danger",
     "Subscribe",
   ]);
 
@@ -32,24 +32,25 @@ export default function ProfilePage() {
 
           //Fetch Country Abrev
           const responseCountry = await axios.get(
-            `https://restcountries.com/v3.1/name/${responseUser.data.country}`
+            `https://restcountries.com/v3.1/name/${responseUser?.data.country}`
           );
           setProfileUserCountry(responseCountry.data[0].cca2);
 
           // Fetch Subscribers Count
           const responseSubsCount = await axios.get(
-            `${DefaultURL}/subscount/${id}`
+            `${DefaultURL}/user/subscount/${id}`
           );
           setSubsCount(responseSubsCount.data);
 
           // Fetch Is Current User Subscribed
           const responseIsSubscribed = await axios.get(
-            `${DefaultURL}/isSubscribed//${id}`
+            `${DefaultURL}/user/isSubscribed/${currentUser?.id}/${id}`
           );
+          console.log(responseIsSubscribed.data);
           if (responseIsSubscribed.data) {
-            setSubButtonContent(["subscribe", "Subscribe"]);
+            setSubButtonContent(["dark", "UnSubscribe"]);
           } else {
-            setSubButtonContent(["unsubscribe", "Unsubscribe"]);
+            setSubButtonContent(["danger", "Subscribe"]);
           }
         } catch (err) {
           console.log(err);
@@ -78,8 +79,17 @@ export default function ProfilePage() {
       }
     }
   }
-
-  const subscribeOrUnsubscribe = () => {};
+  const subscribeOrUnsubscribe = async () => {
+    if (subButtonContent[1] === "Subscribe") {
+      setSubButtonContent(["dark", "UnSubscribe"]);
+      await axios.put(`${DefaultURL}/user/subscribe/${currentUser?.id}/${id}`);
+    } else if (subButtonContent[1] === "UnSubscribe") {
+      setSubButtonContent(["danger", "Subscribe"]);
+      await axios.put(
+        `${DefaultURL}/user/unsubscribe/${currentUser?.id}/${id}`
+      );
+    }
+  };
 
   return (
     <div className="container-xl">
@@ -105,7 +115,11 @@ export default function ProfilePage() {
         <h1>{profileUser?.name}</h1>
         {/* Subscribe Button */}
         <div className="d-flex justify-content-center">
-          <button type="button" class="btn btn-danger mr-md-3 mb-2 mb-md-0">
+          <button
+            type="button"
+            className={`btn btn-${subButtonContent[0]} mr-md-3 mb-2 mb-md-0`}
+            onClick={subscribeOrUnsubscribe}
+          >
             {subButtonContent[1]} - {formatNumber(subsCount)}
           </button>
         </div>

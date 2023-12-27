@@ -68,7 +68,7 @@ public class UserController {
     }
 
     @PutMapping("/{action}/{idCurrentUser}/{idSecondUser}")
-    public void subscribeOrUnsubscrbe(@PathVariable("action") String action, @PathVariable("idCurrentUser") Long idCurrentUser, @PathVariable("idSecondUser") Long idSecondUser) {
+    public void subscribeOrUnsubscribe(@PathVariable("action") String action, @PathVariable("idCurrentUser") Long idCurrentUser, @PathVariable("idSecondUser") Long idSecondUser) {
         userService.subscribeOrUnsubscribe(idCurrentUser, idSecondUser, action);
     }
 
