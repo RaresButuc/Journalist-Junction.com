@@ -1,14 +1,13 @@
 import { useIsAuthenticated, useAuthUser } from "react-auth-kit";
 import CurrentUserInfos from "../usefull/CurrentUserInfos";
-import DefaultURL from "../usefull/DefaultURL";
 import { useParams, useNavigate } from "react-router-dom";
+import DefaultURL from "../usefull/DefaultURL";
 import { useState, useEffect } from "react";
 import axios from "axios";
 
 export default function ProfilePage() {
   const isAuthenticated = useIsAuthenticated();
   const navigate = useNavigate();
-  const auth = useAuthUser();
 
   const [profileUser, setProfileUser] = useState(null);
   const [profileUserCountry, setProfileUserCountry] = useState(null);
@@ -23,7 +22,7 @@ export default function ProfilePage() {
   const { id } = useParams();
 
   useEffect(() => {
-    if (!currentUser) return; // If currentUser is not available, do nothing
+    if (!currentUser) return; 
     if (id) {
       const fetchCurrentUser = async () => {
         try {
