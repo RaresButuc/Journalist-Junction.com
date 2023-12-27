@@ -1,12 +1,13 @@
 import { useIsAuthenticated, useAuthUser } from "react-auth-kit";
 import CurrentUserInfos from "../usefull/CurrentUserInfos";
 import DefaultURL from "../usefull/DefaultURL";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 
 export default function ProfilePage() {
   const isAuthenticated = useIsAuthenticated();
+  const navigate = useNavigate();
   const auth = useAuthUser();
 
   const [profileUser, setProfileUser] = useState(null);
@@ -14,15 +15,15 @@ export default function ProfilePage() {
   const [readMore, setReadMore] = useState(false);
 
   const [subsCount, setSubsCount] = useState(0);
-  const [subButtonContent, setSubButtonContent] = useState([
-    "danger",
-    "Subscribe",
-  ]);
+  const [subButtonContent, setSubButtonContent] = useState(["", ""]);
+  // Used to change the Subs Count automatically
+  const [subAction, setSubAction] = useState(0);
 
   const currentUser = CurrentUserInfos();
   const { id } = useParams();
 
   useEffect(() => {
+    if (!currentUser) return; // If currentUser is not available, do nothing
     if (id) {
       const fetchCurrentUser = async () => {
         try {
@@ -53,29 +54,27 @@ export default function ProfilePage() {
       };
 
       // Fetch Is Current User Subscribed
-      if (currentUser) {
-        const fetchIsSubscribed = async () => {
-          try {
-            const responseIsSubscribed = await axios.get(
-              `${DefaultURL}/user/issubscribed/${currentUser?.id}/${id}`,
-              {}
-            );
-            if (responseIsSubscribed.data) {
-              setSubButtonContent(["dark", "UnSubscribe"]);
-            } else {
-              setSubButtonContent(["danger", "Subscribe"]);
-            }
-          } catch (err) {
-            console.log(err);
+      const fetchIsSubscribed = async () => {
+        try {
+          const responseIsSubscribed = await axios.get(
+            `${DefaultURL}/user/issubscribed/${currentUser?.id}/${id}`,
+            {}
+          );
+          if (responseIsSubscribed.data) {
+            setSubButtonContent(["dark", "UnSubscribe"]);
+          } else {
+            setSubButtonContent(["danger", "Subscribe"]);
           }
-        };
-        fetchIsSubscribed();
-      }
+        } catch (err) {
+          console.log(err);
+        }
+      };
 
-      fetchCurrentUser();
       fetchSubsCount();
+      fetchIsSubscribed();
+      fetchCurrentUser();
     }
-  }, [auth()?.email, id]);
+  }, [subAction, currentUser]);
 
   function formatNumber(number) {
     if (number < 1000) {
@@ -97,14 +96,22 @@ export default function ProfilePage() {
     }
   }
   const subscribeOrUnsubscribe = async () => {
-    if (subButtonContent[1] === "Subscribe") {
-      setSubButtonContent(["dark", "UnSubscribe"]);
-      await axios.put(`${DefaultURL}/user/subscribe/${currentUser?.id}/${id}`);
-    } else if (subButtonContent[1] === "UnSubscribe") {
-      setSubButtonContent(["danger", "Subscribe"]);
-      await axios.put(
-        `${DefaultURL}/user/unsubscribe/${currentUser?.id}/${id}`
-      );
+    if (isAuthenticated()) {
+      if (subButtonContent[1] === "Subscribe") {
+        setSubButtonContent(["dark", "UnSubscribe"]);
+        await axios.put(
+          `${DefaultURL}/user/subscribe/${currentUser?.id}/${id}`
+        );
+        setSubAction(subAction + 1);
+      } else if (subButtonContent[1] === "UnSubscribe") {
+        setSubButtonContent(["danger", "Subscribe"]);
+        await axios.put(
+          `${DefaultURL}/user/unsubscribe/${currentUser?.id}/${id}`
+        );
+        setSubAction(subAction + 1);
+      }
+    } else {
+      navigate("/login");
     }
   };
 
@@ -137,7 +144,9 @@ export default function ProfilePage() {
             title={
               currentUser?.id == id
                 ? "You can't subscribe to your own channel"
-                : `Subscribe to ${profileUser?.name}`
+                : subButtonContent[1] === "Subscribe"
+                ? `Subscribe to ${profileUser?.name}`
+                : `UnSubscribe from ${profileUser?.name}`
             }
           >
             <button

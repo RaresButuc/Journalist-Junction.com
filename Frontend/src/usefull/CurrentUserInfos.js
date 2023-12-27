@@ -19,7 +19,7 @@ export default function CurrentUserInfos() {
       }
     };
     getUserByEmail();
-  }, [auth()?.email]);
+  }, []);
 
   return user;
 }
