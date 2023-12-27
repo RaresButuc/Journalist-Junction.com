@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import DefaultURL from "./DefaultURL";
 import axios from "axios";
 
 export default function LocalDateTimeToString(article) {
@@ -7,9 +8,9 @@ export default function LocalDateTimeToString(article) {
   useEffect(() => {
     const convertDateToString = async () => {
       const response = await axios.get(
-        `http://localhost:8080/article/date/${article?.id}`
+        `${DefaultURL}/article/date/${article?.id}`
       );
-      const data = response.data
+      const data = response.data;
       setDate(data);
     };
     convertDateToString();
