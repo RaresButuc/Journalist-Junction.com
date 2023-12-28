@@ -4,6 +4,7 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
 import HomePage from "./pages/HomePage";
+import ErrorPage from "./pages/ErrorPage";
 import LoginPage from "./pages/LoginPage";
 import ProfilePage from "./pages/ProfilePage";
 
@@ -17,7 +18,10 @@ function App() {
         <Router>
           <Routes>
             <Route path="/" element={<HomePage />} />
-            {/* <Route path="*" element={<ErrorPage />} /> */}
+            <Route
+              path="*"
+              element={<ErrorPage message={"404 Not Found! "} />}
+            />
             <Route path="/login" element={<LoginPage />} />
             {/* <Route path="/forget-password" element={<ForgetPassword />} />
             <Route
