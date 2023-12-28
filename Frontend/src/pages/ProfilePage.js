@@ -3,6 +3,7 @@ import CurrentUserInfos from "../usefull/CurrentUserInfos";
 import { useParams, useNavigate } from "react-router-dom";
 import DefaultURL from "../usefull/DefaultURL";
 import { useState, useEffect } from "react";
+import ErrorPage from "./ErrorPage";
 import axios from "axios";
 
 export default function ProfilePage() {
@@ -18,11 +19,14 @@ export default function ProfilePage() {
   // Used to change the Subs Count automatically
   const [subAction, setSubAction] = useState(0);
 
+  const [userExists, setUserExists] = useState(null);
+
   const currentUser = CurrentUserInfos();
+
   const { id } = useParams();
 
   useEffect(() => {
-    if (!currentUser) return; 
+    if (!currentUser) return;
     if (id) {
       const fetchCurrentUser = async () => {
         try {
@@ -69,11 +73,23 @@ export default function ProfilePage() {
         }
       };
 
+      const fetchUserExists = async () => {
+        try {
+          const userExists = await axios.get(
+            `${DefaultURL}/user/available/${id}`
+          );
+          setUserExists(userExists.data);
+        } catch (err) {
+          console.log(err);
+        }
+      };
+
+      fetchUserExists();
       fetchSubsCount();
       fetchIsSubscribed();
       fetchCurrentUser();
     }
-  }, [subAction, currentUser]);
+  }, [subAction, currentUser, id]);
 
   function formatNumber(number) {
     if (number < 1000) {
@@ -115,95 +131,101 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="container-xl">
-      <div className="position-relative">
-        <img
-          src="https://wallpapercave.com/wp/wp7500280.jpg"
-          className="img-fluid"
-          style={{ width: "100%" }} // Aici pana cand voi avea optiunea de crop,cu 423px height
-          alt="BackgroundImage"
-        />
-        <div className="position-absolute top-100 start-50 translate-middle">
-          <div className="profile">
+    <>
+      {userExists ? (
+        <div className="container-xl">
+          <div className="position-relative">
             <img
-              src="https://i.imgur.com/JgYD2nQ.jpg"
-              className="img-fluid rounded-circle border border-4"
-              style={{ borderColor: "white" }} //250 cand e mare,140 cand e mic. 250 va fi default
-              alt="ProfileImage"
+              src="https://wallpapercave.com/wp/wp7500280.jpg"
+              className="img-fluid"
+              style={{ width: "100%" }} // Aici pana cand voi avea optiunea de crop,cu 423px height
+              alt="BackgroundImage"
             />
+            <div className="position-absolute top-100 start-50 translate-middle">
+              <div className="profile">
+                <img
+                  src="https://i.imgur.com/JgYD2nQ.jpg"
+                  className="img-fluid rounded-circle border border-4"
+                  style={{ borderColor: "white" }} //250 cand e mare,140 cand e mic. 250 va fi default
+                  alt="ProfileImage"
+                />
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-      <div className="container-xl mt-5">
-        <h1>{profileUser?.name}</h1>
-        {/* Subscribe Button */}
-        <div className="d-flex justify-content-center">
-          <span
-            data-toggle="tooltip"
-            title={
-              currentUser?.id == id
-                ? "You can't subscribe to your own channel"
-                : subButtonContent[1] === "Subscribe"
-                ? `Subscribe to ${profileUser?.name}`
-                : `UnSubscribe from ${profileUser?.name}`
-            }
-          >
-            <button
-              type="button"
-              className={`btn btn-${subButtonContent[0]} mr-md-3 mb-2 mb-md-0`}
-              onClick={subscribeOrUnsubscribe}
-              disabled={currentUser?.id == id}
-            >
-              {subButtonContent[1]} - {formatNumber(subsCount)}
-            </button>
-          </span>
-        </div>
+          <div className="container-xl mt-5">
+            <h1>{profileUser?.name}</h1>
+            {/* Subscribe Button */}
+            <div className="d-flex justify-content-center">
+              <span
+                data-toggle="tooltip"
+                title={
+                  currentUser?.id == id
+                    ? "You can't subscribe to your own channel"
+                    : subButtonContent[1] === "Subscribe"
+                    ? `Subscribe to ${profileUser?.name}`
+                    : `UnSubscribe from ${profileUser?.name}`
+                }
+              >
+                <button
+                  type="button"
+                  className={`btn btn-${subButtonContent[0]} mr-md-3 mb-2 mb-md-0`}
+                  onClick={subscribeOrUnsubscribe}
+                  disabled={currentUser?.id == id}
+                >
+                  {subButtonContent[1]} - {formatNumber(subsCount)}
+                </button>
+              </span>
+            </div>
 
-        <div className="row mt-4">
-          <div className="col-xl-6 col-md-12">
-            <h3>
-              <strong>About</strong>
-            </h3>
-            <h5 className="d-inline">Country: </h5>
-            <img
-              className="mx-2 mb-1"
-              data-toggle="tooltip"
-              src={`https://flagsapi.com/${profileUserCountry}/flat/24.png`}
-              alt={profileUserCountry}
-              title={profileUser?.country}
-            />
-            <p className="d-inline">({profileUser?.country})</p>
-            <br />
-            <br />
-            <p className="d-inline fw-medium">
-              {readMore
-                ? profileUser?.shortAutoDescription
-                : profileUser?.shortAutoDescription.substr(0, 300)}
-            </p>
-            <button
-              className="bg-transparent text-danger btn btn-outline-light"
-              style={{ outline: "transparent" }}
-              onClick={() => {
-                readMore ? setReadMore(false) : setReadMore(true);
-              }}
-            >
-              {readMore ? "(Show Less)" : "... (Read More)"}
-            </button>
-          </div>
-          <div className="col-xl-6 col-md-12">
-            <h3>
-              <strong>Links</strong>
-            </h3>
-            <h5 className="d-inline">Email:</h5>
-            <h5 className="d-inline ms-3">
-              <em>{profileUser?.email}</em>
-            </h5>
-            <br />
-            <br />
+            <div className="row mt-4">
+              <div className="col-xl-6 col-md-12">
+                <h3>
+                  <strong>About</strong>
+                </h3>
+                <h5 className="d-inline">Country: </h5>
+                <img
+                  className="mx-2 mb-1"
+                  data-toggle="tooltip"
+                  src={`https://flagsapi.com/${profileUserCountry}/flat/24.png`}
+                  alt={profileUserCountry}
+                  title={profileUser?.country}
+                />
+                <p className="d-inline">({profileUser?.country})</p>
+                <br />
+                <br />
+                <p className="d-inline fw-medium">
+                  {readMore
+                    ? profileUser?.shortAutoDescription
+                    : profileUser?.shortAutoDescription?.substr(0, 300)}
+                </p>
+                <button
+                  className="bg-transparent text-danger btn btn-outline-light"
+                  style={{ outline: "transparent" }}
+                  onClick={() => {
+                    readMore ? setReadMore(false) : setReadMore(true);
+                  }}
+                >
+                  {readMore ? "(Show Less)" : "... (Read More)"}
+                </button>
+              </div>
+              <div className="col-xl-6 col-md-12">
+                <h3>
+                  <strong>Links</strong>
+                </h3>
+                <h5 className="d-inline">Email:</h5>
+                <h5 className="d-inline ms-3">
+                  <em>{profileUser?.email}</em>
+                </h5>
+                <br />
+                <br />
+              </div>
+            </div>
+            <hr />
           </div>
         </div>
-        <hr />
-      </div>
-    </div>
+      ) : (
+        <ErrorPage message={"User Not Found!"} />
+      )}
+    </>
   );
 }

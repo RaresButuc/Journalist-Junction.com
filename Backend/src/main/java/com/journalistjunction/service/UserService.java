@@ -40,7 +40,7 @@ public class UserService {
     }
 
     public boolean isUserIdAvailable(Long id) {
-        return userRepository.findById(id).orElse(null) != null;
+        return userRepository.existsById(id);
     }
 
     public void subscribeOrUnsubscribe(Long idCurrentUser, Long idSecondUser, String command) {
