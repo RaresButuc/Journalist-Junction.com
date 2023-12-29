@@ -18,35 +18,38 @@ export default function RegisterPage() {
 
   const onSubmit = async (values) => {
     try {
-      if (response.data !== "") {
+      if (values.country !== "") {
         const response = await axios.post(
           `${DefaultURL}/user/register`,
           values
         );
-        setTimeout(() => {
-          navigate("/login");
-        }, 2000);
-        setShowAlert(true);
-        setAlertInfos([
-          "Congratulations!",
-          "You have been Succesfully Registered!",
-          "success",
-        ]);
-      } else if (values.country === "") {
-        setShowAlert(true);
-        setAlertInfos([
-          "Be Careful",
-          "The Residence Country Must Be Specified!",
-          "danger",
-        ]);
-        setTimeout(() => {
-          setShowAlert(false);
-        }, 2000);
+
+        if (response.data !== "") {
+          setTimeout(() => {
+            navigate("/login");
+          }, 2000);
+          setShowAlert(true);
+          setAlertInfos([
+            "Congratulations!",
+            "You have been Succesfully Registered!",
+            "success",
+          ]);
+        } else {
+          setShowAlert(true);
+          setAlertInfos([
+            "Be Careful",
+            "Email or UserName Already Registered!",
+            "danger",
+          ]);
+          setTimeout(() => {
+            setShowAlert(false);
+          }, 2000);
+        }
       } else {
         setShowAlert(true);
         setAlertInfos([
           "Be Careful",
-          "Email or UserName Already Registered!",
+          "The Residence Country Must Be Specified!",
           "danger",
         ]);
         setTimeout(() => {
