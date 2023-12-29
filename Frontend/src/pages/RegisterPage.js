@@ -71,19 +71,20 @@ export default function RegisterPage() {
       phoneNumber: formData.get("phoneNumberInput"),
       country: formData.get("countryInput"),
       shortAutoDescription: formData.get("shortAutoDescriptionInput"),
+      role: "JOURNALIST",
     };
     onSubmit(registerData);
   };
 
   return (
     <>
-      {showAlert ? (
+      {/* {showAlert ? ( */}
         <Alert
           type={alertInfos[0]}
           message={alertInfos[1]}
           color={alertInfos[2]}
         />
-      ) : null}
+      {/* ) : null} */}
 
       <form onSubmit={onSave}>
         <div className="container py-2 mt-4">
