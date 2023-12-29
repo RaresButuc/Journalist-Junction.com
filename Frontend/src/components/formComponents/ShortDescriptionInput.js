@@ -8,9 +8,13 @@ function ShortDescriptionInput({ user, id }, ref) {
   const countingCharactersDescription = (e) => {
     setCharactersTextArea(e.target.value.length);
 
-    e.target.value.length === 500
-      ? (setWarning(true), setColorOfText("danger"))
-      : (setWarning(false), setColorOfText("succes"));
+    if (e.target.value.length === 500) {
+      setWarning(true);
+      setColorOfText("danger");
+    } else {
+      setWarning(false);
+      setColorOfText("success");
+    }
   };
 
   return (
@@ -29,7 +33,7 @@ function ShortDescriptionInput({ user, id }, ref) {
       <label for={id}>Self Description</label>
 
       <div id="Title-Help" className={`form-text text-${colorOfText}`}>
-        {charactersTextArea} + / 500
+        {charactersTextArea} / 500
       </div>
 
       {warning ? (
@@ -41,4 +45,4 @@ function ShortDescriptionInput({ user, id }, ref) {
   );
 }
 
-export default forwardRef(NameInput);
+export default forwardRef(ShortDescriptionInput);

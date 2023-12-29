@@ -11,6 +11,9 @@ function PhoneNumberInput({ user, id }, ref) {
         id={id}
         placeholder="Phone Number"
         defaultValue={user?.phoneNumber}
+        onChange={(e) => {
+          e.target.value = e.target.value.replace(/\D/, '');
+        }}
         required
       />
       <label for={id}>Phone Number</label>
