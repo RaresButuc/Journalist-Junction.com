@@ -9,11 +9,11 @@ function EmailInput({ user, id }, ref) {
         type="email"
         name="emailInput"
         id={id}
-        placeholder="Email address"
+        placeholder="Email Address"
         defaultValue={user?.email}
         required
       />
-      <label for={id}>Email address</label>
+      <label for={id}>Email Address</label>
     </div>
   );
 }

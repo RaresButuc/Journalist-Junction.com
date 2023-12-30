@@ -6,6 +6,8 @@ import { useState, useEffect } from "react";
 import ErrorPage from "./ErrorPage";
 import axios from "axios";
 
+import EmailInput from "../components/formComponents/EmailInput";
+
 export default function ProfilePage() {
   const isAuthenticated = useIsAuthenticated();
   const navigate = useNavigate();

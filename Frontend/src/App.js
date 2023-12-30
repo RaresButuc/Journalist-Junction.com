@@ -7,6 +7,7 @@ import HomePage from "./pages/HomePage";
 import ErrorPage from "./pages/ErrorPage";
 import LoginPage from "./pages/LoginPage";
 import ProfilePage from "./pages/ProfilePage";
+import RegisterPage from "./pages/RegisterPage";
 
 import "./App.css";
 
@@ -29,8 +30,8 @@ function App() {
               element={<ChangePasswordPageNoAuth />}
             />
             <Route path="/all-ads" element={<AdsPage />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/register" element={<Register />} />*/}
+            <Route path="/contact" element={<Contact />} />*/}
+            <Route path="/register" element={<RegisterPage />} />
             <Route path="/profile/:id" element={<ProfilePage />} />
 
             {/* <Route path="/ad/:id" element={<AdDetail />} />

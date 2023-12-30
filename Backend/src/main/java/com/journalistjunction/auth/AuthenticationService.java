@@ -1,5 +1,6 @@
 package com.journalistjunction.auth;
 
+import com.journalistjunction.enums.Role;
 import com.journalistjunction.model.User;
 import com.journalistjunction.repository.UserRepository;
 import com.journalistjunction.security.JwtService;
@@ -21,7 +22,7 @@ public class AuthenticationService {
     public AuthenticationResponse register(RegisterRequest request) {
         if (repository.findByEmailIgnoreCase(request.getEmail()) == null && repository.findByNameIgnoreCase(request.getName()) == null) {
             var user = User.builder()
-                    .role(request.getRole())
+                    .role(Role.JOURNALIST)
                     .name(request.getName())
                     .email(request.getEmail())
                     .password(passwordEncoder.encode(request.getPassword()))
