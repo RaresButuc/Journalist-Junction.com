@@ -16,7 +16,6 @@ function CountrySelect({ user }, ref) {
               <img
                 className="mx-2 mb-1"
                 src={`https://flagsapi.com/${country.cca2}/flat/16.png`}
-                alt={country.name.common}
               />
               {country.name.common}
             </div>

@@ -196,20 +196,25 @@ export default function ProfilePage() {
                 <br />
                 <br />
                 <p className="d-inline fw-medium">
-                  {readMore
+                  {profileUser?.shortAutoDescription?.length < 300
+                    ? profileUser?.shortAutoDescription
+                    : readMore
                     ? profileUser?.shortAutoDescription
                     : profileUser?.shortAutoDescription?.substr(0, 300)}
                 </p>
-                <button
-                  className="bg-transparent text-danger btn btn-outline-light"
-                  style={{ outline: "transparent" }}
-                  onClick={() => {
-                    readMore ? setReadMore(false) : setReadMore(true);
-                  }}
-                >
-                  {readMore ? "(Show Less)" : "... (Read More)"}
-                </button>
+                {profileUser?.shortAutoDescription?.length > 300 ? (
+                  <button
+                    className="bg-transparent text-danger btn btn-outline-light"
+                    style={{ outline: "transparent" }}
+                    onClick={() => {
+                      readMore ? setReadMore(false) : setReadMore(true);
+                    }}
+                  >
+                    {readMore ? "(Show Less)" : "... (Read More)"}
+                  </button>
+                ) : null}
               </div>
+              
               <div className="col-xl-6 col-md-12">
                 <h3>
                   <strong>Links</strong>
