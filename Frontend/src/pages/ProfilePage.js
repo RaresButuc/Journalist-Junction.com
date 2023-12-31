@@ -6,8 +6,6 @@ import { useState, useEffect } from "react";
 import ErrorPage from "./ErrorPage";
 import axios from "axios";
 
-import EmailInput from "../components/formComponents/EmailInput";
-
 export default function ProfilePage() {
   const isAuthenticated = useIsAuthenticated();
   const navigate = useNavigate();
@@ -195,21 +193,27 @@ export default function ProfilePage() {
                 <p className="d-inline">({profileUser?.country})</p>
                 <br />
                 <br />
-                <p className="d-inline fw-medium">
-                  {readMore
+                <p className="d-inline fw-medium text-break text-start text-end">
+                  {profileUser?.shortAutoDescription?.length < 300
+                    ? profileUser?.shortAutoDescription
+                    : readMore
                     ? profileUser?.shortAutoDescription
                     : profileUser?.shortAutoDescription?.substr(0, 300)}
                 </p>
-                <button
-                  className="bg-transparent text-danger btn btn-outline-light"
-                  style={{ outline: "transparent" }}
-                  onClick={() => {
-                    readMore ? setReadMore(false) : setReadMore(true);
-                  }}
-                >
-                  {readMore ? "(Show Less)" : "... (Read More)"}
-                </button>
+
+                {profileUser?.shortAutoDescription?.length > 300 ? (
+                  <button
+                    className="bg-transparent text-danger btn btn-outline-light"
+                    style={{ outline: "transparent" }}
+                    onClick={() => {
+                      readMore ? setReadMore(false) : setReadMore(true);
+                    }}
+                  >
+                    {readMore ? "(Show Less)" : "... (Read More)"}
+                  </button>
+                ) : null}
               </div>
+
               <div className="col-xl-6 col-md-12">
                 <h3>
                   <strong>Links</strong>
