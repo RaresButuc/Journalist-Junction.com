@@ -21,7 +21,6 @@ public class Category {
     private String nameOfCategory;
 
     @JsonIgnore
-    @JoinTable
     @ManyToMany(mappedBy = "categories")
     private List<Article> listOfArticles;
 }

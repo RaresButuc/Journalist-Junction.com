@@ -1,6 +1,6 @@
 import { forwardRef, useState } from "react";
 
-function ThumbnailArticle({ article, id }, ref) {
+function ThumbnailDescription({ article, id }, ref) {
   const [warning, setWarning] = useState(false);
   const [charactersTextArea, setCharactersTextArea] = useState(0);
   const [colorOfText, setColorOfText] = useState("succes");
@@ -45,4 +45,4 @@ function ThumbnailArticle({ article, id }, ref) {
   );
 }
 
-export default forwardRef(ThumbnailArticle);
+export default forwardRef(ThumbnailDescription);

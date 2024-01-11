@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { RequireAuth } from "react-auth-kit";
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -8,6 +9,7 @@ import ErrorPage from "./pages/ErrorPage";
 import LoginPage from "./pages/LoginPage";
 import ProfilePage from "./pages/ProfilePage";
 import RegisterPage from "./pages/RegisterPage";
+import EditArticlePage from "./pages/EditArticlePage";
 
 import "./App.css";
 
@@ -58,15 +60,16 @@ function App() {
                   <RatingPage />
                 </RequireAuth>
               }
-            ></Route>
+            ></Route>*/}
             <Route
-              path="post-ads"
+              path="post-article"
+              // path="edit-article/:id"
               element={
                 <RequireAuth loginPath="/login">
-                  <PostOffer />
+                  <EditArticlePage />
                 </RequireAuth>
               }
-            ></Route>  */}
+            ></Route>
           </Routes>
         </Router>
       </div>

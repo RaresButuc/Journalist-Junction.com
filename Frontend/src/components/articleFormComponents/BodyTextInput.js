@@ -1,8 +1,8 @@
-import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-import { CKEditor } from "@ckeditor/ckeditor5-react";
 import { forwardRef } from "react";
+import { CKEditor } from "@ckeditor/ckeditor5-react";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
-function BodyTextInput({ article, id }, ref) {
+const BodyTextInput = forwardRef(({ article, id }, ref) => (
   <div className="container-xl form-floating">
     <CKEditor
       editor={ClassicEditor}
@@ -15,7 +15,7 @@ function BodyTextInput({ article, id }, ref) {
       defaultValue={article?.body}
       required
     />
-  </div>;
-}
+  </div>
+));
 
-export default forwardRef(BodyTextInput);
+export default BodyTextInput;

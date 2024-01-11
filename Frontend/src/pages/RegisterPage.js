@@ -1,10 +1,10 @@
 import Alert from "../components/Alert";
-import NameInput from "../components/formComponents/NameInput";
-import EmailInput from "../components/formComponents/EmailInput";
-import PasswordInput from "../components/formComponents/PasswordInput";
-import CountrySelect from "../components/formComponents/CountrySelect";
-import PhoneNumberInput from "../components/formComponents/PhoneNumberInput";
-import ShortDescriptionInput from "../components/formComponents/ShortDescriptionInput";
+import NameInput from "../components/accountFormComponents/NameInput";
+import EmailInput from "../components/accountFormComponents/EmailInput";
+import PasswordInput from "../components/accountFormComponents/PasswordInput";
+import CountrySelect from "../components/accountFormComponents/CountrySelect";
+import PhoneNumberInput from "../components/accountFormComponents/PhoneNumberInput";
+import ShortDescriptionInput from "../components/accountFormComponents/ShortDescriptionInput";
 
 import axios from "axios";
 import { useState } from "react";
@@ -13,6 +13,7 @@ import DefaultURL from "../usefull/DefaultURL";
 
 export default function RegisterPage() {
   const navigate = useNavigate();
+
   const [showAlert, setShowAlert] = useState(false);
   const [alertInfos, setAlertInfos] = useState(["", "", ""]);
 
@@ -83,7 +84,7 @@ export default function RegisterPage() {
           message={alertInfos[1]}
           color={alertInfos[2]}
         />
-       ) : null}
+      ) : null}
 
       <form onSubmit={onSave}>
         <div className="container py-2 mt-4">
@@ -99,9 +100,9 @@ export default function RegisterPage() {
 
                   <div className="form-outline mb-4 mt-5">
                     <NameInput
-                      user={null}
+                      article={null}
                       ref={null}
-                      id={"floatingNameValue"}
+                      id={"floatingTitleValue"}
                     />
                   </div>
 

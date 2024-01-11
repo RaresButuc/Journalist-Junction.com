@@ -43,7 +43,7 @@ public class ArticleService {
         }
 
         articleFromDb.setTitle(articleUpdater.getTitle());
-        articleFromDb.setShortDescription(articleUpdater.getShortDescription());
+        articleFromDb.setThumbnailDescription(articleUpdater.getThumbnailDescription());
         articleFromDb.setBody(articleUpdater.getBody());
         articleFromDb.setCategories(articleUpdater.getCategories());
         articleFromDb.setLocation(articleUpdater.getLocation());
