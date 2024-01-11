@@ -6,6 +6,7 @@ import DefaultURL from "../usefull/DefaultURL";
 import Alert from "../components/Alert";
 import TitleInput from "../components/articleFormComponents/TitleInput";
 import BodyTextInput from "../components/articleFormComponents/BodyTextInput";
+import CategoriesSelect from "../components/articleFormComponents/CategoriesSelect";
 import ThumbnailDescription from "../components/articleFormComponents/ThumbnailDescription";
 
 export default function EditArticlePage() {
@@ -74,7 +75,7 @@ export default function EditArticlePage() {
   };
 
   return (
-    <div className="container-xl">
+    <div className="container-xl mt-3">
       {showAlert ? (
         <Alert
           type={alertInfos[0]}
@@ -85,49 +86,55 @@ export default function EditArticlePage() {
 
       <div className="row">
         <form onSubmit={onSave} className="col-xl-6 col-md-12">
-          <div className="py-2 mt-4">
-            <div className="row d-flex justify-content-center align-items-center">
-              <div className="col-12 col-md-8 col-lg-6 col-xl-5">
-                <div className="border border-danger">
-                  <div
-                    className="card-body p-4 text-center"
-                    style={{ backgroundColor: "rgba(255, 255, 255,0.5)" }}
-                  >
-                    <h1 className="mb-4">
-                      Edit Article <br></br>"..."
-                    </h1>
-                    <hr style={{ color: "#dc3545" }} />
+          <div className="row d-flex justify-content-center align-items-center">
+            <div className="col-md-8 col-lg-6 col-xl-10">
+              <div className="border border-danger">
+                <div
+                  className="card-body p-4 text-center"
+                  style={{ backgroundColor: "rgba(255, 255, 255,0.5)" }}
+                >
+                  <h1 className="mb-4">
+                    Edit Article <br></br>"..."
+                  </h1>
+                  <hr style={{ color: "#dc3545" }} />
 
-                    <div className="form-outline mb-4 mt-5">
-                      <TitleInput
-                        article={null}
-                        ref={null}
-                        id={"floatingNameValue"}
-                      />
-                    </div>
-
-                    <div className="form-outline mb-4 mt-5">
-                      <ThumbnailDescription
-                        article={null}
-                        ref={null}
-                        id={"floatingThumbnailDescriptionValue"}
-                      />
-                    </div>
-
-                    <button
-                      className="btn btn-success btn-lg btn-block"
-                      type="submit"
-                    >
-                      Save
-                    </button>
+                  <div className="form-outline mb-4 mt-5">
+                    <TitleInput
+                      article={null}
+                      ref={null}
+                      id={"floatingNameValue"}
+                    />
                   </div>
+
+                  <div className="form-outline mb-4">
+                    <ThumbnailDescription
+                      article={null}
+                      ref={null}
+                      id={"floatingThumbnailDescriptionValue"}
+                    />
+                  </div>
+
+                  <div className="form-outline mb-4">
+                    <CategoriesSelect
+                      article={null}
+                      ref={null}
+                      id={"floatingCategoriesSelectValue"}
+                    />
+                  </div>
+
+                  <button
+                    className="btn btn-success btn-lg btn-block"
+                    type="submit"
+                  >
+                    Save
+                  </button>
                 </div>
               </div>
             </div>
           </div>
         </form>
 
-        <div className="col-xl-6 col-md-12 form-outline mb-4 mt-5">
+        <div className="col-xl-6 col-md-12">
           <BodyTextInput
             article={null}
             ref={null}

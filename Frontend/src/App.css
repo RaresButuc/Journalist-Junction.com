@@ -226,3 +226,8 @@ body {
     transform: translate(100px, 100px) rotate(112deg);
   }
 }
+
+.ck-editor__editable_inline:not(.ck-comment__input *) {
+  height: 440px;
+  overflow-y: auto;
+}

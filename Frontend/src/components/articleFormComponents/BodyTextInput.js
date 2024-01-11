@@ -3,7 +3,7 @@ import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 const BodyTextInput = forwardRef(({ article, id }, ref) => (
-  <div className="container-xl form-floating">
+  <div className="form-floating">
     <CKEditor
       editor={ClassicEditor}
       ref={ref}
