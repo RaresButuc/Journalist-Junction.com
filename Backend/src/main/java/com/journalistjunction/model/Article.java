@@ -31,6 +31,7 @@ public class Article {
     private String body;
 
     @ManyToMany
+    @JoinTable
     private List<Category> categories;
 
     private LocalDateTime postTime;
@@ -40,12 +41,15 @@ public class Article {
     private String language;
 
     @ManyToOne
+    @JoinColumn
     private User owner;
 
     @ManyToMany
+    @JoinTable
     private List<User> contributors;
 
     @ManyToMany
+    @JoinTable
     private List<User> rejectedWorkers;
 
     @OneToMany

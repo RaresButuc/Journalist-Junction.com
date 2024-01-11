@@ -18,9 +18,11 @@ public class Notification {
     private Long id;
 
     @ManyToOne
+    @JoinColumn
     private User to;
 
     @ManyToOne
+    @JoinColumn
     private User from;
 
     private String message;
