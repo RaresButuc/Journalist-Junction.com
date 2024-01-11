@@ -25,7 +25,7 @@ public class Article {
     private String title;
 
     @Column(length = 350)
-    private String shortDescription;
+    private String thumbnailDescription;
 
     @Lob
     private String body;
