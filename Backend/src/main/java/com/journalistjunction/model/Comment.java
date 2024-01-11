@@ -18,9 +18,11 @@ public class Comment {
     private Long id;
 
     @ManyToOne
+    @JoinColumn
     private User from;
 
     @ManyToOne
+    @JoinColumn
     private Article to;
 
     private LocalDateTime postTime;
