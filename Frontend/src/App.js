@@ -10,6 +10,7 @@ import LoginPage from "./pages/LoginPage";
 import ProfilePage from "./pages/ProfilePage";
 import RegisterPage from "./pages/RegisterPage";
 import EditArticlePage from "./pages/EditArticlePage";
+import PostArticlePage from "./pages/PostArticlePage";
 
 import "./App.css";
 
@@ -62,11 +63,20 @@ function App() {
               }
             ></Route>*/}
             <Route
-              path="post-article"
+              path="/edit-article"
               // path="edit-article/:id"
               element={
                 <RequireAuth loginPath="/login">
                   <EditArticlePage />
+                </RequireAuth>
+              }
+            ></Route>
+            <Route
+              path="/post-article/:id"
+              // path="edit-article/:id"
+              element={
+                <RequireAuth loginPath="/login">
+                  <PostArticlePage />
                 </RequireAuth>
               }
             ></Route>

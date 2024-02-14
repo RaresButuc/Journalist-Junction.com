@@ -27,7 +27,7 @@ public class Article {
     @Column(length = 350)
     private String thumbnailDescription;
 
-    @Lob
+    @Column(columnDefinition = "TEXT")
     private String body;
 
     @ManyToMany
