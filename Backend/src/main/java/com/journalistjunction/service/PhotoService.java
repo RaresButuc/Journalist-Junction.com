@@ -2,17 +2,15 @@ package com.journalistjunction.service;
 
 import com.journalistjunction.model.Photo;
 import com.journalistjunction.repository.PhotoRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class PhotoService {
     private final PhotoRepository photoRepository;
-
-    public PhotoService(PhotoRepository photoRepository) {
-        this.photoRepository = photoRepository;
-    }
 
 
     public List<Photo> getAllPhotos() {

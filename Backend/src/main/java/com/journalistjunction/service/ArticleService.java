@@ -2,18 +2,16 @@ package com.journalistjunction.service;
 
 import com.journalistjunction.model.Article;
 import com.journalistjunction.repository.ArticleRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class ArticleService {
     private final ArticleRepository articleRepository;
-
-    public ArticleService(ArticleRepository articleRepository) {
-        this.articleRepository = articleRepository;
-    }
 
     public List<Article> getAllArticles() {
         return articleRepository.findAll();

@@ -2,18 +2,16 @@ package com.journalistjunction.service;
 
 import com.journalistjunction.model.Comment;
 import com.journalistjunction.repository.CommentRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class CommentService {
     private final CommentRepository commentRepository;
-
-    public CommentService(CommentRepository commentRepository) {
-        this.commentRepository = commentRepository;
-    }
 
 
     public List<Comment> getAllComments() {
