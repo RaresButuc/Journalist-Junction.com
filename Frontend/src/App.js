@@ -3,7 +3,6 @@ import { RequireAuth } from "react-auth-kit";
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-
 import HomePage from "./pages/HomePage";
 import ErrorPage from "./pages/ErrorPage";
 import LoginPage from "./pages/LoginPage";
@@ -22,6 +21,7 @@ function App() {
         <Router>
           <Routes>
             <Route path="/" element={<HomePage />} />
+
             <Route
               path="*"
               element={<ErrorPage message={"404 Not Found! "} />}

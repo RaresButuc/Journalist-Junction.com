@@ -2,6 +2,7 @@ package com.journalistjunction.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -29,6 +30,9 @@ public class Article {
 
     @Column(columnDefinition = "TEXT")
     private String body;
+
+    @NotNull
+    private String uuid;
 
     @ManyToMany
     @JoinTable
