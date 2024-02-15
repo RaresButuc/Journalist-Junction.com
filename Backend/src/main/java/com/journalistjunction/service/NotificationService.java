@@ -2,18 +2,16 @@ package com.journalistjunction.service;
 
 import com.journalistjunction.model.Notification;
 import com.journalistjunction.repository.NotificationRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class NotificationService {
     private final NotificationRepository notificationRepository;
-
-    public NotificationService(NotificationRepository notificationRepository) {
-        this.notificationRepository = notificationRepository;
-    }
 
 
     public List<Notification> getAllNotifications() {

@@ -4,8 +4,8 @@ import { useSignIn } from "react-auth-kit";
 import axios, { AxiosError } from "axios";
 import { useState } from "react";
 
-import EmailInput from "../components/formComponents/EmailInput";
-import PasswordInput from "../components/formComponents/PasswordInput";
+import EmailInput from "../components/accountFormComponents/EmailInput";
+import PasswordInput from "../components/accountFormComponents/PasswordInput";
 
 export default function LoginPage() {
   const navigate = useNavigate();

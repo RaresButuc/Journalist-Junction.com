@@ -98,13 +98,14 @@ export default function Navbar() {
                           Profile
                         </a>
                       </li>
-                      {currentUser?.role === "READER" ? (
-                        <li>
-                          <a className="dropdown-item" href="/post-ads">
-                            Post New Article
-                          </a>
-                        </li>
-                      ) : null}
+                      <li>
+                        <a
+                          className="dropdown-item"
+                          href={`/post-article/${currentUser?.id}`}
+                        >
+                          Post New Article
+                        </a>
+                      </li>
                       <li>
                         <hr className="dropdown-divider" />
                       </li>

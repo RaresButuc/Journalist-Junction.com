@@ -3,6 +3,7 @@ package com.journalistjunction.security;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -28,7 +29,10 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth ->
                         auth
-//                                .requestMatchers("/**", "/user/**").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/article").authenticated()
+                                .requestMatchers(HttpMethod.PUT, "/article/**").authenticated()
+                                .requestMatchers(HttpMethod.DELETE, "/article/**").authenticated()
+                                .requestMatchers("/**", "/user/**").permitAll()
                                 // .requestMatchers("/postofer").hasRole("CUSTOMER")
                                 .anyRequest()
                                 .authenticated()

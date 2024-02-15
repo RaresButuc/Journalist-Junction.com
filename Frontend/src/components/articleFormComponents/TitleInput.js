@@ -18,4 +18,4 @@ function TitleInput({ article, id }, ref) {
   );
 }
 
-export default forwardRef(NameInput);
+export default forwardRef(TitleInput);

@@ -2,18 +2,16 @@ package com.journalistjunction.service;
 
 import com.journalistjunction.model.Category;
 import com.journalistjunction.repository.CategoryRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class CategoryService {
     private final CategoryRepository categoryRepository;
-
-    public CategoryService(CategoryRepository categoryRepository) {
-        this.categoryRepository = categoryRepository;
-    }
 
     public List<Category> getAllCategories() {
         return categoryRepository.findAll();

@@ -2,18 +2,16 @@ package com.journalistjunction.service;
 
 import com.journalistjunction.model.Article;
 import com.journalistjunction.repository.ArticleRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class ArticleService {
     private final ArticleRepository articleRepository;
-
-    public ArticleService(ArticleRepository articleRepository) {
-        this.articleRepository = articleRepository;
-    }
 
     public List<Article> getAllArticles() {
         return articleRepository.findAll();
@@ -23,11 +21,11 @@ public class ArticleService {
         return articleRepository.findAllByReadyToBePostedIsTrue();
     }
 
-    public void addArticle(Article article) {
+    public Article addArticle(Article article) {
         article.setReadyToBePosted(false);
-        article.setPostTime(null);
+        article.setPostTime(LocalDateTime.now());
         article.setViews(0L);
-        articleRepository.save(article);
+        return articleRepository.save(article);
     }
 
     public Article getArticleById(Long id) {
@@ -43,14 +41,20 @@ public class ArticleService {
         }
 
         articleFromDb.setTitle(articleUpdater.getTitle());
-        articleFromDb.setShortDescription(articleUpdater.getShortDescription());
+        articleFromDb.setThumbnailDescription(articleUpdater.getThumbnailDescription());
         articleFromDb.setBody(articleUpdater.getBody());
+        articleFromDb.setPostTime(LocalDateTime.now());
         articleFromDb.setCategories(articleUpdater.getCategories());
         articleFromDb.setLocation(articleUpdater.getLocation());
         articleFromDb.setLanguage(articleUpdater.getLanguage());
         articleFromDb.setReadyToBePosted(articleUpdater.isReadyToBePosted());
 
         articleRepository.save(articleFromDb);
+    }
+
+    public List<Article> getArticlesByUserId(Long id) {
+        System.out.println(articleRepository.findAllByOwnerId(id));
+        return articleRepository.findAllByOwnerId(id);
     }
 
     public void deleteArticleById(Long id) {
@@ -63,7 +67,7 @@ public class ArticleService {
 
         LocalDateTime articlePostTime = article.getPostTime();
         String hourAndSeconds = articlePostTime.getHour() + ":" + articlePostTime.getSecond();
-        String dayAndMonth = articlePostTime.getDayOfWeek().name() +", "+ articlePostTime.getDayOfMonth() + " " + articlePostTime.getMonth() + " " + articlePostTime.getYear();
+        String dayAndMonth = articlePostTime.getDayOfWeek().name() + ", " + articlePostTime.getDayOfMonth() + " " + articlePostTime.getMonth() + " " + articlePostTime.getYear();
         return hourAndSeconds + "/ " + dayAndMonth;
     }
 }

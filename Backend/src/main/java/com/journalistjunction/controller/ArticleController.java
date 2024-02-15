@@ -36,9 +36,14 @@ public class ArticleController {
         return articleService.localDateTimeToString(id);
     }
 
+    @GetMapping("/user/{id}")
+    public List<Article> getAllArticlesByUser(@PathVariable("id") Long id) {
+        return articleService.getArticlesByUserId(id);
+    }
+
     @PostMapping
-    public void postNewArticle(@RequestBody Article article) {
-        articleService.addArticle(article);
+    public Article postNewArticle(@RequestBody Article article) {
+        return articleService.addArticle(article);
     }
 
     @PutMapping("/{id}")

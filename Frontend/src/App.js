@@ -1,13 +1,15 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { RequireAuth } from "react-auth-kit";
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-
 import HomePage from "./pages/HomePage";
 import ErrorPage from "./pages/ErrorPage";
 import LoginPage from "./pages/LoginPage";
 import ProfilePage from "./pages/ProfilePage";
 import RegisterPage from "./pages/RegisterPage";
+import EditArticlePage from "./pages/EditArticlePage";
+import PostArticlePage from "./pages/PostArticlePage";
 
 import "./App.css";
 
@@ -19,9 +21,10 @@ function App() {
         <Router>
           <Routes>
             <Route path="/" element={<HomePage />} />
+
             <Route
               path="*"
-              element={<ErrorPage message={"404 Not Found! "} />}
+              element={<ErrorPage message={"404 Not Found!"} />}
             />
             <Route path="/login" element={<LoginPage />} />
             {/* <Route path="/forget-password" element={<ForgetPassword />} />
@@ -58,15 +61,25 @@ function App() {
                   <RatingPage />
                 </RequireAuth>
               }
-            ></Route>
+            ></Route>*/}
             <Route
-              path="post-ads"
+              path="/edit-article"
+              // path="edit-article/:id"
               element={
                 <RequireAuth loginPath="/login">
-                  <PostOffer />
+                  <EditArticlePage />
                 </RequireAuth>
               }
-            ></Route>  */}
+            ></Route>
+            <Route
+              path="/post-article/:id"
+              // path="edit-article/:id"
+              element={
+                <RequireAuth loginPath="/login">
+                  <PostArticlePage />
+                </RequireAuth>
+              }
+            ></Route>
           </Routes>
         </Router>
       </div>
