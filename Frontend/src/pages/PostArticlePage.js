@@ -6,7 +6,6 @@ import { useAuthHeader } from "react-auth-kit";
 import DefaultURL from "../usefull/DefaultURL";
 import { useState, useEffect } from "react";
 import ErrorPage from "./ErrorPage";
-import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 
 export default function PostArticlePage() {
@@ -30,13 +29,11 @@ export default function PostArticlePage() {
 
   const createNewArticle = async () => {
     try {
-      const uuid = uuidv4().toString();
       const headers = { Authorization: token() };
 
-      await axios.post(
+      const res = await axios.post(
         `${DefaultURL}/article`,
         {
-          uuid: uuid,
           owner: { id: currentUser?.id },
         },
         { headers }
@@ -44,11 +41,11 @@ export default function PostArticlePage() {
 
       setShowLoader(true);
       setTimeout(() => {
-        navigate(`/edit-article/${uuid}`);
-      }, 3500);
+        navigate(`/edit-article/${res.data.id}`);
+      }, 5000);
     } catch (error) {
       console.error("Request error:", error);
-      // navigate("/an-error-has-occured");
+      navigate("/an-error-has-occured");
     }
   };
 
@@ -109,7 +106,7 @@ export default function PostArticlePage() {
               </div>
             </div>
           ) : (
-            <ErrorPage />
+            <ErrorPage message={"404 Not Found!"} />
           )}
         </>
       )}

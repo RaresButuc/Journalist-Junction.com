@@ -21,11 +21,11 @@ public class ArticleService {
         return articleRepository.findAllByReadyToBePostedIsTrue();
     }
 
-    public void addArticle(Article article) {
+    public Article addArticle(Article article) {
         article.setReadyToBePosted(false);
         article.setPostTime(LocalDateTime.now());
         article.setViews(0L);
-        articleRepository.save(article);
+        return articleRepository.save(article);
     }
 
     public Article getArticleById(Long id) {

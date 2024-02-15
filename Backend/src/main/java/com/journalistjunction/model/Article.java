@@ -31,9 +31,6 @@ public class Article {
     @Column(columnDefinition = "TEXT")
     private String body;
 
-    @NotNull
-    private String uuid;
-
     @ManyToMany
     @JoinTable
     private List<Category> categories;

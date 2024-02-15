@@ -24,7 +24,7 @@ function App() {
 
             <Route
               path="*"
-              element={<ErrorPage message={"404 Not Found! "} />}
+              element={<ErrorPage message={"404 Not Found!"} />}
             />
             <Route path="/login" element={<LoginPage />} />
             {/* <Route path="/forget-password" element={<ForgetPassword />} />

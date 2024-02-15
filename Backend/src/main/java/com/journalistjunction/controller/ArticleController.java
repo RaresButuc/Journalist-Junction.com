@@ -42,8 +42,8 @@ public class ArticleController {
     }
 
     @PostMapping
-    public void postNewArticle(@RequestBody Article article) {
-        articleService.addArticle(article);
+    public Article postNewArticle(@RequestBody Article article) {
+        return articleService.addArticle(article);
     }
 
     @PutMapping("/{id}")
