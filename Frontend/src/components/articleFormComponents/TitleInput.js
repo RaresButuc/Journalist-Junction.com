@@ -1,6 +1,6 @@
 import { forwardRef } from "react";
 
-function TitleInput({ article, id }, ref) {
+function TitleInput({ article, id,updateTitleLive }, ref) {
   return (
     <div className="form-floating">
       <input
@@ -11,6 +11,7 @@ function TitleInput({ article, id }, ref) {
         id={id}
         placeholder="Title"
         defaultValue={article?.title}
+        onChange={updateTitleLive}
         required
       />
       <label for={id}>Title</label>

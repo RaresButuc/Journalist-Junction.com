@@ -53,7 +53,6 @@ public class ArticleService {
     }
 
     public List<Article> getArticlesByUserId(Long id) {
-        System.out.println(articleRepository.findAllByOwnerId(id));
         return articleRepository.findAllByOwnerId(id);
     }
 
