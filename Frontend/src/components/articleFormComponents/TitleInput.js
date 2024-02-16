@@ -14,7 +14,7 @@ function TitleInput({ article, id,updateTitleLive }, ref) {
         onChange={updateTitleLive}
         required
       />
-      <label for={id}>Title</label>
+      <label htmlFor={id}>Title</label>
     </div>
   );
 }

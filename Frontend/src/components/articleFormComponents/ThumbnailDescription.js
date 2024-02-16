@@ -30,7 +30,7 @@ function ThumbnailDescription({ article, id }, ref) {
         required
         onChange={countingCharactersDescription}
       />
-      <label for={id}>Thumbnail Description</label>
+      <label htmlFor={id}>Thumbnail Description</label>
 
       <div id="Title-Help" className={`form-text text-${colorOfText}`}>
         {charactersTextArea} / 350

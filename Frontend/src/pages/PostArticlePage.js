@@ -62,20 +62,28 @@ export default function PostArticlePage() {
                   className="card border-danger col-xl-3 col-lg-4 col-md-6 mx-auto mt-4"
                   style={{ width: "18rem" }}
                 >
-                  <img
-                    src={addArticleIcon}
-                    className="card-img-top"
-                    style={{ padding: "25px", width: "256px" }}
-                  />
-                  <div className="card-body">
-                    <h5 className="card-title">{e.title}</h5>
-                    <hr />
-                    <p className="card-text">
-                      {e.thumbnailDescription?.length > 95
-                        ? e.thumbnailDescription.substring(0, 96) + "..."
-                        : e.thumbnailDescription}
-                    </p>
-                  </div>
+                  <a
+                    href={`/edit-article/${e.id}`}
+                    style={{ textDecoration: "none", color: "black" }}
+                  >
+                    {" "}
+                    <img
+                      src={addArticleIcon}
+                      className="card-img-top"
+                      style={{ padding: "25px", width: "256px" }}
+                    />
+                    <div className="card-body">
+                      <h5 className="card-title">{e.title}</h5>
+                      <hr />
+                      <p className="card-text">
+                        {e.thumbnailDescription
+                          ? e.thumbnailDescription?.length > 95
+                            ? e.thumbnailDescription.substring(0, 96) + "..."
+                            : e.thumbnailDescription
+                          : "No Short Description was provided for this Article"}
+                      </p>
+                    </div>
+                  </a>
                 </div>
               ))}
 

@@ -13,7 +13,7 @@ function EmailInput({ user, id }, ref) {
         defaultValue={user?.email}
         required
       />
-      <label for={id}>Email Address</label>
+      <label htmlFor={id}>Email Address</label>
     </div>
   );
 }

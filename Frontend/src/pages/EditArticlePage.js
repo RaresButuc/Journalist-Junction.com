@@ -1,7 +1,7 @@
 import axios from "axios";
-import { useState, useEffect, useRef } from "react";
-import { useNavigate, useParams } from "react-router";
 import DefaultURL from "../usefull/DefaultURL";
+import { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router";
 
 import Alert from "../components/Alert";
 import TitleInput from "../components/articleFormComponents/TitleInput";
@@ -19,13 +19,15 @@ export default function EditArticlePage() {
   const [currentArticle, setCurrentArticle] = useState(null);
 
   useEffect(() => {
-    const getArticleById = () => {
-      const response = axios.get(`${DefaultURL}/article/${id}`);
-      setCurrentArticle(response.data);
+    const getArticleById = async () => {
+      const response = await axios.get(`${DefaultURL}/article/${id}`);
+      const data = response.data;
+      setCurrentArticle(data);
+      setTitleLive(data.title);
     };
 
     getArticleById();
-  });
+  }, []);
 
   const updateTitleLive = (e) => {
     console.log(e.target.value);
@@ -134,11 +136,7 @@ export default function EditArticlePage() {
                   </div>
 
                   <div className="form-outline mb-4">
-                    <CategoriesSelect
-                      article={null}
-                      ref={null}
-                      id={"floatingCategoriesSelectValue"}
-                    />
+                    <CategoriesSelect id={"floatingCategoriesSelectValue"} />
                   </div>
 
                   <button
@@ -155,8 +153,7 @@ export default function EditArticlePage() {
 
         <div className="col-xl-6 col-md-12">
           <BodyTextInput
-            article={null}
-            ref={null}
+            article={currentArticle}
             id={"floatingBodyTextValue"}
           />
         </div>
