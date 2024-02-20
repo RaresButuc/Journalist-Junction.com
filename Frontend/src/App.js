@@ -63,7 +63,7 @@ function App() {
               }
             ></Route>*/}
             <Route
-              path="/edit-article"
+              path="/edit-article/:id"
               // path="edit-article/:id"
               element={
                 <RequireAuth loginPath="/login">

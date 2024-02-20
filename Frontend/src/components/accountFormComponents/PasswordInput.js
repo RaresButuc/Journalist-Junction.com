@@ -12,7 +12,7 @@ function PasswordInput({ id }, ref) {
         placeholder="Password"
         required
       />
-      <label for={id}>Password</label>
+      <label htmlFor={id}>Password</label>
     </div>
   );
 }

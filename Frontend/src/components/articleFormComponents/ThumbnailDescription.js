@@ -29,11 +29,12 @@ function ThumbnailDescription({ article, id }, ref) {
         defaultValue={article?.thumbnailDescription}
         required
         onChange={countingCharactersDescription}
+        style={{ height: "130px" }}
       />
-      <label for={id}>Thumbnail Description</label>
+      <label htmlFor={id}>Thumbnail Description</label>
 
       <div id="Title-Help" className={`form-text text-${colorOfText}`}>
-        {charactersTextArea} / 350
+        <b>{charactersTextArea} / 350</b>
       </div>
 
       {warning ? (

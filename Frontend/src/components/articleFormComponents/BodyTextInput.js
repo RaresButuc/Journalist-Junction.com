@@ -12,7 +12,7 @@ const BodyTextInput = forwardRef(({ article, id }, ref) => (
       name="bodyText"
       id={id}
       placeholder="Article Body"
-      defaultValue={article?.body}
+      data={article ? article.body : null}
       required
     />
   </div>

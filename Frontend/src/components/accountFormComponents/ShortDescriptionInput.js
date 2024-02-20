@@ -30,7 +30,7 @@ function ShortDescriptionInput({ user, id }, ref) {
         required
         onChange={countingCharactersDescription}
       />
-      <label for={id}>Self Description</label>
+      <label htmlFor={id}>Self Description</label>
 
       <div id="Title-Help" className={`form-text text-${colorOfText}`}>
         {charactersTextArea} / 500

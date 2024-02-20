@@ -16,7 +16,7 @@ function PhoneNumberInput({ user, id }, ref) {
         }}
         required
       />
-      <label for={id}>Phone Number</label>
+      <label htmlFor={id}>Phone Number</label>
     </div>
   );
 }

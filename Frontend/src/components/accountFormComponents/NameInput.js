@@ -13,7 +13,7 @@ function NameInput({ user, id }, ref) {
         defaultValue={user?.name}
         required
       />
-      <label for={id}>Username</label>
+      <label htmlFor={id}>Username</label>
     </div>
   );
 }
