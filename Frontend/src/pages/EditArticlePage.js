@@ -12,13 +12,14 @@ import CategoriesSelect from "../components/articleFormComponents/CategoriesSele
 import ThumbnailDescription from "../components/articleFormComponents/ThumbnailDescription";
 
 export default function EditArticlePage() {
-  const navigate = useNavigate();
   const { id } = useParams();
+  const navigate = useNavigate();
 
-  const [titleCurrent, setTitleCurrent] = useState("");
   const [showAlert, setShowAlert] = useState(false);
-  const [alertInfos, setAlertInfos] = useState(["", "", ""]);
+  const [titleCurrent, setTitleCurrent] = useState("");
   const [currentArticle, setCurrentArticle] = useState(null);
+  const [alertInfos, setAlertInfos] = useState(["", "", ""]);
+  const [selectDisabled, setSelectDisabled] = useState(false);
   const [categoriesCurrent, setCategoriesCurrent] = useState([]);
 
   useEffect(() => {
@@ -27,14 +28,30 @@ export default function EditArticlePage() {
       const data = response.data;
       setCurrentArticle(data);
       setTitleCurrent(data.title);
+      setCategoriesCurrent(data.categories);
+      setSelectDisabled(data.categories.length === 3);
     };
 
     getArticleById();
   }, []);
 
+  useEffect(() => {
+    setSelectDisabled(categoriesCurrent.length === 3);
+  }, [categoriesCurrent]);
+
   const updateTitleLive = (e) => {
-    console.log(e.target.value);
     setTitleCurrent(e.target.value);
+  };
+
+  const deleteCategoryLive = (e) => {
+    setCategoriesCurrent(categoriesCurrent.filter((i) => i.id != e.id));
+    setSelectDisabled(categoriesCurrent.length === 3);
+  };
+
+  const addCategoryLive = (e) => {
+    if (categoriesCurrent.length < 3) {
+      setCategoriesCurrent((prevCategories) => [...prevCategories, e.value]);
+    }
   };
 
   const onSubmit = async (values) => {
@@ -141,10 +158,11 @@ export default function EditArticlePage() {
                   <div className="form-outline mb-4">
                     <h2>Categories</h2>
                     <div className="mb-3">
-                      {currentArticle?.categories.map((e) => (
+                      {categoriesCurrent.map((e) => (
                         <div
                           className="border border-success border-3 rounded-pill ms-3"
                           style={{ display: "inline-block" }}
+                          key={e.id}
                         >
                           <h5 className="d-inline me-2 ms-2">
                             {FirstLetterUppercase(e.nameOfCategory)}
@@ -154,12 +172,17 @@ export default function EditArticlePage() {
                             type="image"
                             src={closeIcon}
                             style={{ width: "22px" }}
-                            onClick={() => console.log(123)}
+                            onClick={() => deleteCategoryLive(e)}
                           />
                         </div>
                       ))}
                     </div>
-                    <CategoriesSelect id={"floatingCategoriesSelectValue"} />
+                    <CategoriesSelect
+                      id={"floatingCategoriesSelectValue"}
+                      action={addCategoryLive}
+                      disabled={selectDisabled}
+                      currentChosenCategs={categoriesCurrent}
+                    />
                   </div>
 
                   <button

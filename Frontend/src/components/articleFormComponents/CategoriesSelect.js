@@ -6,24 +6,28 @@ import { useState, useEffect } from "react";
 
 import axios from "axios";
 
-function CategoriesSelect({ action, id }, ref) {
+function CategoriesSelect({ action, id, disabled, currentChosenCategs }, ref) {
   const [allCategories, setAllCategories] = useState([]);
-  //   const [chosenCategories, setChosenCategories] = useState([]);
 
   useEffect(() => {
     const fetchCategories = async () => {
       const res = await axios.get(`${DefaultURL}/category`);
 
       setAllCategories(
-        res.data.map((category) => ({
-          label: FirstLetterUppercase(category.nameOfCategory),
-          value: category.nameOfCategory,
-        }))
+        res.data
+          .sort((a, b) => a.nameOfCategory.localeCompare(b.nameOfCategory))
+          .filter(
+            (e) => !currentChosenCategs.some((element) => element.id === e.id)
+          )
+          .map((category) => ({
+            label: FirstLetterUppercase(category.nameOfCategory),
+            value: { id: category.id, nameOfCategory: category.nameOfCategory },
+          }))
       );
     };
 
     fetchCategories();
-  }, [allCategories]);
+  }, [currentChosenCategs]);
 
   return (
     <div className="container-xl">
@@ -35,7 +39,7 @@ function CategoriesSelect({ action, id }, ref) {
         defaultValue={"Select Categories"}
         menuPortalTarget={document.body}
         onChange={action}
-        // disabled={chosenCategories.length === 3}
+        isDisabled={disabled}
         styles={{
           menuPortal: (base) => ({ ...base, zIndex: 9999 }),
           control: (baseStyles, state) => ({
