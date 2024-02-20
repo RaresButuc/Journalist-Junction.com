@@ -1,7 +1,9 @@
 import axios from "axios";
-import DefaultURL from "../usefull/DefaultURL";
+import closeIcon from "../photos/close.png";
 import { useState, useEffect } from "react";
+import DefaultURL from "../usefull/DefaultURL";
 import { useNavigate, useParams } from "react-router";
+import FirstLetterUppercase from "../usefull/FirstLetterUppercase";
 
 import Alert from "../components/Alert";
 import TitleInput from "../components/articleFormComponents/TitleInput";
@@ -13,17 +15,18 @@ export default function EditArticlePage() {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const [titleLive, setTitleLive] = useState("");
+  const [titleCurrent, setTitleCurrent] = useState("");
   const [showAlert, setShowAlert] = useState(false);
   const [alertInfos, setAlertInfos] = useState(["", "", ""]);
   const [currentArticle, setCurrentArticle] = useState(null);
+  const [categoriesCurrent, setCategoriesCurrent] = useState([]);
 
   useEffect(() => {
     const getArticleById = async () => {
       const response = await axios.get(`${DefaultURL}/article/${id}`);
       const data = response.data;
       setCurrentArticle(data);
-      setTitleLive(data.title);
+      setTitleCurrent(data.title);
     };
 
     getArticleById();
@@ -31,7 +34,7 @@ export default function EditArticlePage() {
 
   const updateTitleLive = (e) => {
     console.log(e.target.value);
-    setTitleLive(e.target.value);
+    setTitleCurrent(e.target.value);
   };
 
   const onSubmit = async (values) => {
@@ -116,7 +119,7 @@ export default function EditArticlePage() {
                   }}
                 >
                   <h1 className="mb-4">
-                    Edit Article <br></br>"{titleLive}"
+                    Edit Article <br></br>"{titleCurrent}"
                   </h1>
                   <hr style={{ color: "#dc3545" }} />
 
@@ -136,6 +139,26 @@ export default function EditArticlePage() {
                   </div>
 
                   <div className="form-outline mb-4">
+                    <h2>Categories</h2>
+                    <div className="mb-3">
+                      {currentArticle?.categories.map((e) => (
+                        <div
+                          className="border border-success border-3 rounded-pill ms-3"
+                          style={{ display: "inline-block" }}
+                        >
+                          <h5 className="d-inline me-2 ms-2">
+                            {FirstLetterUppercase(e.nameOfCategory)}
+                          </h5>
+                          <input
+                            className="d-inline mt-1 me-2"
+                            type="image"
+                            src={closeIcon}
+                            style={{ width: "22px" }}
+                            onClick={() => console.log(123)}
+                          />
+                        </div>
+                      ))}
+                    </div>
                     <CategoriesSelect id={"floatingCategoriesSelectValue"} />
                   </div>
 

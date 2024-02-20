@@ -6,6 +6,7 @@ import { useAuthHeader } from "react-auth-kit";
 import DefaultURL from "../usefull/DefaultURL";
 import { useState, useEffect } from "react";
 import ErrorPage from "./ErrorPage";
+import noImgIcon from "../photos/no-img.png";
 import axios from "axios";
 
 export default function PostArticlePage() {
@@ -66,14 +67,19 @@ export default function PostArticlePage() {
                     href={`/edit-article/${e.id}`}
                     style={{ textDecoration: "none", color: "black" }}
                   >
-                    {" "}
                     <img
-                      src={addArticleIcon}
+                      src={noImgIcon}
                       className="card-img-top"
                       style={{ padding: "25px", width: "256px" }}
                     />
                     <div className="card-body">
-                      <h5 className="card-title">{e.title}</h5>
+                      <h5 className="card-title">
+                        {e.title
+                          ? e.title?.length > 95
+                            ? e.title.substring(0, 45) + "..."
+                            : e.title
+                          : "No Title was provided for this Article"}
+                      </h5>
                       <hr />
                       <p className="card-text">
                         {e.thumbnailDescription
