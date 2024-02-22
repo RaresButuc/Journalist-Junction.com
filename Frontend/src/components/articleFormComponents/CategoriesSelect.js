@@ -21,7 +21,7 @@ function CategoriesSelect({ action, id, disabled, currentChosenCategs }, ref) {
           )
           .map((category) => ({
             label: FirstLetterUppercase(category.nameOfCategory),
-            value: { id: category.id, nameOfCategory: category.nameOfCategory },
+            value: category,
           }))
       );
     };
