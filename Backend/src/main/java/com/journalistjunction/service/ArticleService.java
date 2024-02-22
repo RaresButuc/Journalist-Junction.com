@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -27,7 +28,7 @@ public class ArticleService {
 
     public Article createArticle(Article article) {
         article.setPublished(false);
-        article.setPostTime(LocalDateTime.now());
+        article.setPostTime(null);
         article.setViews(0L);
         return articleRepository.save(article);
     }
@@ -43,7 +44,6 @@ public class ArticleService {
         articleFromDb.setTitle(articleUpdater.getTitle());
         articleFromDb.setThumbnailDescription(articleUpdater.getThumbnailDescription());
         articleFromDb.setBody(articleUpdater.getBody());
-        articleFromDb.setPostTime(LocalDateTime.now());
         articleFromDb.setCategories(articleUpdater.getCategories());
         articleFromDb.setLocation(articleUpdater.getLocation());
         articleFromDb.setLanguage(articleUpdater.getLanguage());
@@ -55,6 +55,9 @@ public class ArticleService {
         Article articleFromDb = articleRepository.findById(id).orElse(null);
         assert articleFromDb != null;
 
+        if (articleFromDb.getPostTime() == null) {
+            articleFromDb.setPostTime(LocalDateTime.now());
+        }
         articleFromDb.setPublished(Boolean.parseBoolean(decision));
         articleRepository.save(articleFromDb);
 
@@ -67,12 +70,20 @@ public class ArticleService {
 
         switch (decision) {
             case "add" -> {
-                articleFromDb.getContributors().add(contributor);
+                if (articleFromDb.getOwner() != contributor &&
+                        !articleFromDb.getContributors().contains(contributor) &&
+                        !articleFromDb.getRejectedWorkers().contains(contributor)) {
+                    articleFromDb.getContributors().add(contributor);
+                }
             }
             case "delete" -> {
-                articleFromDb.getContributors().remove(contributor);
+                if (articleFromDb.getOwner() != contributor &&
+                        articleFromDb.getContributors().contains(contributor) &&
+                        !articleFromDb.getRejectedWorkers().contains(contributor)) {
+                    articleFromDb.getContributors().remove(contributor);
 
-                articleFromDb.getRejectedWorkers().add(contributor);
+                    articleFromDb.getRejectedWorkers().add(contributor);
+                }
             }
         }
         articleRepository.save(articleFromDb);
@@ -96,10 +107,9 @@ public class ArticleService {
     }
 
     public String localDateTimeToString(Long id) {
-        Article article = articleRepository.findById(id).orElse(null);
-        assert article != null;
+        LocalDateTime articlePostTime = Objects.requireNonNull(articleRepository.findById(id).orElse(null)).getPostTime();
+        assert articlePostTime != null;
 
-        LocalDateTime articlePostTime = article.getPostTime();
         String hourAndSeconds = articlePostTime.getHour() + ":" + articlePostTime.getSecond();
         String dayAndMonth = articlePostTime.getDayOfWeek().name() + ", " + articlePostTime.getDayOfMonth() + " " + articlePostTime.getMonth() + " " + articlePostTime.getYear();
         return hourAndSeconds + "/ " + dayAndMonth;
