@@ -6,22 +6,20 @@ import com.journalistjunction.auth.AuthenticationService;
 import com.journalistjunction.auth.RegisterRequest;
 import com.journalistjunction.model.User;
 import com.journalistjunction.service.UserService;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping(value = "/user")
 public class UserController {
+
     private final UserService userService;
 
     private final AuthenticationService service;
-
-    public UserController(UserService userService, AuthenticationService service) {
-        this.userService = userService;
-        this.service = service;
-    }
 
 
     @GetMapping

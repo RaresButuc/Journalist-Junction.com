@@ -2,18 +2,17 @@ package com.journalistjunction.controller;
 
 import com.journalistjunction.model.Notification;
 import com.journalistjunction.service.NotificationService;
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping(value = "/notification")
 public class NotificationController {
-    private final NotificationService notificationService;
 
-    public NotificationController(NotificationService notificationService) {
-        this.notificationService = notificationService;
-    }
+    private final NotificationService notificationService;
 
     @GetMapping
     public List<Notification> getAllNotifications() {

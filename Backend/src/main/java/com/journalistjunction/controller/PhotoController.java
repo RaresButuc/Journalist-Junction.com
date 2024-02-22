@@ -3,19 +3,17 @@ package com.journalistjunction.controller;
 import com.journalistjunction.model.Notification;
 import com.journalistjunction.model.Photo;
 import com.journalistjunction.service.PhotoService;
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping(value = "/photo")
 public class PhotoController {
+
     private final PhotoService photoService;
-
-    public PhotoController(PhotoService photoService) {
-        this.photoService = photoService;
-    }
-
 
     @GetMapping
     public List<Photo> getAllPhotos() {

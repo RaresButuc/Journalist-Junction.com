@@ -2,19 +2,18 @@ package com.journalistjunction.controller;
 
 import com.journalistjunction.model.Article;
 import com.journalistjunction.service.ArticleService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping(value = "/article")
 public class ArticleController {
-    private final ArticleService articleService;
 
-    public ArticleController(ArticleService articleService) {
-        this.articleService = articleService;
-    }
+    private final ArticleService articleService;
 
     @GetMapping
     public List<Article> getAllArticles() {

@@ -39,7 +39,9 @@ public class Article {
 
     private String location;
 
-    private String language;
+    @ManyToOne
+    @JoinColumn
+    private Language language;
 
     @ManyToOne
     @JoinColumn
