@@ -22,11 +22,11 @@ public class ArticleService {
     }
 
     public List<Article> getAllPostedArticles() {
-        return articleRepository.findAllByReadyToBePostedIsTrue();
+        return articleRepository.findAllByPublishedIsTrue();
     }
 
     public Article createArticle(Article article) {
-        article.setReadyToBePosted(false);
+        article.setPublished(false);
         article.setPostTime(LocalDateTime.now());
         article.setViews(0L);
         return articleRepository.save(article);
@@ -55,7 +55,7 @@ public class ArticleService {
         Article articleFromDb = articleRepository.findById(id).orElse(null);
         assert articleFromDb != null;
 
-        articleFromDb.setReadyToBePosted(Boolean.parseBoolean(decision));
+        articleFromDb.setPublished(Boolean.parseBoolean(decision));
         articleRepository.save(articleFromDb);
 
     }

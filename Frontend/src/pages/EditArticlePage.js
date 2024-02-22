@@ -19,11 +19,13 @@ export default function EditArticlePage() {
 
   const [showAlert, setShowAlert] = useState(false);
   const [titleCurrent, setTitleCurrent] = useState("");
+  const [contributors, setContributors] = useState([]);
+  const [publishState, setPublishState] = useState(["", ""]);
   const [currentArticle, setCurrentArticle] = useState(null);
   const [alertInfos, setAlertInfos] = useState(["", "", ""]);
   const [selectDisabled, setSelectDisabled] = useState(false);
   const [categoriesCurrent, setCategoriesCurrent] = useState([]);
-  const [contributors, setContributors] = useState([]);
+  const [rejectedContributors, setRejectedContributors] = useState([]);
 
   useEffect(() => {
     const getArticleById = async () => {
@@ -34,6 +36,10 @@ export default function EditArticlePage() {
       setCategoriesCurrent(data.categories);
       setSelectDisabled(data.categories.length === 3);
       setContributors(data.contributors);
+      setRejectedContributors(data.rejectedWorkers);
+      setPublishState(
+        data.published ? ["Published", "success"] : ["UnPublished", "danger"]
+      );
     };
 
     getArticleById();
@@ -133,28 +139,32 @@ export default function EditArticlePage() {
             <div className="row d-flex justify-content-center align-items-center">
               <div className="col-md-8 col-lg-6 col-xl-10">
                 <div className="border border-danger">
-                  <div
-                    className="card-body p-4 text-center"
-                    style={{
-                      backgroundColor: "rgba(255, 255, 255,0.5)",
-                      wordWrap: "break-word",
-                    }}
-                  >
+                  <div className="card-body p-4 text-center text-break bg-white bg-opacity-50">
                     <h1 className="mb-4">
                       Edit Article <br></br>"{titleCurrent}"
                     </h1>
-                    <div>
-                      <h4>
+                    <div className="row">
+                      <h5 className="col-6">
                         <u>
-                          <b>Started By:</b>
-                        </u>{" "}
+                          <b>Publish State: </b>
+                        </u>
+                        <b className={`text-${publishState[1]}`}>
+                          {publishState[0]}
+                        </b>
+                      </h5>
+
+                      <h5 className="col-6">
+                        <u>
+                          <b>Started By: </b>
+                        </u>
+                        <br />
                         <a
                           href={`/profile/${currentArticle?.owner.id}`}
-                          style={{ textDecoration: "none", color: "green" }}
+                          className="text-decoration-none text-success"
                         >
                           <b>{currentArticle?.owner.name}</b>
                         </a>
-                      </h4>
+                      </h5>
                     </div>
 
                     <hr style={{ color: "#dc3545" }} />
@@ -179,8 +189,7 @@ export default function EditArticlePage() {
                       <div className="mb-3">
                         {categoriesCurrent.map((e) => (
                           <div
-                            className="border border-success border-3 rounded-pill ms-3 mb-2"
-                            style={{ display: "inline-block" }}
+                            className="border border-success border-3 rounded-pill ms-3 mb-2 d-inline-block"
                             key={e.id}
                           >
                             <h5 className="d-inline me-2 ms-2">
@@ -212,35 +221,38 @@ export default function EditArticlePage() {
                       />
                     </div>
 
-                    <div className="form-outline mb-4 container-xl">
+                    <div className="form-outline mb-5 container-xl">
                       <h2 className="mb-3">Contributors</h2>
                       <div className="mb-3">
-                        {contributors.map((e) => (
-                          <div
-                            className="border border-warning border-3 rounded-pill ms-3 mb-2"
-                            style={{ display: "inline-block" }}
-                            key={e.id}
-                          >
-                            <a
-                              className="d-inline me-2 ms-2 h5"
-                              style={{ textDecoration: "none" }}
-                              href={`/profile/${e.id}`}
+                        {contributors.length === 0 ? (
+                          <h5 className="text-warning">
+                            No Contributors Added!
+                          </h5>
+                        ) : (
+                          contributors.map((e) => (
+                            <div
+                              className="border border-warning border-3 rounded-pill ms-3 mb-2 d-inline-block"
+                              key={e.id}
                             >
-                              {e.name}
-                            </a>
-                            <input
-                              className="d-inline mt-1 me-2"
-                              type="image"
-                              src={closeIcon}
-                              style={{ width: "22px" }}
-                              onClick={() => deleteCategoryLive(e)}
-                            />
-                          </div>
-                        ))}
+                              <a
+                                className="d-inline me-2 ms-2 h5 text-decoration-none"
+                                href={`/profile/${e.id}`}
+                              >
+                                {e.name}
+                              </a>
+                              <input
+                                className="d-inline mt-1 me-2"
+                                type="image"
+                                src={closeIcon}
+                                style={{ width: "22px" }}
+                                // onClick={() => deleteCategoryLive(e)}
+                              />
+                            </div>
+                          ))
+                        )}
                       </div>
                       <div className="form-floating">
                         <input
-                          // ref={ref}
                           className="form-control"
                           type="contributors"
                           name="contributorsInput"
@@ -251,6 +263,39 @@ export default function EditArticlePage() {
                         <label htmlFor={id}>Search for Contributors..</label>
                       </div>
                     </div>
+
+                    <div className="form-outline mb-5 container-xl">
+                      <h2 className="mb-3">Rejected Contributors</h2>
+                      <div className="mb-3">
+                        {rejectedContributors.length === 0 ? (
+                          <h5 className="text-danger">
+                            No Rejected Contributors
+                          </h5>
+                        ) : (
+                          rejectedContributors.map((e) => (
+                            <div
+                              className="border border-danger border-3 rounded-pill ms-3 mb-2 d-inline-block"
+                              key={e.id}
+                            >
+                              <a
+                                className="d-inline me-2 ms-2 h5 text-decoration-none"
+                                href={`/profile/${e.id}`}
+                              >
+                                {e.name}
+                              </a>
+                              <input
+                                className="d-inline mt-1 me-2"
+                                type="image"
+                                src={closeIcon}
+                                style={{ width: "22px" }}
+                                // onClick={() => deleteCategoryLive(e)}
+                              />
+                            </div>
+                          ))
+                        )}
+                      </div>
+                    </div>
+                    <hr />
                     <button
                       className="btn btn-primary btn-lg btn-block col-3 m-3"
                       type="submit"

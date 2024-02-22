@@ -21,7 +21,7 @@ public class Article {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private boolean readyToBePosted;
+    private boolean published;
 
     private String title;
 
