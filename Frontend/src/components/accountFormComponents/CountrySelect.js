@@ -1,8 +1,8 @@
-import { forwardRef, useState, useEffect } from "react";
 import axios from "axios";
 import Select from "react-select";
+import { forwardRef, useState, useEffect } from "react";
 
-function CountrySelect({ user }, ref) {
+function CountrySelect({ user, article }, ref) {
   const [allCountries, setAllCountries] = useState([]);
 
   useEffect(() => {
@@ -15,7 +15,7 @@ function CountrySelect({ user }, ref) {
             <div style={{ display: "flex", alignItems: "center" }}>
               <img
                 className="mx-2 mb-1"
-                src={`https://flagsapi.com/${country.cca2}/flat/16.png`}
+                src={`https://flagsapi.com/${country.cca2}/flat/32.png`}
               />
               {country.name.common}
             </div>
@@ -25,6 +25,23 @@ function CountrySelect({ user }, ref) {
         const sortedCountries = dataCountries.sort((a, b) =>
           a.value.localeCompare(b.value)
         );
+
+        sortedCountries.unshift({
+          value: "Global",
+          label: (
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <img
+                className="mx-2 mb-1"
+                src={
+                  "https://creazilla-store.fra1.digitaloceanspaces.com/emojis/57756/globe-showing-europe-africa-emoji-clipart-md.png"
+                }
+                style={{ height: "32px", width: "32px" }}
+              />
+              Global
+            </div>
+          ),
+        });
+
         setAllCountries(sortedCountries);
       } catch (error) {
         console.error("Error fetching countries:", error);
@@ -32,7 +49,7 @@ function CountrySelect({ user }, ref) {
     };
 
     fetchCountries();
-  }, []);
+  }, [article]);
 
   return (
     <Select
@@ -40,8 +57,20 @@ function CountrySelect({ user }, ref) {
       ref={ref}
       options={allCountries}
       defaultValue={{
-        label: user ? user.country : "Select Your Residence Country",
-        value: user ? user.country : "",
+        label: article
+          ? article.location
+            ? article.location
+            : "Select A Suitable Location For Article"
+          : user
+          ? user.country
+          : "Select Your Residence Country",
+        value: article
+          ? article.location
+            ? article.location
+            : "No Location Specified"
+          : user
+          ? user.country
+          : "",
       }}
       menuPortalTarget={document.body}
       styles={{

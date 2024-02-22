@@ -1,4 +1,4 @@
-export default function ErrorPage({ message }) {
+export default function ErrorPage({ message, message2 }) {
   return (
     <div>
       <div
@@ -58,7 +58,10 @@ export default function ErrorPage({ message }) {
                 className="pencil__body3"
               ></circle>
             </g>
-            <g transform="rotate(-90) translate(49,0)" className="pencil__eraser">
+            <g
+              transform="rotate(-90) translate(49,0)"
+              className="pencil__eraser"
+            >
               <g className="pencil__eraser-skew">
                 <rect
                   height="30"
@@ -90,7 +93,10 @@ export default function ErrorPage({ message }) {
                 ></rect>
               </g>
             </g>
-            <g transform="rotate(-90) translate(49,-30)" className="pencil__point">
+            <g
+              transform="rotate(-90) translate(49,-30)"
+              className="pencil__point"
+            >
               <polygon
                 points="15 0,30 30,0 30"
                 fill="hsl(33,90%,70%)"
@@ -108,7 +114,7 @@ export default function ErrorPage({ message }) {
         <h1>
           {message}
           <br />
-          <a href="/">Return To Main Page</a>
+          <a href="/">{message2}</a>
         </h1>
       </div>
     </div>

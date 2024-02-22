@@ -1,17 +1,21 @@
 package com.journalistjunction.service;
 
 import com.journalistjunction.model.Article;
+import com.journalistjunction.model.User;
 import com.journalistjunction.repository.ArticleRepository;
+import com.journalistjunction.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
 public class ArticleService {
     private final ArticleRepository articleRepository;
+    private final UserRepository userRepository;
 
     public List<Article> getAllArticles() {
         return articleRepository.findAll();
@@ -21,7 +25,7 @@ public class ArticleService {
         return articleRepository.findAllByReadyToBePostedIsTrue();
     }
 
-    public Article addArticle(Article article) {
+    public Article createArticle(Article article) {
         article.setReadyToBePosted(false);
         article.setPostTime(LocalDateTime.now());
         article.setViews(0L);
@@ -36,10 +40,6 @@ public class ArticleService {
         Article articleFromDb = articleRepository.findById(id).orElse(null);
         assert articleFromDb != null;
 
-        if (articleUpdater.isReadyToBePosted() && !articleFromDb.isReadyToBePosted()) {
-            articleFromDb.setPostTime(LocalDateTime.now());
-        }
-
         articleFromDb.setTitle(articleUpdater.getTitle());
         articleFromDb.setThumbnailDescription(articleUpdater.getThumbnailDescription());
         articleFromDb.setBody(articleUpdater.getBody());
@@ -47,8 +47,43 @@ public class ArticleService {
         articleFromDb.setCategories(articleUpdater.getCategories());
         articleFromDb.setLocation(articleUpdater.getLocation());
         articleFromDb.setLanguage(articleUpdater.getLanguage());
-        articleFromDb.setReadyToBePosted(articleUpdater.isReadyToBePosted());
 
+        articleRepository.save(articleFromDb);
+    }
+
+    public void publicOrNonpublicArticle(Long id, String decision) {
+        Article articleFromDb = articleRepository.findById(id).orElse(null);
+        assert articleFromDb != null;
+
+        articleFromDb.setReadyToBePosted(Boolean.parseBoolean(decision));
+        articleRepository.save(articleFromDb);
+
+    }
+
+    public void addOrDeleteContributor(Long idAd, String nameContributor, String decision) {
+        Article articleFromDb = articleRepository.findById(idAd).orElse(null);
+        User contributor = userRepository.findByName(nameContributor).orElse(null);
+        assert articleFromDb != null;
+
+        switch (decision) {
+            case "add" -> {
+                articleFromDb.getContributors().add(contributor);
+            }
+            case "delete" -> {
+                articleFromDb.getContributors().remove(contributor);
+
+                articleFromDb.getRejectedWorkers().add(contributor);
+            }
+        }
+        articleRepository.save(articleFromDb);
+    }
+
+    public void removeRejection(Long idAd, Long idUser) {
+        Article articleFromDb = articleRepository.findById(idAd).orElse(null);
+        User user = userRepository.findById(idUser).orElse(null);
+        assert articleFromDb != null;
+
+        articleFromDb.getRejectedWorkers().remove(user);
         articleRepository.save(articleFromDb);
     }
 
