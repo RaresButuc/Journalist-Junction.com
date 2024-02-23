@@ -3,19 +3,17 @@ package com.journalistjunction.controller;
 import com.journalistjunction.model.Comment;
 import com.journalistjunction.model.Photo;
 import com.journalistjunction.service.CommentService;
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping(value = "/comment")
 public class CommentController {
+
     private final CommentService commentService;
-
-    public CommentController(CommentService commentService) {
-        this.commentService = commentService;
-    }
-
 
     @GetMapping
     public List<Comment> getAllComments() {
