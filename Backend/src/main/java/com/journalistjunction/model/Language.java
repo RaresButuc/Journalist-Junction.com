@@ -18,7 +18,11 @@ public class Language {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String language;
+    private String languageNameEnglish;
+
+    private String languageNameNative;
+
+    private String cca2;
 
     @OneToMany(mappedBy = "language")
     @JsonIgnore

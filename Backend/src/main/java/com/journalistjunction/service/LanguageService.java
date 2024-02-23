@@ -1,6 +1,5 @@
 package com.journalistjunction.service;
 
-import com.journalistjunction.model.Article;
 import com.journalistjunction.model.Language;
 import com.journalistjunction.repository.LanguageRepository;
 import lombok.AllArgsConstructor;
@@ -29,7 +28,9 @@ public class LanguageService {
         Language language = languageRepository.findById(id).orElse(null);
         assert language != null;
 
-        language.setLanguage(newLanguage.getLanguage());
+        language.setLanguageNameEnglish(newLanguage.getLanguageNameEnglish());
+        language.setLanguageNameNative(newLanguage.getLanguageNameNative());
+        language.setCca2(newLanguage.getCca2());
 
         languageRepository.save(language);
     }
