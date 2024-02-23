@@ -431,18 +431,20 @@ export default function EditArticlePage() {
                       </div>
                     </div>
                     <hr />
-                    <button
-                      className="btn btn-primary btn-lg btn-block col-3 m-3"
-                      type="submit"
-                    >
-                      Save
-                    </button>
-                    <button
-                      className="btn btn-success btn-lg btn-block col-3 m-3"
-                      type="submit"
-                    >
-                      Publish
-                    </button>
+                    <div>
+                      <button
+                        className="btn btn-primary btn-lg btn-block col-3 m-3"
+                        type="submit"
+                      >
+                        Save
+                      </button>
+                      <button
+                        className="btn btn-success btn-lg btn-block col-xl-3 m-3"
+                        type="submit"
+                      >
+                        Publish
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
