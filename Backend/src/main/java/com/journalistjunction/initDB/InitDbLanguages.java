@@ -27,7 +27,6 @@ public class InitDbLanguages {
                 Language.builder().languageNameEnglish("Punjabi").languageNameNative("ਪੰਜਾਬੀ").cca2("PK").build(),
                 Language.builder().languageNameEnglish("German").languageNameNative("Deutsch").cca2("DE").build(),
                 Language.builder().languageNameEnglish("French").languageNameNative("Français").cca2("FR").build(),
-                Language.builder().languageNameEnglish("Urdu").languageNameNative("اردو").cca2("PK").build(),
                 Language.builder().languageNameEnglish("Turkish").languageNameNative("Türkçe").cca2("TR").build(),
                 Language.builder().languageNameEnglish("Italian").languageNameNative("Italiano").cca2("IT").build(),
                 Language.builder().languageNameEnglish("Vietnamese").languageNameNative("Tiếng Việt").cca2("VN").build(),
@@ -40,7 +39,8 @@ public class InitDbLanguages {
                 Language.builder().languageNameEnglish("Swedish").languageNameNative("Svenska").cca2("SE").build(),
                 Language.builder().languageNameEnglish("Greek").languageNameNative("Ελληνικά").cca2("GR").build(),
                 Language.builder().languageNameEnglish("Czech").languageNameNative("Čeština").cca2("CZ").build(),
-                Language.builder().languageNameEnglish("Romanian").languageNameNative("Română").cca2("RO").build()
+                Language.builder().languageNameEnglish("Romanian").languageNameNative("Română").cca2("RO").build(),
+                Language.builder().languageNameEnglish("Indonesian").languageNameNative("Bahasa Indonesia").cca2("ID").build()
         );
 
         languageRepository.saveAll(languages);

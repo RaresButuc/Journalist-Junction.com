@@ -10,6 +10,7 @@ import Alert from "../components/Alert";
 import TitleInput from "../components/articleFormComponents/TitleInput";
 import BodyTextInput from "../components/articleFormComponents/BodyTextInput";
 import CountrySelect from "../components/accountFormComponents/CountrySelect";
+import LanguageSelect from "../components/accountFormComponents/LanguageSelect";
 import CategoriesSelect from "../components/articleFormComponents/CategoriesSelect";
 import ThumbnailDescription from "../components/articleFormComponents/ThumbnailDescription";
 
@@ -217,7 +218,15 @@ export default function EditArticlePage() {
                       <h2 className="mb-3">Location</h2>
                       <CountrySelect
                         article={currentArticle}
-                        id={"floatingThumbnailDescriptionValue"}
+                        id={"floatingLocationSelectValue"}
+                      />
+                    </div>
+
+                    <div className="form-outline mt-5 mb-5 container-xl">
+                      <h2 className="mb-3">Language</h2>
+                      <LanguageSelect
+                        article={currentArticle}
+                        id={"floatingLanguageSelectValue"}
                       />
                     </div>
 

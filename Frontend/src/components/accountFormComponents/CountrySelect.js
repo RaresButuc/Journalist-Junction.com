@@ -29,7 +29,7 @@ function CountrySelect({ user, article }, ref) {
         sortedCountries.unshift({
           value: "Global",
           label: (
-            <div style={{ display: "flex", alignItems: "center" }}>
+            <div className="d-flex justify-content-center">
               <img
                 className="mx-2 mb-1"
                 src={
@@ -70,7 +70,7 @@ function CountrySelect({ user, article }, ref) {
             : "No Location Specified"
           : user
           ? user.country
-          : "",
+          : null,
       }}
       menuPortalTarget={document.body}
       styles={{
