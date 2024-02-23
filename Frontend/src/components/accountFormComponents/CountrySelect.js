@@ -12,7 +12,7 @@ function CountrySelect({ user, article }, ref) {
         const dataCountries = response.data.map((country) => ({
           value: country.name.common,
           label: (
-            <div style={{ display: "flex", alignItems: "center" }}>
+            <div>
               <img
                 className="mx-2 mb-1"
                 src={`https://flagsapi.com/${country.cca2}/flat/32.png`}
@@ -29,7 +29,7 @@ function CountrySelect({ user, article }, ref) {
         sortedCountries.unshift({
           value: "Global",
           label: (
-            <div className="d-flex justify-content-center">
+            <div>
               <img
                 className="mx-2 mb-1"
                 src={

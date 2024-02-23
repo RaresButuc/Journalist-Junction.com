@@ -3,6 +3,7 @@ import ErrorPage from "./ErrorPage";
 import closeIcon from "../photos/close.png";
 import { useState, useEffect } from "react";
 import DefaultURL from "../usefull/DefaultURL";
+import { useAuthHeader } from "react-auth-kit";
 import { useNavigate, useParams } from "react-router";
 import FirstLetterUppercase from "../usefull/FirstLetterUppercase";
 
@@ -16,6 +17,7 @@ import ThumbnailDescription from "../components/articleFormComponents/ThumbnailD
 
 export default function EditArticlePage() {
   const { id } = useParams();
+  const token = useAuthHeader();
   const navigate = useNavigate();
 
   const [showAlert, setShowAlert] = useState(false);
@@ -44,7 +46,7 @@ export default function EditArticlePage() {
     };
 
     getArticleById();
-  }, []);
+  }, [contributors, rejectedContributors]);
 
   useEffect(() => {
     setSelectDisabled(categoriesCurrent.length === 3);
@@ -65,6 +67,28 @@ export default function EditArticlePage() {
     }
   };
 
+  const deleteContributor = (e) => {
+    const headers = { Authorization: token() };
+
+    axios.put(
+      `${DefaultURL}/article/${currentArticle.id}/${e.name}/delete`,
+      {},
+      { headers }
+    );
+    setContributors(contributors.filter((i) => i.id != e.id));
+  };
+
+  const deleteRejectedContributor = (e) => {
+    const headers = { Authorization: token() };
+
+    axios.put(
+      `${DefaultURL}/article/removerejection/${currentArticle.id}/${e.id}`,
+      {},
+      { headers }
+    );
+    setRejectedContributors(contributors.filter((i) => i.id != e.id));
+  };
+
   const onSave = (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
@@ -76,53 +100,53 @@ export default function EditArticlePage() {
       location: formData.get("countryInput"),
       language: formData.get("shortAutoDescriptionInput"),
     };
-    onSubmitEdit(editData);
+    // onSubmitEdit(editData);
   };
 
-  const onSubmitEdit = async (values) => {
-    try {
-      if (values.country !== "") {
-        const response = await axios.post(
-          `${DefaultURL}/user/register`,
-          values
-        );
+  // const onSubmitEdit = async (values) => {
+  //   try {
+  //     if (values.country !== "") {
+  //       const response = await axios.post(
+  //         `${DefaultURL}/user/register`,
+  //         values
+  //       );
 
-        if (response.data !== "") {
-          setTimeout(() => {
-            navigate("/login");
-          }, 2000);
-          setShowAlert(true);
-          setAlertInfos([
-            "Congratulations!",
-            "You have been Succesfully Registered!",
-            "success",
-          ]);
-        } else {
-          setShowAlert(true);
-          setAlertInfos([
-            "Be Careful",
-            "Email or UserName Already Registered!",
-            "danger",
-          ]);
-          setTimeout(() => {
-            setShowAlert(false);
-          }, 3000);
-        }
-      } else {
-        setShowAlert(true);
-        setAlertInfos([
-          "Be Careful",
-          "The Residence Country Must Be Specified!",
-          "danger",
-        ]);
-        setTimeout(() => {
-          setShowAlert(false);
-        }, 3000);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  //       if (response.data !== "") {
+  //         setTimeout(() => {
+  //           navigate("/login");
+  //         }, 2000);
+  //         setShowAlert(true);
+  //         setAlertInfos([
+  //           "Congratulations!",
+  //           "You have been Succesfully Registered!",
+  //           "success",
+  //         ]);
+  //       } else {
+  //         setShowAlert(true);
+  //         setAlertInfos([
+  //           "Be Careful",
+  //           "Email or UserName Already Registered!",
+  //           "danger",
+  //         ]);
+  //         setTimeout(() => {
+  //           setShowAlert(false);
+  //         }, 3000);
+  //       }
+  //     } else {
+  //       setShowAlert(true);
+  //       setAlertInfos([
+  //         "Be Careful",
+  //         "The Residence Country Must Be Specified!",
+  //         "danger",
+  //       ]);
+  //       setTimeout(() => {
+  //         setShowAlert(false);
+  //       }, 3000);
+  //     }
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // };
 
   return (
     <div className="container-xl mt-3">
@@ -254,8 +278,58 @@ export default function EditArticlePage() {
                                 type="image"
                                 src={closeIcon}
                                 style={{ width: "22px" }}
-                                // onClick={() => deleteCategoryLive(e)}
+                                data-bs-toggle="modal"
+                                data-bs-target={`#modalDeleteContributor${e.id}`}
                               />
+                              <>
+                                <div
+                                  className="modal fade"
+                                  id={`modalDeleteContributor${e.id}`}
+                                  tabIndex="-1"
+                                  aria-labelledby={`modalLabel${e.id}`}
+                                  aria-hidden="true"
+                                >
+                                  <div className="modal-dialog">
+                                    <div className="modal-content">
+                                      <div className="modal-header">
+                                        <h5
+                                          className="modal-title"
+                                          id={`modalLabel${e.id}`}
+                                        >
+                                          Important!
+                                        </h5>
+                                        <button
+                                          type="button"
+                                          className="btn-close"
+                                          data-bs-dismiss="modal"
+                                          aria-label="Close"
+                                        ></button>
+                                      </div>
+                                      <div className="modal-body">
+                                        {`Are you sure you want to delete `}
+                                        <b className="text-danger">{e.name}</b>
+                                        {` from your list of contributors?`}
+                                      </div>
+                                      <div className="modal-footer d-flex justify-content-center">
+                                        <button
+                                          type="button"
+                                          className="btn btn-secondary"
+                                          data-bs-dismiss="modal"
+                                        >
+                                          Close
+                                        </button>
+                                        <button
+                                          className="btn btn-success"
+                                          onClick={() => deleteContributor(e)}
+                                          data-bs-dismiss="modal"
+                                        >
+                                          Accept
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </>
                             </div>
                           ))
                         )}
@@ -297,8 +371,60 @@ export default function EditArticlePage() {
                                 type="image"
                                 src={closeIcon}
                                 style={{ width: "22px" }}
-                                // onClick={() => deleteCategoryLive(e)}
+                                data-bs-toggle="modal"
+                                data-bs-target={`#modalDeleteRejection${e.id}`}
                               />
+                              <>
+                                <div
+                                  className="modal fade"
+                                  id={`modalDeleteRejection${e.id}`}
+                                  tabIndex="-1"
+                                  aria-labelledby={`modalLabel${e.id}`}
+                                  aria-hidden="true"
+                                >
+                                  <div className="modal-dialog">
+                                    <div className="modal-content">
+                                      <div className="modal-header">
+                                        <h5
+                                          className="modal-title"
+                                          id={`modalLabel${e.id}`}
+                                        >
+                                          Important!
+                                        </h5>
+                                        <button
+                                          type="button"
+                                          className="btn-close"
+                                          data-bs-dismiss="modal"
+                                          aria-label="Close"
+                                        ></button>
+                                      </div>
+                                      <div className="modal-body">
+                                        {`Are you sure you want to remove the rejection status of the user `}
+                                        <b className="text-danger">{e.name}</b>
+                                        {` and give it the possibility to contribute to this article in the future?`}
+                                      </div>
+                                      <div className="modal-footer d-flex justify-content-center">
+                                        <button
+                                          type="button"
+                                          className="btn btn-secondary"
+                                          data-bs-dismiss="modal"
+                                        >
+                                          Close
+                                        </button>
+                                        <button
+                                          className="btn btn-success"
+                                          onClick={() =>
+                                            deleteRejectedContributor(e)
+                                          }
+                                          data-bs-dismiss="modal"
+                                        >
+                                          Accept
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </>
                             </div>
                           ))
                         )}
