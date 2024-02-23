@@ -3,14 +3,13 @@ import Select from "react-select";
 import DefaultURL from "../../usefull/DefaultURL";
 import { forwardRef, useState, useEffect } from "react";
 
-function CountrySelect({ user, article }, ref) {
+function CountrySelect({ article }, ref) {
   const [allLanguages, setAllLanguages] = useState([]);
 
   useEffect(() => {
     const fetchLanguages = async () => {
       try {
         const response = await axios.get(`${DefaultURL}/language`);
-        console.log(response.data);
         const dataLanguages = response.data
           .sort((a, b) =>
             a.languageNameEnglish.localeCompare(b.languageNameEnglish)
@@ -18,7 +17,7 @@ function CountrySelect({ user, article }, ref) {
           .map((language) => ({
             value: language.id,
             label: (
-              <div style={{ display: "flex", alignItems: "center" }}>
+              <div>
                 <img
                   className="mx-2 mb-1"
                   src={`https://flagsapi.com/${language.cca2}/flat/32.png`}
@@ -31,7 +30,7 @@ function CountrySelect({ user, article }, ref) {
         dataLanguages.push({
           value: "Other",
           label: (
-            <div className="d-flex justify-content-center">
+            <div>
               <img
                 className="mx-2 mb-1"
                 src={
@@ -51,7 +50,7 @@ function CountrySelect({ user, article }, ref) {
     };
 
     fetchLanguages();
-  }, [article]);
+  }, []);
 
   return (
     <Select

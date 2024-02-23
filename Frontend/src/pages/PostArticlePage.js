@@ -1,13 +1,13 @@
-import LoaderCreateArticle from "../components/LoaderCreateArticle";
-import CurrentUserInfos from "../usefull/CurrentUserInfos";
-import addArticleIcon from "../photos/addArticleIcon.png";
-import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
+import ErrorPage from "./ErrorPage";
+import { useState, useEffect } from "react";
+import noImgIcon from "../photos/no-img.png";
 import { useAuthHeader } from "react-auth-kit";
 import DefaultURL from "../usefull/DefaultURL";
-import { useState, useEffect } from "react";
-import ErrorPage from "./ErrorPage";
-import noImgIcon from "../photos/no-img.png";
-import axios from "axios";
+import addArticleIcon from "../photos/addArticleIcon.png";
+import { useParams, useNavigate } from "react-router-dom";
+import CurrentUserInfos from "../usefull/CurrentUserInfos";
+import LoaderCreateArticle from "../components/LoaderCreateArticle";
 
 export default function PostArticlePage() {
   const { id } = useParams();
