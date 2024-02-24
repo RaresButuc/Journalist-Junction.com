@@ -5,9 +5,7 @@ function ThumbnailDescription({ article, id }, ref) {
   const [charactersTextArea, setCharactersTextArea] = useState(
     article?.thumbnailDescription ? article.thumbnailDescription.length : 0
   );
-  const [colorOfText, setColorOfText] = useState(
-    charactersTextArea < 350 ? "success" : "danger"
-  );
+  const [colorOfText, setColorOfText] = useState(charactersTextArea < 350 ? "success":"danger");
 
   const countingCharactersDescription = (e) => {
     setCharactersTextArea(e.target.value.length);

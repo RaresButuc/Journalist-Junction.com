@@ -115,7 +115,7 @@ export default function EditArticlePage() {
 
     e.preventDefault();
     const data = formData(new FormData(e.target));
-
+    console.log(data.body);
     await axios.put(`${DefaultURL}/article/${id}`, data, { headers });
   };
 

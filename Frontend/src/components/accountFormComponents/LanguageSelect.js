@@ -69,7 +69,7 @@ function CountrySelect({ article }, ref) {
         ) : (
           "Select The Language of Your Article"
         ),
-        value: article.language ? article.language : null,
+        value: article.language ? article.language.id : null,
       }}
       menuPortalTarget={document.body}
       styles={{
