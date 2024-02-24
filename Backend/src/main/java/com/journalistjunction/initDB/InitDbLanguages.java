@@ -41,6 +41,7 @@ public class InitDbLanguages {
                 Language.builder().languageNameEnglish("Czech").languageNameNative("Čeština").cca2("CZ").build(),
                 Language.builder().languageNameEnglish("Romanian").languageNameNative("Română").cca2("RO").build(),
                 Language.builder().languageNameEnglish("Indonesian").languageNameNative("Bahasa Indonesia").cca2("ID").build()
+
         );
 
         languageRepository.saveAll(languages);

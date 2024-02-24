@@ -27,21 +27,21 @@ function CountrySelect({ article }, ref) {
             ),
           }));
 
-        dataLanguages.push({
-          value: "Other",
-          label: (
-            <div>
-              <img
-                className="mx-2 mb-1"
-                src={
-                  "https://creazilla-store.fra1.digitaloceanspaces.com/emojis/57756/globe-showing-europe-africa-emoji-clipart-md.png"
-                }
-                style={{ height: "32px", width: "32px" }}
-              />
-              Other
-            </div>
-          ),
-        });
+        // dataLanguages.push({
+        //   value: "Other",
+        //   label: (
+        //     <div>
+        //       <img
+        //         className="mx-2 mb-1"
+        //         src={
+        //           "https://creazilla-store.fra1.digitaloceanspaces.com/emojis/57756/globe-showing-europe-africa-emoji-clipart-md.png"
+        //         }
+        //         style={{ height: "32px", width: "32px" }}
+        //       />
+        //       Other
+        //     </div>
+        //   ),
+        // });
 
         setAllLanguages(dataLanguages);
       } catch (error) {
@@ -58,10 +58,18 @@ function CountrySelect({ article }, ref) {
       ref={ref}
       options={allLanguages}
       defaultValue={{
-        label: article.language
-          ? article.language
-          : "Select The Language of Your Article",
-        value: article ? article.language : null,
+        label: article.language ? (
+          <div>
+            <img
+              className="mx-2 mb-1"
+              src={`https://flagsapi.com/${article.language.cca2}/flat/32.png`}
+            />
+            {article.language.languageNameEnglish} ({article.language.languageNameNative})
+          </div>
+        ) : (
+          "Select The Language of Your Article"
+        ),
+        value: article.language ? article.language : null,
       }}
       menuPortalTarget={document.body}
       styles={{
