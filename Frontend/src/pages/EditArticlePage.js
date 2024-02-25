@@ -37,6 +37,8 @@ export default function EditArticlePage() {
       setCurrentArticle(data);
       setTitleCurrent(data.title);
       setCategoriesCurrent(data.categories);
+      setContributors(data.contributors);
+      setRejectedContributors(data.rejectedWorkers);
       setSelectDisabled(data.categories.length === 3);
       setPublishState(
         data.published ? ["Published", "success"] : ["UnPublished", "danger"]
@@ -44,23 +46,11 @@ export default function EditArticlePage() {
     };
 
     getArticleById();
-  }, []);
+  }, [contributors.length, rejectedContributors.length]);
 
   useEffect(() => {
     setSelectDisabled(categoriesCurrent.length === 3);
   }, [categoriesCurrent]);
-
-  useEffect(() => {
-    const getContributorsAndRejectedCOntributors = async () => {
-      const response = await axios.get(`${DefaultURL}/article/${id}`);
-      const data = response.data;
-
-      setContributors(data.contributors);
-      setRejectedContributors(data.rejectedWorkers);
-    };
-
-    getContributorsAndRejectedCOntributors();
-  }, [contributors, rejectedContributors]);
 
   const updateTitleLive = (e) => {
     setTitleCurrent(e.target.value);
