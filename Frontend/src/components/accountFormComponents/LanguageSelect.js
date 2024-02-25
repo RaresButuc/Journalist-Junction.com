@@ -11,9 +11,6 @@ function CountrySelect({ article }, ref) {
       try {
         const response = await axios.get(`${DefaultURL}/language`);
         const dataLanguages = response.data
-          .sort((a, b) =>
-            a.languageNameEnglish.localeCompare(b.languageNameEnglish)
-          )
           .map((language) => ({
             value: language.id,
             label: (
@@ -26,22 +23,6 @@ function CountrySelect({ article }, ref) {
               </div>
             ),
           }));
-
-        // dataLanguages.push({
-        //   value: "Other",
-        //   label: (
-        //     <div>
-        //       <img
-        //         className="mx-2 mb-1"
-        //         src={
-        //           "https://creazilla-store.fra1.digitaloceanspaces.com/emojis/57756/globe-showing-europe-africa-emoji-clipart-md.png"
-        //         }
-        //         style={{ height: "32px", width: "32px" }}
-        //       />
-        //       Other
-        //     </div>
-        //   ),
-        // });
 
         setAllLanguages(dataLanguages);
       } catch (error) {
