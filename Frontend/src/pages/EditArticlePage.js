@@ -21,6 +21,7 @@ export default function EditArticlePage() {
   const navigate = useNavigate();
 
   const [showAlert, setShowAlert] = useState(false);
+  const [bodyContent, setBodyContent] = useState("");
   const [titleCurrent, setTitleCurrent] = useState("");
   const [contributors, setContributors] = useState([]);
   const [publishState, setPublishState] = useState(["", ""]);
@@ -89,11 +90,15 @@ export default function EditArticlePage() {
     setRejectedContributors(contributors.filter((i) => i.id != e.id));
   };
 
+  const handleBodyChange = (content) => {
+    setBodyContent(content);
+  };
+
   const formData = (form) => {
     return {
       title: form.get("titleInput"),
       thumbnailDescription: form.get("thumbnailDescription"),
-      body: form.get("bodyText"),
+      body: bodyContent,
       categories: categoriesCurrent,
       location: { id: parseInt(form.get("countryInput"), 10) },
       language: { id: parseInt(form.get("languageInput"), 10) },
@@ -105,7 +110,7 @@ export default function EditArticlePage() {
 
     e.preventDefault();
     const data = formData(new FormData(e.target));
-
+    console.log(data);
     await axios.put(`${DefaultURL}/article/${id}`, data, { headers });
   };
 
@@ -416,6 +421,7 @@ export default function EditArticlePage() {
             <BodyTextInput
               article={currentArticle}
               id={"floatingBodyTextValue"}
+              onChange={handleBodyChange}
             />
           </div>
         </div>
