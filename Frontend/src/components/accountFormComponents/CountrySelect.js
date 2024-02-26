@@ -1,6 +1,8 @@
 import axios from "axios";
 import Select from "react-select";
+import DefaultURL from "../../usefull/DefaultURL";
 import { forwardRef, useState, useEffect } from "react";
+import LanguageLocationOptionLabel from "../articleFormComponents/LanguageLocationOptionLabel";
 
 function CountrySelect({ user, article }, ref) {
   const [allCountries, setAllCountries] = useState([]);
@@ -8,41 +10,18 @@ function CountrySelect({ user, article }, ref) {
   useEffect(() => {
     const fetchCountries = async () => {
       try {
-        const response = await axios.get("https://restcountries.com/v3.1/all");
-        const dataCountries = response.data.map((country) => ({
-          value: country.name.common,
+        const response = await axios.get(`${DefaultURL}/location`);
+        const dataCountries = response.data.map((location) => ({
+          value: location.id,
           label: (
-            <div>
-              <img
-                className="mx-2 mb-1"
-                src={`https://flagsapi.com/${country.cca2}/flat/32.png`}
-              />
-              {country.name.common}
-            </div>
+            <LanguageLocationOptionLabel
+              cca2={location.cca2}
+              value={location.country}
+            />
           ),
         }));
 
-        const sortedCountries = dataCountries.sort((a, b) =>
-          a.value.localeCompare(b.value)
-        );
-
-        sortedCountries.unshift({
-          value: "Global",
-          label: (
-            <div>
-              <img
-                className="mx-2 mb-1"
-                src={
-                  "https://creazilla-store.fra1.digitaloceanspaces.com/emojis/57756/globe-showing-europe-africa-emoji-clipart-md.png"
-                }
-                style={{ height: "32px", width: "32px" }}
-              />
-              Global
-            </div>
-          ),
-        });
-
-        setAllCountries(sortedCountries);
+        setAllCountries(dataCountries);
       } catch (error) {
         console.error("Error fetching countries:", error);
       }
@@ -57,19 +36,29 @@ function CountrySelect({ user, article }, ref) {
       ref={ref}
       options={allCountries}
       defaultValue={{
-        label: article
-          ? article.location
-            ? article.location
-            : "Select A Suitable Location For Article"
-          : user
-          ? user.country
-          : "Select Your Residence Country",
+        label: article ? (
+          article.location ? (
+            <LanguageLocationOptionLabel
+              cca2={article.location.cca2}
+              value={article.location.country}
+            />
+          ) : (
+            "Select A Suitable Location For Article"
+          )
+        ) : user ? (
+          <LanguageLocationOptionLabel
+            cca2={user.location.cca2}
+            value={user.location.country}
+          />
+        ) : (
+          "Select Your Residence Country"
+        ),
         value: article
           ? article.location
-            ? article.location
+            ? article.location.id
             : "No Location Specified"
           : user
-          ? user.country
+          ? user.location.id
           : null,
       }}
       menuPortalTarget={document.body}

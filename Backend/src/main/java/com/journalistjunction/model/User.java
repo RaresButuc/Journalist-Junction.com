@@ -32,7 +32,9 @@ public class User implements UserDetails {
 
     private String phoneNumber;
 
-    private String country;
+    @ManyToOne
+    @JoinColumn
+    private Location location;
 
     @Column(length = 500)
     private String shortAutoDescription;

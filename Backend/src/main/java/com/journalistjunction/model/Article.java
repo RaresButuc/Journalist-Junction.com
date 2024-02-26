@@ -37,7 +37,9 @@ public class Article {
 
     private LocalDateTime postTime;
 
-    private String location;
+    @ManyToOne
+    @JoinColumn
+    private Location location;
 
     @ManyToOne
     @JoinColumn

@@ -2,6 +2,7 @@ import axios from "axios";
 import Select from "react-select";
 import DefaultURL from "../../usefull/DefaultURL";
 import { forwardRef, useState, useEffect } from "react";
+import LanguageLocationOptionLabel from "../articleFormComponents/LanguageLocationOptionLabel";
 
 function CountrySelect({ article }, ref) {
   const [allLanguages, setAllLanguages] = useState([]);
@@ -10,38 +11,15 @@ function CountrySelect({ article }, ref) {
     const fetchLanguages = async () => {
       try {
         const response = await axios.get(`${DefaultURL}/language`);
-        const dataLanguages = response.data
-          .sort((a, b) =>
-            a.languageNameEnglish.localeCompare(b.languageNameEnglish)
-          )
-          .map((language) => ({
-            value: language.id,
-            label: (
-              <div>
-                <img
-                  className="mx-2 mb-1"
-                  src={`https://flagsapi.com/${language.cca2}/flat/32.png`}
-                />
-                {language.languageNameEnglish} ({language.languageNameNative})
-              </div>
-            ),
-          }));
-
-        dataLanguages.push({
-          value: "Other",
+        const dataLanguages = response.data.map((language) => ({
+          value: language.id,
           label: (
-            <div>
-              <img
-                className="mx-2 mb-1"
-                src={
-                  "https://creazilla-store.fra1.digitaloceanspaces.com/emojis/57756/globe-showing-europe-africa-emoji-clipart-md.png"
-                }
-                style={{ height: "32px", width: "32px" }}
-              />
-              Other
-            </div>
+            <LanguageLocationOptionLabel
+              cca2={language.cca2}
+              value={`${language.languageNameEnglish} (${language.languageNameNative})`}
+            />
           ),
-        });
+        }));
 
         setAllLanguages(dataLanguages);
       } catch (error) {
@@ -58,10 +36,15 @@ function CountrySelect({ article }, ref) {
       ref={ref}
       options={allLanguages}
       defaultValue={{
-        label: article.language
-          ? article.language
-          : "Select The Language of Your Article",
-        value: article ? article.language : null,
+        label: article.language ? (
+          <LanguageLocationOptionLabel
+            cca2={article.language.cca2}
+            value={`${article.language.languageNameEnglish} (${article.language.languageNameNative})`}
+          />
+        ) : (
+          "Select The Language of Your Article"
+        ),
+        value: article.language ? article.language.id : null,
       }}
       menuPortalTarget={document.body}
       styles={{

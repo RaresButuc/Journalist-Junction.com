@@ -21,6 +21,7 @@ export default function EditArticlePage() {
   const navigate = useNavigate();
 
   const [showAlert, setShowAlert] = useState(false);
+  const [bodyContent, setBodyContent] = useState("");
   const [titleCurrent, setTitleCurrent] = useState("");
   const [contributors, setContributors] = useState([]);
   const [publishState, setPublishState] = useState(["", ""]);
@@ -37,16 +38,16 @@ export default function EditArticlePage() {
       setCurrentArticle(data);
       setTitleCurrent(data.title);
       setCategoriesCurrent(data.categories);
-      setSelectDisabled(data.categories.length === 3);
       setContributors(data.contributors);
       setRejectedContributors(data.rejectedWorkers);
+      setSelectDisabled(data.categories.length === 3);
       setPublishState(
         data.published ? ["Published", "success"] : ["UnPublished", "danger"]
       );
     };
 
     getArticleById();
-  }, [contributors, rejectedContributors]);
+  }, [contributors.length, rejectedContributors.length]);
 
   useEffect(() => {
     setSelectDisabled(categoriesCurrent.length === 3);
@@ -56,15 +57,15 @@ export default function EditArticlePage() {
     setTitleCurrent(e.target.value);
   };
 
-  const deleteCategoryLive = (e) => {
-    setCategoriesCurrent(categoriesCurrent.filter((i) => i.id != e.id));
-    setSelectDisabled(categoriesCurrent.length === 3);
-  };
-
   const addCategoryLive = (e) => {
     if (categoriesCurrent.length < 3) {
       setCategoriesCurrent((prevCategories) => [...prevCategories, e.value]);
     }
+  };
+
+  const deleteCategoryLive = (e) => {
+    setCategoriesCurrent(categoriesCurrent.filter((i) => i.id !== e.id));
+    setSelectDisabled(categoriesCurrent.length === 3);
   };
 
   const deleteContributor = (e) => {
@@ -89,64 +90,29 @@ export default function EditArticlePage() {
     setRejectedContributors(contributors.filter((i) => i.id != e.id));
   };
 
-  const onSave = (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    const editData = {
-      title: formData.get("titleInput"),
-      thumbnailDescription: formData.get("thumbnailDescription"),
-      body: formData.get("bodyText"),
-      categories: formData.get(categoriesCurrent),
-      location: formData.get("countryInput"),
-      language: formData.get("shortAutoDescriptionInput"),
-    };
-    // onSubmitEdit(editData);
+  const handleBodyChange = (content) => {
+    setBodyContent(content);
   };
 
-  // const onSubmitEdit = async (values) => {
-  //   try {
-  //     if (values.country !== "") {
-  //       const response = await axios.post(
-  //         `${DefaultURL}/user/register`,
-  //         values
-  //       );
+  const formData = (form) => {
+    return {
+      title: form.get("titleInput"),
+      thumbnailDescription: form.get("thumbnailDescription"),
+      body: bodyContent,
+      categories: categoriesCurrent,
+      location: { id: parseInt(form.get("countryInput"), 10) },
+      language: { id: parseInt(form.get("languageInput"), 10) },
+    };
+  };
 
-  //       if (response.data !== "") {
-  //         setTimeout(() => {
-  //           navigate("/login");
-  //         }, 2000);
-  //         setShowAlert(true);
-  //         setAlertInfos([
-  //           "Congratulations!",
-  //           "You have been Succesfully Registered!",
-  //           "success",
-  //         ]);
-  //       } else {
-  //         setShowAlert(true);
-  //         setAlertInfos([
-  //           "Be Careful",
-  //           "Email or UserName Already Registered!",
-  //           "danger",
-  //         ]);
-  //         setTimeout(() => {
-  //           setShowAlert(false);
-  //         }, 3000);
-  //       }
-  //     } else {
-  //       setShowAlert(true);
-  //       setAlertInfos([
-  //         "Be Careful",
-  //         "The Residence Country Must Be Specified!",
-  //         "danger",
-  //       ]);
-  //       setTimeout(() => {
-  //         setShowAlert(false);
-  //       }, 3000);
-  //     }
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
+  const editArticle = async (e) => {
+    const headers = { Authorization: token() };
+
+    e.preventDefault();
+    const data = formData(new FormData(e.target));
+    console.log(data);
+    await axios.put(`${DefaultURL}/article/${id}`, data, { headers });
+  };
 
   return (
     <div className="container-xl mt-3">
@@ -160,7 +126,10 @@ export default function EditArticlePage() {
 
       {currentArticle ? (
         <div className="row">
-          <form onSubmit={onSave} className="container-xl col-xl-6 col-md-12">
+          <form
+            onSubmit={editArticle}
+            className="container-xl col-xl-6 col-md-12"
+          >
             <div className="row d-flex justify-content-center align-items-center">
               <div className="col-md-8 col-lg-6 col-xl-10">
                 <div className="border border-danger">
@@ -438,10 +407,7 @@ export default function EditArticlePage() {
                       >
                         Save
                       </button>
-                      <button
-                        className="btn btn-success btn-lg btn-block col-xl-3 m-3"
-                        type="submit"
-                      >
+                      <button className="btn btn-success btn-lg btn-block col-xl-3 m-3">
                         Publish
                       </button>
                     </div>
@@ -455,6 +421,7 @@ export default function EditArticlePage() {
             <BodyTextInput
               article={currentArticle}
               id={"floatingBodyTextValue"}
+              onChange={handleBodyChange}
             />
           </div>
         </div>

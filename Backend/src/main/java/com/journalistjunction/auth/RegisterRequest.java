@@ -1,6 +1,7 @@
 package com.journalistjunction.auth;
 
 import com.journalistjunction.enums.Role;
+import com.journalistjunction.model.Location;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,7 +23,7 @@ public class RegisterRequest {
 
     private String password;
 
-    private String country;
+    private Location location;
 
     private String shortAutoDescription;
 

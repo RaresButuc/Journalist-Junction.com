@@ -68,11 +68,12 @@ export default function RegisterPage() {
     const registerData = {
       name: formData.get("nameInput"),
       email: formData.get("emailInput"),
-      country: formData.get("countryInput"),
+      location: { id: parseInt(formData.get("countryInput"), 10) },
       password: formData.get("passwordInput"),
       phoneNumber: formData.get("phoneNumberInput"),
       shortAutoDescription: formData.get("shortAutoDescriptionInput"),
     };
+
     onSubmit(registerData);
   };
 
