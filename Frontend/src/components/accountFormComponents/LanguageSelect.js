@@ -2,6 +2,7 @@ import axios from "axios";
 import Select from "react-select";
 import DefaultURL from "../../usefull/DefaultURL";
 import { forwardRef, useState, useEffect } from "react";
+import LanguageLocationOptionLabel from "../articleFormComponents/LanguageLocationOptionLabel";
 
 function CountrySelect({ article }, ref) {
   const [allLanguages, setAllLanguages] = useState([]);
@@ -9,20 +10,16 @@ function CountrySelect({ article }, ref) {
   useEffect(() => {
     const fetchLanguages = async () => {
       try {
-        const response = await axios.get(`${DefaultURL}/language`);
-        const dataLanguages = response.data
-          .map((language) => ({
-            value: language.id,
-            label: (
-              <div>
-                <img
-                  className="mx-2 mb-1"
-                  src={`https://flagsapi.com/${language.cca2}/flat/32.png`}
-                />
-                {language.languageNameEnglish} ({language.languageNameNative})
-              </div>
-            ),
-          }));
+        const response = await axios.get(`${DefaultURL}/location`);
+        const dataLanguages = response.data.map((language) => ({
+          value: language.id,
+          label: (
+            <LanguageLocationOptionLabel
+              cca2={language.cca2}
+              value={`${language.languageNameEnglish} (${language.languageNameNative})`}
+            />
+          ),
+        }));
 
         setAllLanguages(dataLanguages);
       } catch (error) {
@@ -40,13 +37,10 @@ function CountrySelect({ article }, ref) {
       options={allLanguages}
       defaultValue={{
         label: article.language ? (
-          <div>
-            <img
-              className="mx-2 mb-1"
-              src={`https://flagsapi.com/${article.language.cca2}/flat/32.png`}
-            />
-            {article.language.languageNameEnglish} ({article.language.languageNameNative})
-          </div>
+          <LanguageLocationOptionLabel
+            cca2={article.language.cca2}
+            value={`${article.language.languageNameEnglish} (${article.language.languageNameNative})`}
+          />
         ) : (
           "Select The Language of Your Article"
         ),

@@ -27,7 +27,7 @@ public class AuthenticationService {
                     .email(request.getEmail())
                     .password(passwordEncoder.encode(request.getPassword()))
                     .phoneNumber(request.getPhoneNumber())
-                    .country(request.getCountry())
+                    .location(request.getLocation())
                     .shortAutoDescription(request.getShortAutoDescription())
                     .build();
             repository.save(user);

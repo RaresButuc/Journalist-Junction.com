@@ -58,6 +58,6 @@ public class InitDbLanguages {
                 Language.builder().languageNameEnglish("Welsh").languageNameNative("Cymraeg").cca2("GB").build()
         );
 
-        languageRepository.saveAll(languages);
+        languageRepository.saveAllAndFlush(languages);
     }
 }

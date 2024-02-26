@@ -33,12 +33,6 @@ export default function ProfilePage() {
           // Fetch user
           const responseUser = await axios.get(`${DefaultURL}/user/${id}`);
           setProfileUser(responseUser.data);
-
-          //Fetch Country Abrev
-          const responseCountry = await axios.get(
-            `https://restcountries.com/v3.1/name/${responseUser?.data.country}`
-          );
-          setProfileUserCountry(responseCountry.data[0].cca2);
         } catch (err) {
           console.log(err);
         }
@@ -186,11 +180,11 @@ export default function ProfilePage() {
                 <img
                   className="mx-2 mb-1"
                   data-toggle="tooltip"
-                  src={`https://flagsapi.com/${profileUserCountry}/flat/24.png`}
-                  alt={profileUserCountry}
-                  title={profileUser?.country}
+                  src={`https://flagsapi.com/${profileUser?.location?.cca2}/flat/24.png`}
+                  alt={profileUser?.location?.cca2}
+                  title={profileUser?.location?.country}
                 />
-                <p className="d-inline">({profileUser?.country})</p>
+                <p className="d-inline">({profileUser?.location?.country})</p>
                 <br />
                 <br />
                 <p className="d-inline fw-medium text-break text-start text-end">
