@@ -95,7 +95,7 @@ export default function EditArticlePage() {
       thumbnailDescription: form.get("thumbnailDescription"),
       body: form.get("bodyText"),
       categories: categoriesCurrent,
-      location: form.get("countryInput"),
+      location: { id: parseInt(form.get("countryInput"), 10) },
       language: { id: parseInt(form.get("languageInput"), 10) },
     };
   };
@@ -105,7 +105,7 @@ export default function EditArticlePage() {
 
     e.preventDefault();
     const data = formData(new FormData(e.target));
-    console.log(data.body);
+
     await axios.put(`${DefaultURL}/article/${id}`, data, { headers });
   };
 

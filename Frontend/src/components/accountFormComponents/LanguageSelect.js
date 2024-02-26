@@ -10,7 +10,7 @@ function CountrySelect({ article }, ref) {
   useEffect(() => {
     const fetchLanguages = async () => {
       try {
-        const response = await axios.get(`${DefaultURL}/location`);
+        const response = await axios.get(`${DefaultURL}/language`);
         const dataLanguages = response.data.map((language) => ({
           value: language.id,
           label: (
