@@ -53,16 +53,19 @@ public class UserService {
                 if (!isUserSubscriber(idCurrentUser, idSecondUser) && !idCurrentUser.equals(idSecondUser)) {
                     currentUser.getSubscribedTo().add(secondUser);
                     secondUser.getSubscribers().add(currentUser);
+                } else {
+                    throw new IllegalStateException("User is already subscribed or trying to subscribe to themselves!");
                 }
             }
             case "unsubscribe" -> {
                 if (isUserSubscriber(idCurrentUser, idSecondUser) && !idCurrentUser.equals(idSecondUser)) {
                     currentUser.getSubscribedTo().remove(secondUser);
                     secondUser.getSubscribers().remove(currentUser);
+                } else {
+                    throw new IllegalStateException("User is not subscribed or trying to unsubscribe from themselves!");
                 }
             }
-            default ->
-                throw new IllegalStateException("Invalid command: " + command);
+            default -> throw new IllegalStateException("Invalid command: " + command);
         }
         userRepository.save(currentUser);
         userRepository.save(secondUser);

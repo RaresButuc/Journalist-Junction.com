@@ -29,7 +29,6 @@ function ThumbnailDescription({ article, id }, ref) {
         maxLength={350}
         placeholder="Give The Article a Short Description for its Thumbnail.."
         defaultValue={article?.thumbnailDescription}
-        required
         onChange={countingCharactersDescription}
         style={{ height: "130px" }}
       />

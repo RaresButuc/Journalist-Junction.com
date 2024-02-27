@@ -17,7 +17,6 @@ const BodyTextInput = ({ article, id, onChange }) => {
         id={id}
         placeholder="Article Body"
         data={article ? article.body : ""}
-        required
       />
     </div>
   );

@@ -19,8 +19,7 @@ export default function RegisterPage() {
 
   const onSubmit = async (values) => {
     try {
-      console.log(values.location.id);
-      if (values.location.id !== "null") {
+      if (!Number.isNaN(values.location.id)) {
         await axios.post(`${DefaultURL}/user/register`, values);
         setTimeout(() => {
           navigate("/login");
