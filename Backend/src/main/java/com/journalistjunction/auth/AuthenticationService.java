@@ -4,6 +4,7 @@ import com.journalistjunction.enums.Role;
 import com.journalistjunction.model.User;
 import com.journalistjunction.repository.UserRepository;
 import com.journalistjunction.security.JwtService;
+import jakarta.persistence.EntityExistsException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -33,8 +34,9 @@ public class AuthenticationService {
             repository.save(user);
             var jwtToken = jwtService.generateToken(user);
             return AuthenticationResponse.builder().token(jwtToken).build();
+        } else {
+            throw new EntityExistsException("User With The Same Email or UserName Already Exists!");
         }
-        return null;
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {

@@ -66,17 +66,21 @@ public class UserController {
 
 
     @PutMapping("/{id}")
-    public void editUser(@PathVariable("id") Long id, @RequestBody User user) {
+    public ResponseEntity<String> editUser(@PathVariable("id") Long id, @RequestBody User user) {
         userService.updateUserById(id, user);
+        return ResponseEntity.ok("User ID#" + id + " Was Successfully Edited and Saved!");
     }
 
     @PutMapping("/{action}/{idCurrentUser}/{idSecondUser}")
-    public void subscribeOrUnsubscribe(@PathVariable("action") String action, @PathVariable("idCurrentUser") Long idCurrentUser, @PathVariable("idSecondUser") Long idSecondUser) {
+    public ResponseEntity<String> subscribeOrUnsubscribe(@PathVariable("action") String action, @PathVariable("idCurrentUser") Long idCurrentUser, @PathVariable("idSecondUser") Long idSecondUser) {
         userService.subscribeOrUnsubscribe(idCurrentUser, idSecondUser, action);
+
+        return ResponseEntity.ok("");
     }
 
     @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable("id") Long id) {
+    public ResponseEntity<String> deleteUser(@PathVariable("id") Long id) {
         userService.deleteUserById(id);
+        return ResponseEntity.ok("User ID#" + id + " Was Successfully Deleted!!");
     }
 }

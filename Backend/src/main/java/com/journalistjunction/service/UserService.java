@@ -3,10 +3,10 @@ package com.journalistjunction.service;
 import com.journalistjunction.model.User;
 import com.journalistjunction.repository.UserRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 @Service
@@ -20,19 +20,20 @@ public class UserService {
 
 
     public User getUserById(Long id) {
-        return userRepository.findById(id).orElse(null);
+        return userRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("No User Found With This ID!"));
     }
 
     public User getUserByEmail(String email) {
-        return userRepository.findByEmail(email).orElse(null);
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new NoSuchElementException("No User Found With This Email!"));
     }
 
     public boolean isUserSubscriber(Long idCurrentUser, Long idSecondUser) {
-        User currentUser = userRepository.findById(idCurrentUser).orElse(null);
-        User secondUser = userRepository.findById(idSecondUser).orElse(null);
-
-        assert currentUser != null;
-        assert secondUser != null;
+        User currentUser = userRepository.findById(idCurrentUser)
+                .orElseThrow(() -> new NoSuchElementException("No User Found With This ID!"));
+        User secondUser = userRepository.findById(idSecondUser)
+                .orElseThrow(() -> new NoSuchElementException("No User Found With This ID!"));
 
         return secondUser.getSubscribers().stream().anyMatch(e -> Objects.equals(e.getId(), currentUser.getId()));
     }
@@ -42,11 +43,10 @@ public class UserService {
     }
 
     public void subscribeOrUnsubscribe(Long idCurrentUser, Long idSecondUser, String command) {
-        User currentUser = userRepository.findById(idCurrentUser).orElse(null);
-        User secondUser = userRepository.findById(idSecondUser).orElse(null);
-
-        assert currentUser != null;
-        assert secondUser != null;
+        User currentUser = userRepository.findById(idCurrentUser)
+                .orElseThrow(() -> new NoSuchElementException("No User Found With This ID!"));
+        User secondUser = userRepository.findById(idSecondUser)
+                .orElseThrow(() -> new NoSuchElementException("No User Found With This ID!"));
 
         switch (command) {
             case "subscribe" -> {
@@ -61,18 +61,28 @@ public class UserService {
                     secondUser.getSubscribers().remove(currentUser);
                 }
             }
+            default ->
+                throw new IllegalStateException("Invalid command: " + command);
         }
         userRepository.save(currentUser);
         userRepository.save(secondUser);
     }
 
     public int subscribersCount(Long idUser) {
-        return Objects.requireNonNull(userRepository.findById(idUser).orElse(null)).getSubscribers().size();
+        return userRepository.findById(idUser)
+                .orElseThrow(() -> new NoSuchElementException("No User Found With This ID!"))
+                .getSubscribers()
+                .size();
     }
 
     public void updateUserById(Long id, User updatedUser) {
-        User userFromDb = userRepository.findById(id).orElse(null);
-        assert userFromDb != null;
+        if (updatedUser == null) {
+            throw new IllegalArgumentException("Updated user data cannot be null");
+        }
+
+        User userFromDb = userRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("No User Found With This ID!"));
+
         userFromDb.setName(updatedUser.getName());
         userFromDb.setEmail(updatedUser.getEmail());
         userFromDb.setPhoneNumber(updatedUser.getPhoneNumber());
