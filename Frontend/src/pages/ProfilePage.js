@@ -224,7 +224,7 @@ export default function ProfilePage() {
           </div>
         </div>
       ) : (
-        <ErrorPage message1={"User is Loading!"} message2={"If it takes too long,press here to escape to the Home Page!"} />
+        <ErrorPage message={"User is Loading!"} message2={"If it takes too long,press here to escape to the Home Page!"} />
       )}
     </>
   );

@@ -33,17 +33,22 @@ export default function EditArticlePage() {
 
   useEffect(() => {
     const getArticleById = async () => {
-      const response = await axios.get(`${DefaultURL}/article/${id}`);
-      const data = response.data;
-      setCurrentArticle(data);
-      setTitleCurrent(data.title);
-      setCategoriesCurrent(data.categories);
-      setContributors(data.contributors);
-      setRejectedContributors(data.rejectedWorkers);
-      setSelectDisabled(data.categories.length === 3);
-      setPublishState(
-        data.published ? ["Published", "success"] : ["UnPublished", "danger"]
-      );
+      try {
+        const response = await axios.get(`${DefaultURL}/article/${id}`);
+        const data = response.data;
+        setCurrentArticle(data);
+        setTitleCurrent(data.title);
+        setCategoriesCurrent(data.categories);
+        setContributors(data.contributors);
+        setRejectedContributors(data.rejectedWorkers);
+        setSelectDisabled(data.categories.length === 3);
+        setPublishState(
+          data.published ? ["Published", "success"] : ["UnPublished", "danger"]
+        );
+      } catch (err) {
+        console.error("Request error:", err);
+        navigate("/an-error-has-occured");
+      }
     };
 
     getArticleById();
@@ -68,26 +73,58 @@ export default function EditArticlePage() {
     setSelectDisabled(categoriesCurrent.length === 3);
   };
 
-  const deleteContributor = (e) => {
+  const deleteContributor = async (e) => {
     const headers = { Authorization: token() };
 
-    axios.put(
-      `${DefaultURL}/article/${currentArticle.id}/${e.name}/delete`,
-      {},
-      { headers }
-    );
-    setContributors(contributors.filter((i) => i.id != e.id));
+    try {
+      await axios.put(
+        `${DefaultURL}/article/${currentArticle.id}/${e.name}/delete`,
+        {},
+        { headers }
+      );
+      setContributors(contributors.filter((i) => i.id != e.id));
+
+      setShowAlert(true);
+      setAlertInfos([
+        "Success!",
+        `${e.name} Is No Longer A Contributor For This Article!`,
+        "success",
+      ]);
+      setTimeout(() => {
+        setShowAlert(false);
+      }, 3000);
+    } catch (err) {
+      setShowAlert(true);
+      setAlertInfos(["Error Occured!", err.response.data.message, "danger"]);
+      setTimeout(() => {
+        setShowAlert(false);
+      }, 3000);
+    }
   };
 
-  const deleteRejectedContributor = (e) => {
+  const deleteRejectedContributor = async (e) => {
     const headers = { Authorization: token() };
 
-    axios.put(
-      `${DefaultURL}/article/removerejection/${currentArticle.id}/${e.id}`,
-      {},
-      { headers }
-    );
-    setRejectedContributors(contributors.filter((i) => i.id != e.id));
+    try {
+      const response = await axios.put(
+        `${DefaultURL}/article/removerejection/${currentArticle.id}/${e.id}`,
+        {},
+        { headers }
+      );
+      setRejectedContributors(contributors.filter((i) => i.id != e.id));
+
+      setShowAlert(true);
+      setAlertInfos(["Success!", response.data, "success"]);
+      setTimeout(() => {
+        setShowAlert(false);
+      }, 3000);
+    } catch (err) {
+      setShowAlert(true);
+      setAlertInfos(["Error Occured!", err.response.data.message, "danger"]);
+      setTimeout(() => {
+        setShowAlert(false);
+      }, 3000);
+    }
   };
 
   const handleBodyChange = (content) => {
@@ -108,10 +145,30 @@ export default function EditArticlePage() {
   const editArticle = async (e) => {
     const headers = { Authorization: token() };
 
-    e.preventDefault();
-    const data = formData(new FormData(e.target));
-    console.log(data);
-    await axios.put(`${DefaultURL}/article/${id}`, data, { headers });
+    try {
+      e.preventDefault();
+      const data = formData(new FormData(e.target));
+
+      const response = await axios.put(`${DefaultURL}/article/${id}`, data, {
+        headers,
+      });
+
+      window.scrollTo(0, 0);
+
+      setShowAlert(true);
+      setAlertInfos(["Success!", response.data, "success"]);
+      setTimeout(() => {
+        setShowAlert(false);
+      }, 3000);
+    } catch (err) {
+      window.scrollTo(0, 0);
+
+      setShowAlert(true);
+      setAlertInfos(["Error Occured!", err.response.data.message, "danger"]);
+      setTimeout(() => {
+        setShowAlert(false);
+      }, 3000);
+    }
   };
 
   return (

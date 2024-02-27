@@ -12,7 +12,6 @@ function TitleInput({ article, id,updateTitleLive }, ref) {
         placeholder="Title"
         defaultValue={article?.title}
         onChange={updateTitleLive}
-        required
       />
       <label htmlFor={id}>Title</label>
     </div>

@@ -56,7 +56,7 @@ function CountrySelect({ user, article }, ref) {
         value: article
           ? article.location
             ? article.location.id
-            : "No Location Specified"
+            : null
           : user
           ? user.location.id
           : null,

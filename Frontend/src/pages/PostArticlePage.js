@@ -44,8 +44,8 @@ export default function PostArticlePage() {
       setTimeout(() => {
         navigate(`/edit-article/${res.data.id}`);
       }, 5000);
-    } catch (error) {
-      console.error("Request error:", error);
+    } catch (err) {
+      console.error("Request error:", err);
       navigate("/an-error-has-occured");
     }
   };

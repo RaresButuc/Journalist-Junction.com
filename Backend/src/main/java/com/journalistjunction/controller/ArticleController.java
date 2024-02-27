@@ -3,7 +3,7 @@ package com.journalistjunction.controller;
 import com.journalistjunction.model.Article;
 import com.journalistjunction.service.ArticleService;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -46,27 +46,37 @@ public class ArticleController {
     }
 
     @PutMapping("/{id}")
-    public void editArticle(@PathVariable("id") Long id, @RequestBody Article articleEdited) {
+    public ResponseEntity<String> editArticle(@PathVariable("id") Long id, @RequestBody Article articleEdited) {
         articleService.updateArticleById(id, articleEdited);
+        return ResponseEntity.ok("Modifications Successfully Saved!");
     }
 
     @PutMapping("/{id}/{decision}")
-    public void publicOrNonPublicArticle(@PathVariable("id") Long id, @PathVariable("decision") String decision) {
+    public ResponseEntity<String> publicOrNonPublicArticle(@PathVariable("id") Long id, @PathVariable("decision") String decision) {
         articleService.publicOrNonpublicArticle(id, decision);
+
+        String message = decision.equals("true") ?
+                "Congratulations! Your Article Was Successfully Published!" :
+                "Your Article Was Successfully UnPublished!";
+        return ResponseEntity.ok(message);
     }
 
     @PutMapping("/{id}/{username}/{decision}")
-    public void addOrDeleteContributor(@PathVariable("id") Long id, @PathVariable("username") String username, @PathVariable("decision") String decision) {
+    public ResponseEntity<String> addOrDeleteContributor(@PathVariable("id") Long id, @PathVariable("username") String username, @PathVariable("decision") String decision) {
         articleService.addOrDeleteContributor(id, username, decision);
+
+        return ResponseEntity.ok("");
     }
 
     @PutMapping("/removerejection/{id}/{userId}")
-    public void removeRejection(@PathVariable("id") Long id, @PathVariable("userId") Long userId) {
+    public ResponseEntity<String> removeRejection(@PathVariable("id") Long id, @PathVariable("userId") Long userId) {
         articleService.removeRejection(id, userId);
+        return ResponseEntity.ok("This User Was Removed from the `Rejected Contributors` List!");
     }
 
     @DeleteMapping("/{id}")
-    public void deleteArticle(@PathVariable("id") Long id) {
+    public ResponseEntity<String> deleteArticle(@PathVariable("id") Long id) {
         articleService.deleteArticleById(id);
+        return ResponseEntity.ok("Article ID#" + id + "Was Successfully Deleted!");
     }
 }

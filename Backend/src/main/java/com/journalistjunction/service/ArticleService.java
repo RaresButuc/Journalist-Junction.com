@@ -9,8 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 
 @Service
 @AllArgsConstructor
@@ -34,12 +33,13 @@ public class ArticleService {
     }
 
     public Article getArticleById(Long id) {
-        return articleRepository.findById(id).orElse(null);
+        return articleRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("No Article Found With This ID!"));
     }
 
     public void updateArticleById(Long id, Article articleUpdater) {
-        Article articleFromDb = articleRepository.findById(id).orElse(null);
-        assert articleFromDb != null;
+        Article articleFromDb = articleRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("No Article Found With This ID!"));
 
         articleFromDb.setTitle(articleUpdater.getTitle());
         articleFromDb.setThumbnailDescription(articleUpdater.getThumbnailDescription());
@@ -52,9 +52,9 @@ public class ArticleService {
     }
 
     public void publicOrNonpublicArticle(Long id, String decision) {
-        Article articleFromDb = articleRepository.findById(id).orElse(null);
-        assert articleFromDb != null;
-
+        Article articleFromDb = articleRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("No Article Found With This ID!"));
+        ;
         if (articleFromDb.getPostTime() == null) {
             articleFromDb.setPostTime(LocalDateTime.now());
         }
@@ -64,9 +64,10 @@ public class ArticleService {
     }
 
     public void addOrDeleteContributor(Long idAd, String nameContributor, String decision) {
-        Article articleFromDb = articleRepository.findById(idAd).orElse(null);
-        User contributor = userRepository.findByName(nameContributor).orElse(null);
-        assert articleFromDb != null;
+        Article articleFromDb = articleRepository.findById(idAd)
+                .orElseThrow(() -> new NoSuchElementException("No Article Found With This ID!"));
+        User contributor = userRepository.findByName(nameContributor)
+                .orElseThrow(() -> new NoSuchElementException("No User Found With This UserName!!"));
 
         switch (decision) {
             case "add" -> {
@@ -85,14 +86,17 @@ public class ArticleService {
                     articleFromDb.getRejectedWorkers().add(contributor);
                 }
             }
+            default -> throw new IllegalStateException("Invalid decision: " + decision);
         }
         articleRepository.save(articleFromDb);
     }
 
     public void removeRejection(Long idAd, Long idUser) {
-        Article articleFromDb = articleRepository.findById(idAd).orElse(null);
-        User user = userRepository.findById(idUser).orElse(null);
-        assert articleFromDb != null;
+        Article articleFromDb = articleRepository.findById(idAd)
+                .orElseThrow(() -> new NoSuchElementException("No Article Found With This ID!"));
+
+        User user = userRepository.findById(idUser)
+                .orElseThrow(() -> new NoSuchElementException("No User Found With This UserName!!"));
 
         articleFromDb.getRejectedWorkers().remove(user);
         articleRepository.save(articleFromDb);
@@ -107,8 +111,9 @@ public class ArticleService {
     }
 
     public String localDateTimeToString(Long id) {
-        LocalDateTime articlePostTime = Objects.requireNonNull(articleRepository.findById(id).orElse(null)).getPostTime();
-        assert articlePostTime != null;
+        LocalDateTime articlePostTime = articleRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("No Article Found With This ID!"))
+                .getPostTime();
 
         String hourAndSeconds = articlePostTime.getHour() + ":" + articlePostTime.getSecond();
         String dayAndMonth = articlePostTime.getDayOfWeek().name() + ", " + articlePostTime.getDayOfMonth() + " " + articlePostTime.getMonth() + " " + articlePostTime.getYear();
