@@ -68,7 +68,7 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<String> editUser(@PathVariable("id") Long id, @RequestBody User user) {
         userService.updateUserById(id, user);
-        return ResponseEntity.ok("User ID#" + id + " Was Successfully Edited and Saved!");
+        return ResponseEntity.ok("New Profile Information Saved!");
     }
 
     @PutMapping("/{action}/{idCurrentUser}/{idSecondUser}")
