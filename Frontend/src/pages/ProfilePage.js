@@ -11,7 +11,6 @@ export default function ProfilePage() {
   const navigate = useNavigate();
 
   const [profileUser, setProfileUser] = useState(null);
-  const [profileUserCountry, setProfileUserCountry] = useState(null);
   const [readMore, setReadMore] = useState(false);
 
   const [subsCount, setSubsCount] = useState(0);
@@ -67,18 +66,6 @@ export default function ProfilePage() {
         }
       };
 
-      const fetchUserExists = async () => {
-        try {
-          const userExists = await axios.get(
-            `${DefaultURL}/user/available/${id}`
-          );
-          setUserExists(userExists.data);
-        } catch (err) {
-          console.log(err);
-        }
-      };
-
-      fetchUserExists();
       fetchSubsCount();
       fetchIsSubscribed();
       fetchCurrentUser();
@@ -126,7 +113,7 @@ export default function ProfilePage() {
 
   return (
     <>
-      {userExists ? (
+      {profileUser ? (
         <div className="container-xl">
           <div className="position-relative">
             <img
@@ -224,7 +211,12 @@ export default function ProfilePage() {
           </div>
         </div>
       ) : (
-        <ErrorPage message={"User is Loading!"} message2={"If it takes too long,press here to escape to the Home Page!"} />
+        <ErrorPage
+          message={"User is Loading!"}
+          message2={
+            "If it takes too long,press here to escape to the Home Page!"
+          }
+        />
       )}
     </>
   );
