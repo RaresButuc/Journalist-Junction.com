@@ -47,11 +47,6 @@ public class UserController {
         return userService.subscribersCount(user);
     }
 
-    @GetMapping(value = "/available/{user}")
-    public boolean userIdExists(@PathVariable("user") Long user) {
-        return userService.isUserIdAvailable(user);
-    }
-
     @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest request) {

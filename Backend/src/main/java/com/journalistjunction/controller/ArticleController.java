@@ -52,8 +52,8 @@ public class ArticleController {
     }
 
     @PutMapping("/{id}/{decision}")
-    public ResponseEntity<String> publicOrNonPublicArticle(@PathVariable("id") Long id, @PathVariable("decision") String decision) {
-        articleService.publicOrNonpublicArticle(id, decision);
+    public ResponseEntity<String> publicOrNonPublicArticle(@PathVariable("id") Long id, @PathVariable("decision") String decision, @RequestBody Article currentVersion) {
+        articleService.publishOrUnPublishArticle(id, decision, currentVersion);
 
         String message = decision.equals("true") ?
                 "Congratulations! Your Article Was Successfully Published!" :

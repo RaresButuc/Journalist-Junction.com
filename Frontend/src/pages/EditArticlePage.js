@@ -21,15 +21,25 @@ export default function EditArticlePage() {
   const navigate = useNavigate();
 
   const [showAlert, setShowAlert] = useState(false);
+  const [alertInfos, setAlertInfos] = useState(["", "", ""]);
+
+  const [currentArticle, setCurrentArticle] = useState(null);
+
   const [bodyContent, setBodyContent] = useState("");
   const [titleCurrent, setTitleCurrent] = useState("");
   const [contributors, setContributors] = useState([]);
-  const [publishState, setPublishState] = useState(["", ""]);
-  const [currentArticle, setCurrentArticle] = useState(null);
-  const [alertInfos, setAlertInfos] = useState(["", "", ""]);
-  const [selectDisabled, setSelectDisabled] = useState(false);
+  const [publishState, setPublishState] = useState({
+    state: null,
+    color: null,
+  });
   const [categoriesCurrent, setCategoriesCurrent] = useState([]);
   const [rejectedContributors, setRejectedContributors] = useState([]);
+
+  const [selectDisabled, setSelectDisabled] = useState(false);
+  const [publishButton, setPublishButton] = useState({
+    value: null,
+    color: null,
+  });
 
   useEffect(() => {
     const getArticleById = async () => {
@@ -43,7 +53,26 @@ export default function EditArticlePage() {
         setRejectedContributors(data.rejectedWorkers);
         setSelectDisabled(data.categories.length === 3);
         setPublishState(
-          data.published ? ["Published", "success"] : ["UnPublished", "danger"]
+          data.published
+            ? {
+                state: "Published",
+                color: "success",
+              }
+            : {
+                state: "UnPublished",
+                color: "danger",
+              }
+        );
+        setPublishButton(
+          data.published
+            ? {
+                value: "UnPublish",
+                color: "danger",
+              }
+            : {
+                value: "Publish",
+                color: "success",
+              }
         );
       } catch (err) {
         console.error("Request error:", err);
@@ -131,6 +160,67 @@ export default function EditArticlePage() {
     setBodyContent(content);
   };
 
+  const publishOrUnpublish = async (e, headers) => {
+    try {
+      e.preventDefault();
+      // const data = formData(new FormData(e.target));
+      // console.log(data);
+      if (!currentArticle.published) {
+        const response = await axios.put(
+          `${DefaultURL}/${id}/true`,
+          {},
+          {
+            headers,
+          }
+        );
+
+        setPublishState({
+          state: "Published",
+          color: "success",
+        });
+
+        setPublishButton({
+          value: "UnPublish",
+          color: "danger",
+        });
+
+        setShowAlert(true);
+        setAlertInfos(["Success!", response.data, "success"]);
+        // setTimeout(() => {
+        //   navigate(`/read-article/${id}`);
+        // }, 3000);
+      } else {
+        setPublishState({
+          state: "UnPublished",
+          color: "danger",
+        });
+
+        setPublishButton({
+          value: "Publish",
+          color: "success",
+        });
+
+        const response = await axios.put(
+          `${DefaultURL}/${id}/false`,
+          {},
+          { headers }
+        );
+
+        setShowAlert(true);
+        setAlertInfos(["Success!", response.data, "success"]);
+        setTimeout(() => {
+          setShowAlert(false);
+        }, 3000);
+      }
+    } catch (err) {
+      setShowAlert(true);
+      setAlertInfos(["Error Occured!", err.response.data.message, "danger"]);
+      setTimeout(() => {
+        setShowAlert(false);
+      }, 3000);
+    }
+  };
+
   const formData = (form) => {
     return {
       title: form.get("titleInput"),
@@ -142,9 +232,7 @@ export default function EditArticlePage() {
     };
   };
 
-  const editArticle = async (e) => {
-    const headers = { Authorization: token() };
-
+  const editArticle = async (e, headers) => {
     try {
       e.preventDefault();
       const data = formData(new FormData(e.target));
@@ -171,6 +259,17 @@ export default function EditArticlePage() {
     }
   };
 
+  const formSubmit = (e) => {
+    e.preventDefault();
+    const headers = { Authorization: token() };
+
+    try {
+      
+    } catch (err) {
+      
+    }
+  };
+
   return (
     <div className="container-xl mt-3">
       {showAlert && (
@@ -183,10 +282,8 @@ export default function EditArticlePage() {
 
       {currentArticle ? (
         <div className="row">
-          <form
-            onSubmit={editArticle}
-            className="container-xl col-xl-6 col-md-12"
-          >
+          <form className="container-xl col-xl-6 col-md-12"
+          onSubmit={formSubmit}>
             <div className="row d-flex justify-content-center align-items-center">
               <div className="col-md-8 col-lg-6 col-xl-10">
                 <div className="border border-danger">
@@ -199,8 +296,8 @@ export default function EditArticlePage() {
                         <u>
                           <b>Publish State: </b>
                         </u>
-                        <b className={`text-${publishState[1]}`}>
-                          {publishState[0]}
+                        <b className={`text-${publishState.color}`}>
+                          {publishState.state}
                         </b>
                       </h5>
 
@@ -236,7 +333,7 @@ export default function EditArticlePage() {
                     </div>
 
                     <div className="form-outline mb-4">
-                      <h2 className="mb-3">Categories</h2>
+                      <h2 className="mb-3">Categories *</h2>
                       <div className="mb-3">
                         {categoriesCurrent.map((e) => (
                           <div
@@ -265,7 +362,7 @@ export default function EditArticlePage() {
                     </div>
 
                     <div className="form-outline mt-5 mb-5 container-xl">
-                      <h2 className="mb-3">Location</h2>
+                      <h2 className="mb-3">Location *</h2>
                       <CountrySelect
                         article={currentArticle}
                         id={"floatingLocationSelectValue"}
@@ -273,7 +370,7 @@ export default function EditArticlePage() {
                     </div>
 
                     <div className="form-outline mt-5 mb-5 container-xl">
-                      <h2 className="mb-3">Language</h2>
+                      <h2 className="mb-3">Language *</h2>
                       <LanguageSelect
                         article={currentArticle}
                         id={"floatingLanguageSelectValue"}
@@ -459,13 +556,16 @@ export default function EditArticlePage() {
                     <hr />
                     <div>
                       <button
-                        className="btn btn-primary btn-lg btn-block col-3 m-3"
-                        type="submit"
+                        className="btn btn-primary btn-lg col-4 m-3"
+                        onClick={saveOrPublish} // Modificare aici: transmite parametrul e
                       >
                         Save
                       </button>
-                      <button className="btn btn-success btn-lg btn-block col-xl-3 m-3">
-                        Publish
+                      <button
+                        className={`btn btn-${publishButton.color} btn-lg col-xl-4 m-3`}
+                        onClick={saveOrPublish} // Modificare aici: transmite parametrul e
+                      >
+                        {publishButton.value}
                       </button>
                     </div>
                   </div>

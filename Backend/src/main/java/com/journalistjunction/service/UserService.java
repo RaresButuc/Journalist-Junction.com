@@ -38,10 +38,6 @@ public class UserService {
         return secondUser.getSubscribers().stream().anyMatch(e -> Objects.equals(e.getId(), currentUser.getId()));
     }
 
-    public boolean isUserIdAvailable(Long id) {
-        return userRepository.existsById(id);
-    }
-
     public void subscribeOrUnsubscribe(Long idCurrentUser, Long idSecondUser, String command) {
         User currentUser = userRepository.findById(idCurrentUser)
                 .orElseThrow(() -> new NoSuchElementException("No User Found With This ID!"));

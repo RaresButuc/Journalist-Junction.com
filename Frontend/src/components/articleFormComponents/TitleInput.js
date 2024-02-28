@@ -13,7 +13,7 @@ function TitleInput({ article, id,updateTitleLive }, ref) {
         defaultValue={article?.title}
         onChange={updateTitleLive}
       />
-      <label htmlFor={id}>Title</label>
+      <label htmlFor={id}>Title *</label>
     </div>
   );
 }
