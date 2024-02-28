@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import DefaultURL from "../usefull/DefaultURL";
 import { useAuthHeader } from "react-auth-kit";
 import { useNavigate, useParams } from "react-router";
+import Modal from "../components/articleFormComponents/Modal";
 import FirstLetterUppercase from "../usefull/FirstLetterUppercase";
 
 import Alert from "../components/Alert";
@@ -184,11 +185,9 @@ export default function EditArticlePage() {
 
     try {
       if (buttonTarget === "Save") {
-
-        const response = await axios.put(`${DefaultURL}/article/${id}`, 
-        data, 
-        {headers}
-        );
+        const response = await axios.put(`${DefaultURL}/article/${id}`, data, {
+          headers,
+        });
 
         window.scrollTo(0, 0);
 
@@ -198,7 +197,6 @@ export default function EditArticlePage() {
           setShowAlert(false);
         }, 3000);
       } else if (buttonTarget === "Publish") {
-
         const response = await axios.put(
           `${DefaultURL}/article/${id}/true`,
           data,
@@ -221,7 +219,6 @@ export default function EditArticlePage() {
           navigate(`/read-article/${id}`);
         }, 3000);
       } else if (buttonTarget === "UnPublish") {
-
         const response = await axios.put(
           `${DefaultURL}/article/${id}/false`,
           {},
@@ -274,14 +271,14 @@ export default function EditArticlePage() {
                 <div className="border border-danger">
                   <div className="card-body p-4 text-center text-break bg-white bg-opacity-50">
                     <h1 className="mb-4">
-                      Edit Article <br/>"{titleCurrent}"
+                      Edit Article <br />"{titleCurrent}"
                     </h1>
                     <div className="row">
                       <h5 className="col-6">
                         <u>
                           <b>Publish State:</b>
                         </u>
-                        <br/>
+                        <br />
                         <b className={`text-${publishState.color}`}>
                           {publishState.state}
                         </b>
@@ -391,53 +388,12 @@ export default function EditArticlePage() {
                                 data-bs-target={`#modalDeleteContributor${e.id}`}
                               />
                               <>
-                                <div
-                                  className="modal fade"
+                                <Modal
                                   id={`modalDeleteContributor${e.id}`}
-                                  tabIndex="-1"
-                                  aria-labelledby={`modalLabel${e.id}`}
-                                  aria-hidden="true"
-                                >
-                                  <div className="modal-dialog">
-                                    <div className="modal-content">
-                                      <div className="modal-header">
-                                        <h5
-                                          className="modal-title"
-                                          id={`modalLabel${e.id}`}
-                                        >
-                                          Important!
-                                        </h5>
-                                        <button
-                                          type="button"
-                                          className="btn-close"
-                                          data-bs-dismiss="modal"
-                                          aria-label="Close"
-                                        ></button>
-                                      </div>
-                                      <div className="modal-body">
-                                        {`Are you sure you want to delete `}
-                                        <b className="text-danger">{e.name}</b>
-                                        {` from your list of contributors?`}
-                                      </div>
-                                      <div className="modal-footer d-flex justify-content-center">
-                                        <button
-                                          type="button"
-                                          className="btn btn-secondary"
-                                          data-bs-dismiss="modal"
-                                        >
-                                          Close
-                                        </button>
-                                        <button
-                                          className="btn btn-success"
-                                          onClick={() => deleteContributor(e)}
-                                          data-bs-dismiss="modal"
-                                        >
-                                          Accept
-                                        </button>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
+                                  title="Important!"
+                                  message={`Are you sure you want to delete ${e.name} from your list of contributors?`}
+                                  onAccept={() => deleteContributor(e)}
+                                />
                               </>
                             </div>
                           ))
@@ -484,55 +440,12 @@ export default function EditArticlePage() {
                                 data-bs-target={`#modalDeleteRejection${e.id}`}
                               />
                               <>
-                                <div
-                                  className="modal fade"
+                                <Modal
                                   id={`modalDeleteRejection${e.id}`}
-                                  tabIndex="-1"
-                                  aria-labelledby={`modalLabel${e.id}`}
-                                  aria-hidden="true"
-                                >
-                                  <div className="modal-dialog">
-                                    <div className="modal-content">
-                                      <div className="modal-header">
-                                        <h5
-                                          className="modal-title"
-                                          id={`modalLabel${e.id}`}
-                                        >
-                                          Important!
-                                        </h5>
-                                        <button
-                                          type="button"
-                                          className="btn-close"
-                                          data-bs-dismiss="modal"
-                                          aria-label="Close"
-                                        ></button>
-                                      </div>
-                                      <div className="modal-body">
-                                        {`Are you sure you want to remove the rejection status of the user `}
-                                        <b className="text-danger">{e.name}</b>
-                                        {` and give it the possibility to contribute to this article in the future?`}
-                                      </div>
-                                      <div className="modal-footer d-flex justify-content-center">
-                                        <button
-                                          type="button"
-                                          className="btn btn-secondary"
-                                          data-bs-dismiss="modal"
-                                        >
-                                          Close
-                                        </button>
-                                        <button
-                                          className="btn btn-success"
-                                          onClick={() =>
-                                            deleteRejectedContributor(e)
-                                          }
-                                          data-bs-dismiss="modal"
-                                        >
-                                          Accept
-                                        </button>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
+                                  title="Important!"
+                                  message={`Are you sure you want to remove the rejection status of the user ${e.name} and give it the possibility to contribute to this article in the future?`}
+                                  onAccept={() => deleteRejectedContributor(e)}
+                                />
                               </>
                             </div>
                           ))
