@@ -37,6 +37,7 @@ public class ArticleService {
                 .orElseThrow(() -> new NoSuchElementException("No Article Found With This ID!"));
     }
 
+//    Update Article
     public void updateArticleById(Long id, Article articleUpdater) {
         Article articleFromDb = articleRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("No Article Found With This ID!"));
@@ -57,47 +58,8 @@ public class ArticleService {
         destination.setLocation(source.getLocation());
         destination.setLanguage(source.getLanguage());
     }
-    ///////////////////////////////////////////////////////////////////////////////////
 
-//    public void publishOrUnPublishArticle(Long id, String decision, Article currentVersion) {
-//        Article articleFromDb = articleRepository.findById(id)
-//                .orElseThrow(() -> new NoSuchElementException("No Article Found With This ID!"));
-//
-//        if (articleFromDb.isPublished()) {
-//            throw new IllegalStateException("Article is already published!");
-//        }
-//
-//        if (decision.equals("true") &&
-//                articleFromDb.getTitle() == null ||
-//                articleFromDb.getTitle().isEmpty() ||
-//                articleFromDb.getThumbnailDescription() == null ||
-//                articleFromDb.getThumbnailDescription().isEmpty() ||
-//                articleFromDb.getBody() == null ||
-//                articleFromDb.getBody().isEmpty() ||
-//                articleFromDb.getCategories() == null ||
-//                articleFromDb.getCategories().isEmpty() ||
-//                articleFromDb.getLocation() == null ||
-//                articleFromDb.getLanguage() == null) {
-//            throw new IllegalStateException("All the necessary fields must be completed! They are Marked With ` * `");
-//        }
-//
-//        if (!decision.equals("true") && !decision.equals("false")) {
-//            throw new IllegalArgumentException("Invalid decision value! Please provide a valid decision!");
-//        }
-//
-//        if (articleFromDb.getPostTime() == null) {
-//            articleFromDb.setPostTime(LocalDateTime.now());
-//        }
-//
-//        articleFromDb.setTitle(currentVersion.getTitle());
-//        articleFromDb.setThumbnailDescription(currentVersion.getThumbnailDescription());
-//        articleFromDb.setBody(currentVersion.getBody());
-//        articleFromDb.setCategories(currentVersion.getCategories());
-//        articleFromDb.setLocation(currentVersion.getLocation());
-//        articleFromDb.setLanguage(currentVersion.getLanguage());
-//        articleFromDb.setPublished(Boolean.parseBoolean(decision));
-//        articleRepository.save(articleFromDb);
-//    }
+//    Publish or UnPublish Article
 
     public void publishOrUnPublishArticle(Long id, String decision, Article articleUpdater) {
         Article articleFromDb = articleRepository.findById(id)
@@ -146,8 +108,6 @@ public class ArticleService {
             validateArticleFields(newVersion);
         }
     }
-
-    ///////////////////////////////////////////////////////////////////////////////////
 
 
     public void addOrDeleteContributor(Long idAd, String nameContributor, String decision) {
