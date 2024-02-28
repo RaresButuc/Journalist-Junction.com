@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import DefaultURL from "../usefull/DefaultURL";
 import { useAuthHeader } from "react-auth-kit";
 import { useNavigate, useParams } from "react-router";
+import Modal from "../components/articleFormComponents/Modal";
 import FirstLetterUppercase from "../usefull/FirstLetterUppercase";
 
 import Alert from "../components/Alert";
@@ -160,18 +161,46 @@ export default function EditArticlePage() {
     setBodyContent(content);
   };
 
-  const publishOrUnpublish = async (e, headers) => {
+  const formData = (form) => {
+    return {
+      title: form.get("titleInput"),
+      thumbnailDescription: form.get("thumbnailDescription"),
+      body: bodyContent,
+      categories: categoriesCurrent,
+      location: Number.isNaN(parseInt(form.get("countryInput"), 10))
+        ? null
+        : { id: parseInt(form.get("countryInput"), 10) },
+      language: Number.isNaN(parseInt(form.get("languageInput"), 10))
+        ? null
+        : { id: parseInt(form.get("languageInput"), 10) },
+    };
+  };
+
+  const formSubmit = async (e) => {
+    e.preventDefault();
+
+    const headers = { Authorization: token() };
+    const data = formData(new FormData(e.target));
+    const buttonTarget = e.nativeEvent.submitter.textContent;
+
     try {
-      e.preventDefault();
-      // const data = formData(new FormData(e.target));
-      // console.log(data);
-      if (!currentArticle.published) {
+      if (buttonTarget === "Save") {
+        const response = await axios.put(`${DefaultURL}/article/${id}`, data, {
+          headers,
+        });
+
+        window.scrollTo(0, 0);
+
+        setShowAlert(true);
+        setAlertInfos(["Success!", response.data, "success"]);
+        setTimeout(() => {
+          setShowAlert(false);
+        }, 3000);
+      } else if (buttonTarget === "Publish") {
         const response = await axios.put(
-          `${DefaultURL}/${id}/true`,
-          {},
-          {
-            headers,
-          }
+          `${DefaultURL}/article/${id}/true`,
+          data,
+          { headers }
         );
 
         setPublishState({
@@ -186,10 +215,16 @@ export default function EditArticlePage() {
 
         setShowAlert(true);
         setAlertInfos(["Success!", response.data, "success"]);
-        // setTimeout(() => {
-        //   navigate(`/read-article/${id}`);
-        // }, 3000);
-      } else {
+        setTimeout(() => {
+          navigate(`/read-article/${id}`);
+        }, 3000);
+      } else if (buttonTarget === "UnPublish") {
+        const response = await axios.put(
+          `${DefaultURL}/article/${id}/false`,
+          {},
+          { headers }
+        );
+
         setPublishState({
           state: "UnPublished",
           color: "danger",
@@ -199,12 +234,6 @@ export default function EditArticlePage() {
           value: "Publish",
           color: "success",
         });
-
-        const response = await axios.put(
-          `${DefaultURL}/${id}/false`,
-          {},
-          { headers }
-        );
 
         setShowAlert(true);
         setAlertInfos(["Success!", response.data, "success"]);
@@ -221,55 +250,6 @@ export default function EditArticlePage() {
     }
   };
 
-  const formData = (form) => {
-    return {
-      title: form.get("titleInput"),
-      thumbnailDescription: form.get("thumbnailDescription"),
-      body: bodyContent,
-      categories: categoriesCurrent,
-      location: { id: parseInt(form.get("countryInput"), 10) },
-      language: { id: parseInt(form.get("languageInput"), 10) },
-    };
-  };
-
-  const editArticle = async (e, headers) => {
-    try {
-      e.preventDefault();
-      const data = formData(new FormData(e.target));
-
-      const response = await axios.put(`${DefaultURL}/article/${id}`, data, {
-        headers,
-      });
-
-      window.scrollTo(0, 0);
-
-      setShowAlert(true);
-      setAlertInfos(["Success!", response.data, "success"]);
-      setTimeout(() => {
-        setShowAlert(false);
-      }, 3000);
-    } catch (err) {
-      window.scrollTo(0, 0);
-
-      setShowAlert(true);
-      setAlertInfos(["Error Occured!", err.response.data.message, "danger"]);
-      setTimeout(() => {
-        setShowAlert(false);
-      }, 3000);
-    }
-  };
-
-  const formSubmit = (e) => {
-    e.preventDefault();
-    const headers = { Authorization: token() };
-
-    try {
-      
-    } catch (err) {
-      
-    }
-  };
-
   return (
     <div className="container-xl mt-3">
       {showAlert && (
@@ -282,20 +262,23 @@ export default function EditArticlePage() {
 
       {currentArticle ? (
         <div className="row">
-          <form className="container-xl col-xl-6 col-md-12"
-          onSubmit={formSubmit}>
+          <form
+            className="container-xl col-xl-6 col-md-12"
+            onSubmit={formSubmit}
+          >
             <div className="row d-flex justify-content-center align-items-center">
               <div className="col-md-8 col-lg-6 col-xl-10">
                 <div className="border border-danger">
                   <div className="card-body p-4 text-center text-break bg-white bg-opacity-50">
                     <h1 className="mb-4">
-                      Edit Article <br></br>"{titleCurrent}"
+                      Edit Article <br />"{titleCurrent}"
                     </h1>
                     <div className="row">
                       <h5 className="col-6">
                         <u>
-                          <b>Publish State: </b>
+                          <b>Publish State:</b>
                         </u>
+                        <br />
                         <b className={`text-${publishState.color}`}>
                           {publishState.state}
                         </b>
@@ -405,53 +388,12 @@ export default function EditArticlePage() {
                                 data-bs-target={`#modalDeleteContributor${e.id}`}
                               />
                               <>
-                                <div
-                                  className="modal fade"
+                                <Modal
                                   id={`modalDeleteContributor${e.id}`}
-                                  tabIndex="-1"
-                                  aria-labelledby={`modalLabel${e.id}`}
-                                  aria-hidden="true"
-                                >
-                                  <div className="modal-dialog">
-                                    <div className="modal-content">
-                                      <div className="modal-header">
-                                        <h5
-                                          className="modal-title"
-                                          id={`modalLabel${e.id}`}
-                                        >
-                                          Important!
-                                        </h5>
-                                        <button
-                                          type="button"
-                                          className="btn-close"
-                                          data-bs-dismiss="modal"
-                                          aria-label="Close"
-                                        ></button>
-                                      </div>
-                                      <div className="modal-body">
-                                        {`Are you sure you want to delete `}
-                                        <b className="text-danger">{e.name}</b>
-                                        {` from your list of contributors?`}
-                                      </div>
-                                      <div className="modal-footer d-flex justify-content-center">
-                                        <button
-                                          type="button"
-                                          className="btn btn-secondary"
-                                          data-bs-dismiss="modal"
-                                        >
-                                          Close
-                                        </button>
-                                        <button
-                                          className="btn btn-success"
-                                          onClick={() => deleteContributor(e)}
-                                          data-bs-dismiss="modal"
-                                        >
-                                          Accept
-                                        </button>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
+                                  title="Important!"
+                                  message={`Are you sure you want to delete ${e.name} from your list of contributors?`}
+                                  onAccept={() => deleteContributor(e)}
+                                />
                               </>
                             </div>
                           ))
@@ -498,55 +440,12 @@ export default function EditArticlePage() {
                                 data-bs-target={`#modalDeleteRejection${e.id}`}
                               />
                               <>
-                                <div
-                                  className="modal fade"
+                                <Modal
                                   id={`modalDeleteRejection${e.id}`}
-                                  tabIndex="-1"
-                                  aria-labelledby={`modalLabel${e.id}`}
-                                  aria-hidden="true"
-                                >
-                                  <div className="modal-dialog">
-                                    <div className="modal-content">
-                                      <div className="modal-header">
-                                        <h5
-                                          className="modal-title"
-                                          id={`modalLabel${e.id}`}
-                                        >
-                                          Important!
-                                        </h5>
-                                        <button
-                                          type="button"
-                                          className="btn-close"
-                                          data-bs-dismiss="modal"
-                                          aria-label="Close"
-                                        ></button>
-                                      </div>
-                                      <div className="modal-body">
-                                        {`Are you sure you want to remove the rejection status of the user `}
-                                        <b className="text-danger">{e.name}</b>
-                                        {` and give it the possibility to contribute to this article in the future?`}
-                                      </div>
-                                      <div className="modal-footer d-flex justify-content-center">
-                                        <button
-                                          type="button"
-                                          className="btn btn-secondary"
-                                          data-bs-dismiss="modal"
-                                        >
-                                          Close
-                                        </button>
-                                        <button
-                                          className="btn btn-success"
-                                          onClick={() =>
-                                            deleteRejectedContributor(e)
-                                          }
-                                          data-bs-dismiss="modal"
-                                        >
-                                          Accept
-                                        </button>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
+                                  title="Important!"
+                                  message={`Are you sure you want to remove the rejection status of the user ${e.name} and give it the possibility to contribute to this article in the future?`}
+                                  onAccept={() => deleteRejectedContributor(e)}
+                                />
                               </>
                             </div>
                           ))
@@ -557,13 +456,13 @@ export default function EditArticlePage() {
                     <div>
                       <button
                         className="btn btn-primary btn-lg col-4 m-3"
-                        onClick={saveOrPublish} // Modificare aici: transmite parametrul e
+                        type="submit"
                       >
                         Save
                       </button>
                       <button
                         className={`btn btn-${publishButton.color} btn-lg col-xl-4 m-3`}
-                        onClick={saveOrPublish} // Modificare aici: transmite parametrul e
+                        type="submit"
                       >
                         {publishButton.value}
                       </button>
@@ -575,6 +474,7 @@ export default function EditArticlePage() {
           </form>
 
           <div className="col-xl-6 col-md-12">
+            <h2 className="mb-3">Body *</h2>
             <BodyTextInput
               article={currentArticle}
               id={"floatingBodyTextValue"}

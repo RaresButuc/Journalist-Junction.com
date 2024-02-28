@@ -37,38 +37,14 @@ public class ArticleService {
                 .orElseThrow(() -> new NoSuchElementException("No Article Found With This ID!"));
     }
 
-//    public void updateArticleById(Long id, Article articleUpdater) {
-//        Article articleFromDb = articleRepository.findById(id)
-//                .orElseThrow(() -> new NoSuchElementException("No Article Found With This ID!"));
-//
-//        if (articleFromDb.isPublished() &&
-//                articleUpdater.getTitle() == null ||
-//                articleUpdater.getTitle().isEmpty() ||
-//                articleUpdater.getThumbnailDescription() == null ||
-//                articleUpdater.getThumbnailDescription().isEmpty() ||
-//                articleUpdater.getBody() == null ||
-//                articleUpdater.getBody().isEmpty() ||
-//                articleUpdater.getCategories() == null ||
-//                articleUpdater.getCategories().isEmpty() ||
-//                articleUpdater.getLocation() == null ||
-//                articleUpdater.getLanguage() == null) {
-//            throw new IllegalStateException("All the necessary fields must be completed! They are Marked With ` * `");
-//        }
-//
-//        articleFromDb.setTitle(articleUpdater.getTitle());
-//        articleFromDb.setThumbnailDescription(articleUpdater.getThumbnailDescription());
-//        articleFromDb.setBody(articleUpdater.getBody());
-//        articleFromDb.setCategories(articleUpdater.getCategories());
-//        articleFromDb.setLocation(articleUpdater.getLocation());
-//        articleFromDb.setLanguage(articleUpdater.getLanguage());
-//
-//        articleRepository.save(articleFromDb);
-//    }
-
+//    Update Article
     public void updateArticleById(Long id, Article articleUpdater) {
         Article articleFromDb = articleRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("No Article Found With This ID!"));
 
+        if (articleUpdater.isPublished()) {
+            validateArticleFields(articleUpdater);
+        }
         copyArticleFields(articleUpdater, articleFromDb);
 
         articleRepository.save(articleFromDb);
@@ -82,56 +58,18 @@ public class ArticleService {
         destination.setLocation(source.getLocation());
         destination.setLanguage(source.getLanguage());
     }
-    ///////////////////////////////////////////////////////////////////////////////////
 
-//    public void publishOrUnPublishArticle(Long id, String decision, Article currentVersion) {
-//        Article articleFromDb = articleRepository.findById(id)
-//                .orElseThrow(() -> new NoSuchElementException("No Article Found With This ID!"));
-//
-//        if (articleFromDb.isPublished()) {
-//            throw new IllegalStateException("Article is already published!");
-//        }
-//
-//        if (decision.equals("true") &&
-//                articleFromDb.getTitle() == null ||
-//                articleFromDb.getTitle().isEmpty() ||
-//                articleFromDb.getThumbnailDescription() == null ||
-//                articleFromDb.getThumbnailDescription().isEmpty() ||
-//                articleFromDb.getBody() == null ||
-//                articleFromDb.getBody().isEmpty() ||
-//                articleFromDb.getCategories() == null ||
-//                articleFromDb.getCategories().isEmpty() ||
-//                articleFromDb.getLocation() == null ||
-//                articleFromDb.getLanguage() == null) {
-//            throw new IllegalStateException("All the necessary fields must be completed! They are Marked With ` * `");
-//        }
-//
-//        if (!decision.equals("true") && !decision.equals("false")) {
-//            throw new IllegalArgumentException("Invalid decision value! Please provide a valid decision!");
-//        }
-//
-//        if (articleFromDb.getPostTime() == null) {
-//            articleFromDb.setPostTime(LocalDateTime.now());
-//        }
-//
-//        articleFromDb.setTitle(currentVersion.getTitle());
-//        articleFromDb.setThumbnailDescription(currentVersion.getThumbnailDescription());
-//        articleFromDb.setBody(currentVersion.getBody());
-//        articleFromDb.setCategories(currentVersion.getCategories());
-//        articleFromDb.setLocation(currentVersion.getLocation());
-//        articleFromDb.setLanguage(currentVersion.getLanguage());
-//        articleFromDb.setPublished(Boolean.parseBoolean(decision));
-//        articleRepository.save(articleFromDb);
-//    }
+//    Publish or UnPublish Article
 
-    public void publishOrUnPublishArticle(Long id, String decision, Article currentVersion) {
+    public void publishOrUnPublishArticle(Long id, String decision, Article articleUpdater) {
         Article articleFromDb = articleRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("No Article Found With This ID!"));
 
+        validateArticle(articleFromDb, articleUpdater, decision);
+
         if (decision.equals("true")) {
-            validateArticle(articleFromDb, decision);
             articleFromDb.setPostTime(LocalDateTime.now());
-            copyArticleFields(currentVersion, articleFromDb);
+            copyArticleFields(articleUpdater, articleFromDb);
             articleFromDb.setPublished(true);
         } else {
             articleFromDb.setPublished(false);
@@ -151,13 +89,15 @@ public class ArticleService {
                 article.getCategories().isEmpty() ||
                 article.getLocation() == null ||
                 article.getLanguage() == null) {
-            throw new IllegalStateException("All the necessary fields must be completed! They are Marked With ` * `");
+            throw new IllegalStateException("All The Necessary Fields Must Be Completed! They Are Marked With ` * `");
         }
     }
 
-    private void validateArticle(Article article, String decision) {
-        if (article.isPublished()) {
-            throw new IllegalStateException("Article is already published!");
+    private void validateArticle(Article oldVersion, Article newVersion, String decision) {
+        if (oldVersion.isPublished() && decision.equals("true")) {
+            throw new IllegalStateException("Article Is Already Published!");
+        } else if (!oldVersion.isPublished() && decision.equals("false")) {
+            throw new IllegalStateException("Article is Already Not Published!");
         }
 
         if (!decision.equals("true") && !decision.equals("false")) {
@@ -165,11 +105,9 @@ public class ArticleService {
         }
 
         if (decision.equals("true")) {
-            validateArticleFields(article);
+            validateArticleFields(newVersion);
         }
     }
-
-    ///////////////////////////////////////////////////////////////////////////////////
 
 
     public void addOrDeleteContributor(Long idAd, String nameContributor, String decision) {
