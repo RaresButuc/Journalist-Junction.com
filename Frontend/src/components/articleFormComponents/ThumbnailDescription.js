@@ -32,7 +32,7 @@ function ThumbnailDescription({ article, id }, ref) {
         onChange={countingCharactersDescription}
         style={{ height: "130px" }}
       />
-      <label htmlFor={id}>Thumbnail Description</label>
+      <label htmlFor={id}>Thumbnail Description *</label>
 
       <div id="Title-Help" className={`form-text text-${colorOfText}`}>
         <b>{charactersTextArea} / 350</b>
