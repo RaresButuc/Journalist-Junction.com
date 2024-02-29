@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @AllArgsConstructor
@@ -25,7 +26,9 @@ public class LanguageService {
     }
 
     public void updateLanguageById(Long id, Language newLanguage) {
-        Language language = languageRepository.findById(id).orElse(null);
+        Language language = languageRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("No Language Found!"));
+
         assert language != null;
 
         language.setLanguageNameEnglish(newLanguage.getLanguageNameEnglish());

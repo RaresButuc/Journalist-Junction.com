@@ -21,28 +21,28 @@ public class UserService {
 
     public User getUserById(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("No User Found With This ID!"));
+                .orElseThrow(() -> new NoSuchElementException("No User Found!"));
     }
 
     public User getUserByEmail(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new NoSuchElementException("No User Found With This Email!"));
+                .orElseThrow(() -> new NoSuchElementException("No User Found!"));
     }
 
     public boolean isUserSubscriber(Long idCurrentUser, Long idSecondUser) {
         User currentUser = userRepository.findById(idCurrentUser)
-                .orElseThrow(() -> new NoSuchElementException("No User Found With This ID!"));
+                .orElseThrow(() -> new NoSuchElementException("No User Found!"));
         User secondUser = userRepository.findById(idSecondUser)
-                .orElseThrow(() -> new NoSuchElementException("No User Found With This ID!"));
+                .orElseThrow(() -> new NoSuchElementException("No User Found!"));
 
         return secondUser.getSubscribers().stream().anyMatch(e -> Objects.equals(e.getId(), currentUser.getId()));
     }
 
     public void subscribeOrUnsubscribe(Long idCurrentUser, Long idSecondUser, String command) {
         User currentUser = userRepository.findById(idCurrentUser)
-                .orElseThrow(() -> new NoSuchElementException("No User Found With This ID!"));
+                .orElseThrow(() -> new NoSuchElementException("No User Found!"));
         User secondUser = userRepository.findById(idSecondUser)
-                .orElseThrow(() -> new NoSuchElementException("No User Found With This ID!"));
+                .orElseThrow(() -> new NoSuchElementException("No User Found!"));
 
         switch (command) {
             case "subscribe" -> {
@@ -69,7 +69,7 @@ public class UserService {
 
     public int subscribersCount(Long idUser) {
         return userRepository.findById(idUser)
-                .orElseThrow(() -> new NoSuchElementException("No User Found With This ID!"))
+                .orElseThrow(() -> new NoSuchElementException("No User Found!"))
                 .getSubscribers()
                 .size();
     }
@@ -80,7 +80,7 @@ public class UserService {
         }
 
         User userFromDb = userRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("No User Found With This ID!"));
+                .orElseThrow(() -> new NoSuchElementException("No User Found!"));
 
         userFromDb.setName(updatedUser.getName());
         userFromDb.setEmail(updatedUser.getEmail());

@@ -48,9 +48,10 @@ export default function EditArticlePage() {
         const response = await axios.get(`${DefaultURL}/article/${id}`);
         const data = response.data;
         setCurrentArticle(data);
+        setBodyContent(data.body);
         setTitleCurrent(data.title);
-        setCategoriesCurrent(data.categories);
         setContributors(data.contributors);
+        setCategoriesCurrent(data.categories);
         setRejectedContributors(data.rejectedWorkers);
         setSelectDisabled(data.categories.length === 3);
         setPublishState(
