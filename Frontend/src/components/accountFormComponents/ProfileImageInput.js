@@ -1,7 +1,37 @@
-import { useMemo, useCallback } from "react";
+import axios from "axios";
 import { useDropzone } from "react-dropzone";
+import { useMemo, useCallback, useState, useEffect } from "react";
 
-export default function ProfileImageInput(props) {
+import Alert from "../Alert";
+import DefaultURL from "../../usefull/DefaultURL";
+
+export default function ProfileImageInput({ userId }) {
+  const [photo, setPhoto] = useState(null);
+  const [userPhoto, setUserPhoto] = useState(null);
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertInfos, setAlertInfos] = useState(["", "", ""]);
+  const [showImageOrNot, setShowImageOrNot] = useState(false);
+
+  const [photoPreview, setPhotoPreview] = useState(
+    "https://www.pngall.com/wp-content/uploads/5/Profile-PNG-File.png"
+  );
+
+  useEffect(() => {
+    if (userId) {
+      const fetchCurrentUser = async () => {
+        try {
+          const responseUser = await axios.get(`${DefaultURL}/user/${userId}`);
+          setUserPhoto(responseUser.data.profilePhoto);
+          setShowImageOrNot(true);
+        } catch (err) {
+          console.log(err);
+        }
+      };
+
+      fetchCurrentUser();
+    }
+  }, []);
+
   const baseStyle = {
     flex: 1,
     display: "flex",
@@ -31,7 +61,27 @@ export default function ProfileImageInput(props) {
   };
 
   const onDrop = useCallback((acceptedFiles) => {
-    console.log(acceptedFiles);
+    const file = acceptedFiles[0];
+    const image = new Image();
+
+    image.onload = function () {
+      if (this.width <= 800 && this.height <= 800) {
+        setPhoto(file);
+        setPhotoPreview(URL.createObjectURL(file));
+      } else {
+        setShowAlert(true);
+        setAlertInfos([
+          "Be Careful!",
+          "Please select an image with maximum resolution of 800 x 800 pixels.",
+          "danger",
+        ]);
+        setTimeout(() => {
+          setShowAlert(false);
+        }, 3000);
+      }
+    };
+
+    image.src = URL.createObjectURL(file);
   }, []);
 
   const { getRootProps, getInputProps, isFocused, isDragAccept, isDragReject } =
@@ -49,11 +99,27 @@ export default function ProfileImageInput(props) {
   );
 
   return (
-    <div className="container mt-4">
-      <div {...getRootProps({ style })}>
-        <input {...getInputProps()} />
-        <p className="mb-0">Select a Profile Image</p>
+    <>
+      {showAlert ? (
+        <Alert
+          type={alertInfos[0]}
+          message={alertInfos[1]}
+          color={alertInfos[2]}
+        />
+      ) : null}
+      <div className="container mt-4">
+        <div {...getRootProps({ style })}>
+          <input {...getInputProps()} />
+          <p className="mb-0">Select a Profile Image</p>
+        </div>
+
+        <img
+          src={photoPreview}
+          className="mt-4 img-fluid rounded-circle border border-4"
+          style={{ borderColor: "white", width: "150px" }} //250 cand e mare,140 cand e mic. 250 va fi default
+          alt="ProfileImage"
+        />
       </div>
-    </div>
+    </>
   );
 }

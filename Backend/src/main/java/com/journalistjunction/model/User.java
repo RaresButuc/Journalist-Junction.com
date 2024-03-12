@@ -43,7 +43,7 @@ public class User implements UserDetails {
     private Photo profileBackgroundPhoto;
 
     @OneToOne
-    private Photo profilPhoto;
+    private Photo profilePhoto;
 
     @JsonIgnore
     @ManyToMany(mappedBy = "contributors")
