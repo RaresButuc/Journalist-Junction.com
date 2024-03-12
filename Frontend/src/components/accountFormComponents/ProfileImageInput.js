@@ -30,8 +30,12 @@ export default function ProfileImageInput(props) {
     borderColor: "#ff1744",
   };
 
+  const onDrop = useCallback((acceptedFiles) => {
+    console.log(acceptedFiles);
+  }, []);
+
   const { getRootProps, getInputProps, isFocused, isDragAccept, isDragReject } =
-    useDropzone({ accept: { "image/*": [] } });
+    useDropzone({ onDrop });
 
   const style = useMemo(
     () => ({
@@ -39,13 +43,10 @@ export default function ProfileImageInput(props) {
       ...(isFocused ? focusedStyle : {}),
       ...(isDragAccept ? acceptStyle : {}),
       ...(isDragReject ? rejectStyle : {}),
+      cursor: "pointer",
     }),
     [isFocused, isDragAccept, isDragReject]
   );
-
-  const onDrop = useCallback((acceptedFiles) => {
-    // Do something with the files
-  }, []);
 
   return (
     <div className="container mt-4">
