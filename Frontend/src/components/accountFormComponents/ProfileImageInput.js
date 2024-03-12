@@ -1,41 +1,58 @@
+import { useMemo, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
-import { useState, useCallback } from "react";
 
-export default function ProfileImageInput({ userId }) {
+export default function ProfileImageInput(props) {
+  const baseStyle = {
+    flex: 1,
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    padding: "20px",
+    borderWidth: 2,
+    borderRadius: 2,
+    borderColor: "#e03444",
+    borderStyle: "dashed",
+    backgroundColor: "#fafafa",
+    color: "#e03444",
+    outline: "none",
+    transition: "border .24s ease-in-out",
+  };
+
+  const focusedStyle = {
+    borderColor: "#2196f3",
+  };
+
+  const acceptStyle = {
+    borderColor: "#00e676",
+  };
+
+  const rejectStyle = {
+    borderColor: "#ff1744",
+  };
+
+  const { getRootProps, getInputProps, isFocused, isDragAccept, isDragReject } =
+    useDropzone({ accept: { "image/*": [] } });
+
+  const style = useMemo(
+    () => ({
+      ...baseStyle,
+      ...(isFocused ? focusedStyle : {}),
+      ...(isDragAccept ? acceptStyle : {}),
+      ...(isDragReject ? rejectStyle : {}),
+    }),
+    [isFocused, isDragAccept, isDragReject]
+  );
+
   const onDrop = useCallback((acceptedFiles) => {
     // Do something with the files
   }, []);
 
-  const [underText, setUnderText] = useState("No Image Selected");
-  const [imgSource, setImageSource] = useState(
-    "https://www.pngall.com/wp-content/uploads/5/Profile-PNG-File.png"
-  );
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
-
   return (
-    <div>
-      <div
-        {...getRootProps({
-          className: "mt-4 dropzone border rounded border-danger border-3",
-          style: { cursor: "pointer" },
-        })}
-      >
+    <div className="container mt-4">
+      <div {...getRootProps({ style })}>
         <input {...getInputProps()} />
-        {isDragActive ? (
-          <p className="mt-2">Drop the files here...</p>
-        ) : (
-          <p className="mt-2">Select Your Image Profile</p>
-        )}
-        
+        <p className="mb-0">Select a Profile Image</p>
       </div>
-
-      <img
-        src={imgSource}
-        className="img-fluid rounded-circle border border-4 mt-4"
-        style={{ width: "170px" }} //250 cand e mare,140 cand e mic. 250 va fi default
-        alt="No Attached Image"
-      />
-      <p className="mt-2">{underText}</p>
     </div>
   );
 }
