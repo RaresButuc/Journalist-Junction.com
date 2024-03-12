@@ -1,17 +1,16 @@
 import axios from "axios";
 import { useDropzone } from "react-dropzone";
-import { useMemo, useCallback, useState, useEffect } from "react";
+import { useMemo, useCallback, useState, useEffect, forwardRef } from "react";
 
 import Alert from "../Alert";
 import DefaultURL from "../../usefull/DefaultURL";
 
-export default function ProfileImageInput({ userId }) {
-  const [photo, setPhoto] = useState(null);
+const ProfileImageInput = forwardRef(({ userId }, ref) => {
+  const [photoData, setPhotoData] = useState(null);
   const [userPhoto, setUserPhoto] = useState(null);
   const [showAlert, setShowAlert] = useState(false);
   const [alertInfos, setAlertInfos] = useState(["", "", ""]);
-  const [showImageOrNot, setShowImageOrNot] = useState(false);
-
+  const [description, setDescription] = useState("No Image Selected");
   const [photoPreview, setPhotoPreview] = useState(
     "https://www.pngall.com/wp-content/uploads/5/Profile-PNG-File.png"
   );
@@ -21,8 +20,8 @@ export default function ProfileImageInput({ userId }) {
       const fetchCurrentUser = async () => {
         try {
           const responseUser = await axios.get(`${DefaultURL}/user/${userId}`);
-          setUserPhoto(responseUser.data.profilePhoto);
-          setShowImageOrNot(true);
+          setPhotoData(responseUser.data.profilePhoto);
+          setDescription(responseUser.data.profilePhoto.description);
         } catch (err) {
           console.log(err);
         }
@@ -31,6 +30,15 @@ export default function ProfileImageInput({ userId }) {
       fetchCurrentUser();
     }
   }, []);
+
+  const deleteImage = (e) => {
+    e.preventDefault();
+    setPhotoData(null);
+    setDescription("No Image Selected");
+    setPhotoPreview(
+      "https://www.pngall.com/wp-content/uploads/5/Profile-PNG-File.png"
+    );
+  };
 
   const baseStyle = {
     flex: 1,
@@ -68,7 +76,8 @@ export default function ProfileImageInput({ userId }) {
 
       image.onload = function () {
         if (this.width <= 800 && this.height <= 800) {
-          setPhoto(file);
+          setPhotoData(file);
+          setDescription(file.name);
           setPhotoPreview(URL.createObjectURL(file));
         } else {
           setShowAlert(true);
@@ -82,6 +91,8 @@ export default function ProfileImageInput({ userId }) {
           }, 3000);
         }
       };
+
+      image.src = URL.createObjectURL(file);
     } else {
       setShowAlert(true);
       setAlertInfos([
@@ -109,6 +120,12 @@ export default function ProfileImageInput({ userId }) {
     [isFocused, isDragAccept, isDragReject]
   );
 
+  useEffect(() => {
+    if (ref) {
+      ref.current = photoData;
+    }
+  }, [ref, photoData]);
+
   return (
     <>
       {showAlert ? (
@@ -123,14 +140,17 @@ export default function ProfileImageInput({ userId }) {
           <input {...getInputProps()} />
           <p className="mb-0">Select a Profile Image</p>
         </div>
-
         <img
           src={photoPreview}
           className="mt-4 img-fluid rounded-circle border border-4"
-          style={{ borderColor: "white", width: "150px" }} //250 cand e mare,140 cand e mic. 250 va fi default
+          style={{ borderColor: "white", width: "150px" }}
           alt="ProfileImage"
         />
+        <p className="mt-2">{description}</p>
+        <button onClick={deleteImage}>X</button>
       </div>
     </>
   );
-}
+});
+
+export default ProfileImageInput;

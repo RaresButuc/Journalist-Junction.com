@@ -9,12 +9,14 @@ import ProfileImageInput from "../components/accountFormComponents/ProfileImageI
 import ShortDescriptionInput from "../components/accountFormComponents/ShortDescriptionInput";
 
 import axios from "axios";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router";
 import DefaultURL from "../usefull/DefaultURL";
 
 export default function RegisterPage() {
   const navigate = useNavigate();
+
+  const photoRef = useRef(null);
 
   const [showAlert, setShowAlert] = useState(false);
   const [alertInfos, setAlertInfos] = useState(["", "", ""]);
@@ -55,6 +57,7 @@ export default function RegisterPage() {
   const onSave = (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
+    console.log(photoRef.current);
     const registerData = {
       name: formData.get("nameInput"),
       email: formData.get("emailInput"),
@@ -64,7 +67,7 @@ export default function RegisterPage() {
       shortAutoDescription: formData.get("shortAutoDescriptionInput"),
     };
 
-    onSubmit(registerData);
+    // onSubmit(registerData);
   };
 
   return (
@@ -139,8 +142,7 @@ export default function RegisterPage() {
 
                   <div className="form-outline mb-5 mt-5">
                     <h4>Profile Picture</h4>
-                    {/* <input class="form-control" type="file" id="formFile" /> */}
-                    <ProfileImageInput id="formFile"/>
+                    <ProfileImageInput ref={photoRef} />
                   </div>
 
                   <button
