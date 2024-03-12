@@ -7,9 +7,12 @@ import com.journalistjunction.auth.RegisterRequest;
 import com.journalistjunction.model.User;
 import com.journalistjunction.service.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -47,6 +50,11 @@ public class UserController {
         return userService.subscribersCount(user);
     }
 
+    @GetMapping("/profile-photo/{id}/")
+    public byte[] uploadUserProfileImage(@PathVariable("id") Long id) {
+        return userService.getUserProfileImage(id);
+    }
+
     @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest request) {
@@ -59,10 +67,17 @@ public class UserController {
         return ResponseEntity.ok(service.authenticate(request));
     }
 
+    @PutMapping(value = "/profile-photo/{id}/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> uploadUserProfileImage(@PathVariable("id") Long id, @RequestParam("file") MultipartFile file) throws IOException {
+        userService.uploadUserProfileImage(id, file);
+
+        return ResponseEntity.ok("Image Successfully Posted!");
+    }
 
     @PutMapping("/{id}")
     public ResponseEntity<String> editUser(@PathVariable("id") Long id, @RequestBody User user) {
         userService.updateUserById(id, user);
+
         return ResponseEntity.ok("New Profile Information Saved!");
     }
 
@@ -72,6 +87,7 @@ public class UserController {
 
         return ResponseEntity.ok("");
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable("id") Long id) {

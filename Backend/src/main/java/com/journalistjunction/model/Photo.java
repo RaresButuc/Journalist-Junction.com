@@ -15,7 +15,9 @@ public class Photo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String link;
+    private String bucket;
+
+    private String key;
 
     private String description;
 }

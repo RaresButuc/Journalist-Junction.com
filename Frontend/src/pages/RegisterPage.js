@@ -1,9 +1,11 @@
 import Alert from "../components/Alert";
+
 import NameInput from "../components/accountFormComponents/NameInput";
 import EmailInput from "../components/accountFormComponents/EmailInput";
 import PasswordInput from "../components/accountFormComponents/PasswordInput";
 import CountrySelect from "../components/accountFormComponents/CountrySelect";
 import PhoneNumberInput from "../components/accountFormComponents/PhoneNumberInput";
+import ProfileImageInput from "../components/accountFormComponents/ProfileImageInput";
 import ShortDescriptionInput from "../components/accountFormComponents/ShortDescriptionInput";
 
 import axios from "axios";
@@ -137,7 +139,8 @@ export default function RegisterPage() {
 
                   <div className="form-outline mb-5 mt-5">
                     <h4>Profile Picture</h4>
-                    <input class="form-control" type="file" id="formFile" />
+                    {/* <input class="form-control" type="file" id="formFile" /> */}
+                    <ProfileImageInput id="formFile"/>
                   </div>
 
                   <button

@@ -1,10 +1,15 @@
 package com.journalistjunction.service;
 
+import com.journalistjunction.model.Photo;
 import com.journalistjunction.model.User;
 import com.journalistjunction.repository.UserRepository;
+import com.journalistjunction.s3.S3Buckets;
+import com.journalistjunction.s3.S3Service;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -12,7 +17,10 @@ import java.util.Objects;
 @Service
 @AllArgsConstructor
 public class UserService {
+
     private final UserRepository userRepository;
+    private final S3Service s3Service;
+    private final S3Buckets s3Buckets;
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
@@ -36,6 +44,13 @@ public class UserService {
                 .orElseThrow(() -> new NoSuchElementException("No User Found!"));
 
         return secondUser.getSubscribers().stream().anyMatch(e -> Objects.equals(e.getId(), currentUser.getId()));
+    }
+
+    public byte[] getUserProfileImage(Long id) {
+        userRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("No User Found!"));
+
+        return s3Service.getObject(s3Buckets.getCustomer(), "%s/%s_Profile_Image".formatted(id, id));
     }
 
     public void subscribeOrUnsubscribe(Long idCurrentUser, Long idSecondUser, String command) {
@@ -90,8 +105,22 @@ public class UserService {
         userRepository.save(userFromDb);
     }
 
+    public void uploadUserProfileImage(Long id, MultipartFile file) throws IOException {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("No User Found!"));
+
+        s3Service.putObject(s3Buckets.getCustomer(), "%s/%s_Profile_Image".formatted(id, id), file.getBytes());
+
+        if (user.getProfilePhoto() != null) {
+            user.setProfilePhoto(new Photo(0L, s3Buckets.getCustomer(), "%s/%s_Profile_Image".formatted(id, id), "%s's Profile Image".formatted(user.getName())));
+        }
+
+        userRepository.save(user);
+    }
+
     public void deleteUserById(Long id) {
         userRepository.deleteById(id);
     }
+
 
 }
