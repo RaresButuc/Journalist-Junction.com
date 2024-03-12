@@ -62,26 +62,37 @@ export default function ProfileImageInput({ userId }) {
 
   const onDrop = useCallback((acceptedFiles) => {
     const file = acceptedFiles[0];
-    const image = new Image();
 
-    image.onload = function () {
-      if (this.width <= 800 && this.height <= 800) {
-        setPhoto(file);
-        setPhotoPreview(URL.createObjectURL(file));
-      } else {
-        setShowAlert(true);
-        setAlertInfos([
-          "Be Careful!",
-          "Please select an image with maximum resolution of 800 x 800 pixels.",
-          "danger",
-        ]);
-        setTimeout(() => {
-          setShowAlert(false);
-        }, 3000);
-      }
-    };
+    if (file.type.substring(0, 6) === "image/") {
+      const image = new Image();
 
-    image.src = URL.createObjectURL(file);
+      image.onload = function () {
+        if (this.width <= 800 && this.height <= 800) {
+          setPhoto(file);
+          setPhotoPreview(URL.createObjectURL(file));
+        } else {
+          setShowAlert(true);
+          setAlertInfos([
+            "Be Careful!",
+            "Please Select An Image With Maximum Resolution Of 800 x 800 Pixels.",
+            "danger",
+          ]);
+          setTimeout(() => {
+            setShowAlert(false);
+          }, 3000);
+        }
+      };
+    } else {
+      setShowAlert(true);
+      setAlertInfos([
+        "Be Careful!",
+        "The File You Selected Is Not an Image. Try Again!",
+        "danger",
+      ]);
+      setTimeout(() => {
+        setShowAlert(false);
+      }, 3000);
+    }
   }, []);
 
   const { getRootProps, getInputProps, isFocused, isDragAccept, isDragReject } =
