@@ -10,7 +10,7 @@ const ProfileImageInput = forwardRef(({ userId }, ref) => {
   const [userPhoto, setUserPhoto] = useState(null);
   const [showAlert, setShowAlert] = useState(false);
   const [alertInfos, setAlertInfos] = useState(["", "", ""]);
-  const [description, setDescription] = useState("No Image Selected");
+  const [description, setDescription] = useState("No Image Selected*");
   const [photoPreview, setPhotoPreview] = useState(
     "https://www.pngall.com/wp-content/uploads/5/Profile-PNG-File.png"
   );
@@ -34,7 +34,7 @@ const ProfileImageInput = forwardRef(({ userId }, ref) => {
   const deleteImage = (e) => {
     e.preventDefault();
     setPhotoData(null);
-    setDescription("No Image Selected");
+    setDescription("No Image Selected*");
     setPhotoPreview(
       "https://www.pngall.com/wp-content/uploads/5/Profile-PNG-File.png"
     );
@@ -146,8 +146,15 @@ const ProfileImageInput = forwardRef(({ userId }, ref) => {
           style={{ borderColor: "white", width: "150px" }}
           alt="ProfileImage"
         />
-        <p className="mt-2">{description}</p>
-        <button onClick={deleteImage}>X</button>
+        <br />
+        <div className="mt-2">
+          <h5 className="d-inline">{description} </h5>
+          {photoData ? (
+            <button className="btn btn-danger ml-2" onClick={deleteImage}>
+              X
+            </button>
+          ) : null}
+        </div>
       </div>
     </>
   );
