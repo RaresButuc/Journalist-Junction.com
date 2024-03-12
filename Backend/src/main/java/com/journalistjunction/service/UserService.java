@@ -1,5 +1,6 @@
 package com.journalistjunction.service;
 
+import com.journalistjunction.model.Photo;
 import com.journalistjunction.model.User;
 import com.journalistjunction.repository.UserRepository;
 import com.journalistjunction.s3.S3Buckets;
@@ -109,6 +110,12 @@ public class UserService {
                 .orElseThrow(() -> new NoSuchElementException("No User Found!"));
 
         s3Service.putObject(s3Buckets.getCustomer(), "%s/%s_Profile_Image".formatted(id, id), file.getBytes());
+
+        if (user.getProfilPhoto() != null) {
+            user.setProfilPhoto(new Photo(0L, s3Buckets.getCustomer(), "%s/%s_Profile_Image".formatted(id, id), "%s's Profile Image".formatted(user.getName())));
+        }
+
+        userRepository.save(user);
     }
 
     public void deleteUserById(Long id) {
