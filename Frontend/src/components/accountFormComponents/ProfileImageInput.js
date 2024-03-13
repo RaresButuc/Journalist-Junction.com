@@ -7,7 +7,6 @@ import DefaultURL from "../../usefull/DefaultURL";
 
 const ProfileImageInput = forwardRef(({ userId }, ref) => {
   const [photoData, setPhotoData] = useState(null);
-  const [userPhoto, setUserPhoto] = useState(null);
   const [showAlert, setShowAlert] = useState(false);
   const [alertInfos, setAlertInfos] = useState(["", "", ""]);
   const [description, setDescription] = useState("No Image Selected*");

@@ -51,8 +51,8 @@ public class UserController {
     }
 
     @GetMapping("/profile-photo/{id}/")
-    public byte[] uploadUserProfileImage(@PathVariable("id") Long id) {
-        return userService.getUserProfileImage(id);
+    public byte[] uploadUserProfilePhoto(@PathVariable("id") Long id) {
+        return userService.getUserProfilePhoto(id);
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
@@ -68,8 +68,8 @@ public class UserController {
     }
 
     @PutMapping(value = "/profile-photo/{id}/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> uploadUserProfileImage(@PathVariable("id") Long id, @RequestParam("file") MultipartFile file) throws IOException {
-        userService.uploadUserProfileImage(id, file);
+    public ResponseEntity<String> uploadUserProfilePhoto(@PathVariable("id") Long id, @RequestParam("file") MultipartFile file) throws IOException {
+        userService.updateUserProfilePhoto(id, file);
 
         return ResponseEntity.ok("Image Successfully Posted!");
     }

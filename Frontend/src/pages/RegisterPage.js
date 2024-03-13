@@ -67,7 +67,7 @@ export default function RegisterPage() {
       shortAutoDescription: formData.get("shortAutoDescriptionInput"),
     };
 
-    // onSubmit(registerData);
+    onSubmit(registerData);
   };
 
   return (

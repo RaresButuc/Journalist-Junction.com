@@ -57,7 +57,7 @@ public class Article {
     @JoinTable
     private List<User> rejectedWorkers;
 
-    @OneToMany
+    @ElementCollection
     private List<Photo> photos;
 
     @JsonIgnore

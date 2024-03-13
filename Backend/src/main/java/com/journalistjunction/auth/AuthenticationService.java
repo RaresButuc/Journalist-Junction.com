@@ -30,6 +30,7 @@ public class AuthenticationService {
                     .phoneNumber(request.getPhoneNumber())
                     .location(request.getLocation())
                     .shortAutoDescription(request.getShortAutoDescription())
+                    .profilePhoto(request.getProfilePhoto())
                     .build();
             repository.save(user);
             var jwtToken = jwtService.generateToken(user);

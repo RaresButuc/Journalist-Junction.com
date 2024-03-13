@@ -46,7 +46,7 @@ public class UserService {
         return secondUser.getSubscribers().stream().anyMatch(e -> Objects.equals(e.getId(), currentUser.getId()));
     }
 
-    public byte[] getUserProfileImage(Long id) {
+    public byte[] getUserProfilePhoto(Long id) {
         userRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("No User Found!"));
 
@@ -105,14 +105,14 @@ public class UserService {
         userRepository.save(userFromDb);
     }
 
-    public void uploadUserProfileImage(Long id, MultipartFile file) throws IOException {
+    public void updateUserProfilePhoto(Long id, MultipartFile file) throws IOException {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("No User Found!"));
 
         s3Service.putObject(s3Buckets.getCustomer(), "%s/%s_Profile_Image".formatted(id, id), file.getBytes());
 
-        if (user.getProfilePhoto() != null) {
-            user.setProfilePhoto(new Photo(0L, s3Buckets.getCustomer(), "%s/%s_Profile_Image".formatted(id, id), "%s's Profile Image".formatted(user.getName())));
+        if (user.getProfilePhoto() == null) {
+            user.setProfilePhoto(new Photo(s3Buckets.getCustomer(), "%s/%s_Profile_Image".formatted(id, id), "%s's Profile Image".formatted(user.getName())));
         }
 
         userRepository.save(user);

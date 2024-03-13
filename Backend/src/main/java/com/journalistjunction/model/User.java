@@ -39,10 +39,20 @@ public class User implements UserDetails {
     @Column(length = 500)
     private String shortAutoDescription;
 
-    @OneToOne
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "bucket", column = @Column(name = "background_bucket")),
+            @AttributeOverride(name = "description", column = @Column(name = "background_description")),
+            @AttributeOverride(name = "key", column = @Column(name = "background_key"))
+    })
     private Photo profileBackgroundPhoto;
 
-    @OneToOne
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "bucket", column = @Column(name = "profile_bucket")),
+            @AttributeOverride(name = "description", column = @Column(name = "profile_description")),
+            @AttributeOverride(name = "key", column = @Column(name = "profile_key"))
+    })
     private Photo profilePhoto;
 
     @JsonIgnore
