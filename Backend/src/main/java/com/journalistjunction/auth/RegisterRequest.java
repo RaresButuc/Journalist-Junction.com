@@ -2,6 +2,7 @@ package com.journalistjunction.auth;
 
 import com.journalistjunction.enums.Role;
 import com.journalistjunction.model.Location;
+import com.journalistjunction.model.Photo;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

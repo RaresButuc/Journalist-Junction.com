@@ -24,7 +24,19 @@ export default function RegisterPage() {
   const onSubmit = async (values) => {
     try {
       if (!Number.isNaN(values.location.id)) {
-        await axios.post(`${DefaultURL}/user/register`, values);
+        const token = await axios.post(`${DefaultURL}/user/register`, values);
+
+        if (photoRef.current !== null) {
+          const headers = { Authorization: `Bearer ${token.data.token}` };
+
+          const formData = new FormData();
+          formData.append("file", photoRef.current);
+
+          await axios.put(`${DefaultURL}/user/set-profile-photo`, formData, {
+            headers,
+            "Content-Type": "multipart/form-data",
+          });
+        }
         setTimeout(() => {
           navigate("/login");
         }, 2000);
@@ -57,7 +69,7 @@ export default function RegisterPage() {
   const onSave = (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
-    console.log(photoRef.current);
+
     const registerData = {
       name: formData.get("nameInput"),
       email: formData.get("emailInput"),
@@ -67,7 +79,7 @@ export default function RegisterPage() {
       shortAutoDescription: formData.get("shortAutoDescriptionInput"),
     };
 
-    // onSubmit(registerData);
+    onSubmit(registerData);
   };
 
   return (

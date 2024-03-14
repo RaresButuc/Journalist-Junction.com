@@ -6,6 +6,8 @@ import com.journalistjunction.repository.UserRepository;
 import com.journalistjunction.s3.S3Buckets;
 import com.journalistjunction.s3.S3Service;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -46,7 +48,7 @@ public class UserService {
         return secondUser.getSubscribers().stream().anyMatch(e -> Objects.equals(e.getId(), currentUser.getId()));
     }
 
-    public byte[] getUserProfileImage(Long id) {
+    public byte[] getUserProfilePhoto(Long id) {
         userRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("No User Found!"));
 
@@ -89,13 +91,14 @@ public class UserService {
                 .size();
     }
 
-    public void updateUserById(Long id, User updatedUser) {
+    public void updateUserById(User updatedUser) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
         if (updatedUser == null) {
             throw new IllegalArgumentException("Updated user data cannot be null");
         }
 
-        User userFromDb = userRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("No User Found!"));
+        User userFromDb = (User) auth.getPrincipal();
 
         userFromDb.setName(updatedUser.getName());
         userFromDb.setEmail(updatedUser.getEmail());
@@ -105,14 +108,14 @@ public class UserService {
         userRepository.save(userFromDb);
     }
 
-    public void uploadUserProfileImage(Long id, MultipartFile file) throws IOException {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("No User Found!"));
+    public void updateUserProfilePhoto(MultipartFile file) throws IOException {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) auth.getPrincipal();
 
-        s3Service.putObject(s3Buckets.getCustomer(), "%s/%s_Profile_Image".formatted(id, id), file.getBytes());
+        s3Service.putObject(s3Buckets.getCustomer(), "%s/%s_Profile_Image".formatted(user.getId(), user.getId()), file.getBytes());
 
-        if (user.getProfilePhoto() != null) {
-            user.setProfilePhoto(new Photo(0L, s3Buckets.getCustomer(), "%s/%s_Profile_Image".formatted(id, id), "%s's Profile Image".formatted(user.getName())));
+        if (user.getProfilePhoto() == null) {
+            user.setProfilePhoto(new Photo(s3Buckets.getCustomer(), "%s/%s_Profile_Image".formatted(user.getId(), user.getId()), "%s's Profile Image".formatted(user.getName())));
         }
 
         userRepository.save(user);
