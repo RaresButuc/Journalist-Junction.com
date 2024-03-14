@@ -28,5 +28,4 @@ public class RegisterRequest {
 
     private String shortAutoDescription;
 
-    private Photo profilePhoto;
 }
