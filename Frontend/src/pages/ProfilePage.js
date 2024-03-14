@@ -10,15 +10,14 @@ export default function ProfilePage() {
   const isAuthenticated = useIsAuthenticated();
   const navigate = useNavigate();
 
-  const [profileUser, setProfileUser] = useState(null);
   const [readMore, setReadMore] = useState(false);
+  const [profileUser, setProfileUser] = useState(null);
+  const [profileImage, setProfileImage] = useState(null);
 
   const [subsCount, setSubsCount] = useState(0);
   const [subButtonContent, setSubButtonContent] = useState(["", ""]);
   // Used to change the Subs Count automatically
   const [subAction, setSubAction] = useState(0);
-
-  const [userExists, setUserExists] = useState(null);
 
   const currentUser = CurrentUserInfos();
 
@@ -31,7 +30,23 @@ export default function ProfilePage() {
         try {
           // Fetch user
           const responseUser = await axios.get(`${DefaultURL}/user/${id}`);
+
           setProfileUser(responseUser.data);
+
+          const reponseUserProfilePhoto = await axios.get(
+            `${DefaultURL}/user/get-profile-photo/${responseUser.data.id}`,
+            {
+              responseType: "arraybuffer",
+            }
+          );
+          const imageUrl = `data:image/jpeg;base64,
+          ${btoa(
+            new Uint8Array(reponseUserProfilePhoto.data).reduce(
+              (data, byte) => data + String.fromCharCode(byte),
+              ""
+            )
+          )}`;
+          setProfileImage(imageUrl);
         } catch (err) {
           console.log(err);
         }
@@ -125,15 +140,15 @@ export default function ProfilePage() {
             <div className="position-absolute top-100 start-50 translate-middle">
               <div className="profile">
                 <img
-                  src="https://i.imgur.com/JgYD2nQ.jpg"
+                  src={profileImage}
                   className="img-fluid rounded-circle border border-4"
-                  style={{ borderColor: "white" }} //250 cand e mare,140 cand e mic. 250 va fi default
+                  style={{ borderColor: "white",width:"115px" }} 
                   alt="ProfileImage"
                 />
               </div>
             </div>
           </div>
-          <div className="container-xl mt-5">
+          <div className="container-xl" style={{marginTop:"55px"}}>
             <h1>{profileUser?.name}</h1>
             {/* Subscribe Button */}
             <div className="d-flex justify-content-center">
