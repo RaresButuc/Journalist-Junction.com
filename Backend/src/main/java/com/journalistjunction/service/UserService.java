@@ -93,16 +93,12 @@ public class UserService {
 
     public void updateUserById(User updatedUser) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println(auth);
-        System.out.println(auth.getPrincipal());
 
         if (updatedUser == null) {
             throw new IllegalArgumentException("Updated user data cannot be null");
         }
 
         User userFromDb = (User) auth.getPrincipal();
-//                userRepository.findById(id)
-//                .orElseThrow(() -> new NoSuchElementException("No User Found!"));
 
         userFromDb.setName(updatedUser.getName());
         userFromDb.setEmail(updatedUser.getEmail());
@@ -114,12 +110,7 @@ public class UserService {
 
     public void updateUserProfilePhoto(MultipartFile file) throws IOException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//        System.out.println(auth);
-//        System.out.println(auth.getPrincipal());
         User user = (User) auth.getPrincipal();
-
-//        User user = userRepository.findById(id)
-//                .orElseThrow(() -> new NoSuchElementException("No User Found!"));
 
         s3Service.putObject(s3Buckets.getCustomer(), "%s/%s_Profile_Image".formatted(user.getId(), user.getId()), file.getBytes());
 
