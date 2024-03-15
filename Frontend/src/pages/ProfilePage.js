@@ -25,7 +25,7 @@ export default function ProfilePage() {
   const { id } = useParams();
 
   useEffect(() => {
-    if (!currentUser) return;
+    // if (!currentUser) return;
     if (id) {
       const fetchCurrentUser = async () => {
         try {
@@ -50,7 +50,7 @@ export default function ProfilePage() {
           )}`;
             setProfileImage(imageUrl);
           } else {
-            setProfileImage(noProfileImage)
+            setProfileImage(noProfileImage);
           }
         } catch (err) {
           console.log(err);
@@ -72,12 +72,16 @@ export default function ProfilePage() {
       // Fetch Is Current User Subscribed
       const fetchIsSubscribed = async () => {
         try {
-          const responseIsSubscribed = await axios.get(
-            `${DefaultURL}/user/issubscribed/${currentUser?.id}/${id}`,
-            {}
-          );
-          if (responseIsSubscribed.data) {
-            setSubButtonContent(["dark", "UnSubscribe"]);
+          if (currentUser) {
+            const responseIsSubscribed = await axios.get(
+              `${DefaultURL}/user/issubscribed/${currentUser?.id}/${id}`,
+              {}
+            );
+            if (responseIsSubscribed.data) {
+              setSubButtonContent(["dark", "UnSubscribe"]);
+            } else {
+              setSubButtonContent(["danger", "Subscribe"]);
+            }
           } else {
             setSubButtonContent(["danger", "Subscribe"]);
           }
@@ -146,8 +150,8 @@ export default function ProfilePage() {
               <div className="profile">
                 <img
                   src={profileImage}
-                  className="img-fluid rounded-circle border border-4"
-                  style={{ borderColor: "white", width: "115px",height:"115px" }}
+                  className="img-fluid rounded-circle border border-4 border-white"
+                  style={{ width: "120px", height: "120px" }}
                   alt="ProfileImage"
                 />
               </div>
@@ -171,7 +175,9 @@ export default function ProfilePage() {
                   type="button"
                   className={`btn btn-${subButtonContent[0]} mr-md-3 mb-2 mb-md-0`}
                   onClick={subscribeOrUnsubscribe}
-                  disabled={currentUser?.id == id}
+                  disabled={
+                    currentUser ? (currentUser.id == id ? true : false) : false
+                  }
                 >
                   {subButtonContent[1]} - {formatNumber(subsCount)}
                 </button>

@@ -1,17 +1,51 @@
-import { useIsAuthenticated, useSignOut } from "react-auth-kit";
-import CurrentUserInfos from "../usefull/CurrentUserInfos";
-import navbarlogo from "../photos/websitelogo.png";
+import axios from "axios";
 import { Outlet } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useIsAuthenticated, useSignOut } from "react-auth-kit";
+
+import DefaultURL from "../usefull/DefaultURL";
+import navbarlogo from "../photos/websitelogo.png";
+import CurrentUserInfos from "../usefull/CurrentUserInfos";
+import noProfileImage from "../photos/default-profile-image.png";
 
 export default function Navbar() {
-  const isAuthenticated = useIsAuthenticated();
   const signOut = useSignOut();
+  const isAuthenticated = useIsAuthenticated();
 
   const currentUser = CurrentUserInfos();
+  const [profilePhoto, setProfilePhoto] = useState(null);
+
+  useEffect(() => {
+    if (currentUser) {
+      const fetchCurrentUserProfile = async () => {
+        try {
+          const reponseUserProfilePhoto = await axios.get(
+            `${DefaultURL}/user/get-profile-photo/${currentUser.id}`,
+            {
+              responseType: "arraybuffer",
+            }
+          );
+          const imageUrl = `data:image/jpeg;base64,
+        ${btoa(
+          new Uint8Array(reponseUserProfilePhoto.data).reduce(
+            (data, byte) => data + String.fromCharCode(byte),
+            ""
+          )
+        )}`;
+          setProfilePhoto(imageUrl);
+        } catch (err) {
+          console.log(err);
+        }
+      };
+
+      fetchCurrentUserProfile();
+    }
+  }, [currentUser]);
 
   const handleLogOut = () => {
-    window.location.href = "/";
-    signOut();
+    setTimeout(() => {
+      signOut();
+    }, 500);
   };
 
   return (
@@ -47,7 +81,7 @@ export default function Navbar() {
             <ul className="navbar-nav ms-auto  mb-2 mb-lg-0">
               <li className="nav-item">
                 <a
-                  className="nav-link fw-bold mx-2 text-danger"
+                  className="nav-link fw-bold mx-2 mt-2 text-danger"
                   aria-current="page"
                   href="/all-ads"
                 >
@@ -57,7 +91,7 @@ export default function Navbar() {
 
               <li className="nav-item">
                 <a
-                  className="nav-link font-weight-bold mx-2 text-dark"
+                  className="nav-link font-weight-bold mx-2 mt-2 text-dark"
                   aria-current="page"
                   href="/all-ads"
                 >
@@ -74,20 +108,27 @@ export default function Navbar() {
                       data-bs-toggle="dropdown"
                       aria-expanded="false"
                     >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="30"
-                        height="30"
-                        fill="currentColor"
-                        className="bi bi-person-circle"
-                        viewBox="0 0 16 16"
-                      >
-                        <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
-                        <path
-                          fillRule="evenodd"
-                          d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"
+                      {currentUser?.profilePhoto ? (
+                        <img
+                          src={profilePhoto}
+                          className="img-fluid rounded-circle border border-2 border-danger"
+                          style={{
+                            borderColor: "black",
+                            width: "40px",
+                            height: "40px",
+                          }}
+                          alt={null}
                         />
-                      </svg>
+                      ) : (
+                        <img
+                          src={noProfileImage}
+                          style={{
+                            width: "40px",
+                            height: "40px",
+                            marginBottom: "0px",
+                          }}
+                        />
+                      )}
                     </button>
                     <ul className="dropdown-menu dropdown-menu-end">
                       <li>
@@ -126,7 +167,7 @@ export default function Navbar() {
                 <>
                   <li className="nav-item">
                     <a
-                      className="btn btn-success font-weight-bold mx-2"
+                      className="btn btn-success font-weight-bold mx-2 mt-2"
                       aria-current="page"
                       href="/register"
                     >
@@ -135,7 +176,7 @@ export default function Navbar() {
                   </li>
 
                   <li className="nav-item">
-                    <a className="nav-link mx-2 text-dark" href="/login">
+                    <a className="nav-link mx-2 mt-2 text-dark" href="/login">
                       Log In
                     </a>
                   </li>
