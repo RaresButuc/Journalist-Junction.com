@@ -1,10 +1,11 @@
-import { useIsAuthenticated, useAuthUser } from "react-auth-kit";
+import { useIsAuthenticated } from "react-auth-kit";
 import CurrentUserInfos from "../usefull/CurrentUserInfos";
 import { useParams, useNavigate } from "react-router-dom";
 import DefaultURL from "../usefull/DefaultURL";
 import { useState, useEffect } from "react";
 import ErrorPage from "./ErrorPage";
 import axios from "axios";
+import noProfileImage from "../photos/default-profile-image.png";
 
 export default function ProfilePage() {
   const isAuthenticated = useIsAuthenticated();
@@ -33,20 +34,24 @@ export default function ProfilePage() {
 
           setProfileUser(responseUser.data);
 
-          const reponseUserProfilePhoto = await axios.get(
-            `${DefaultURL}/user/get-profile-photo/${responseUser.data.id}`,
-            {
-              responseType: "arraybuffer",
-            }
-          );
-          const imageUrl = `data:image/jpeg;base64,
+          if (responseUser.data.profilePhoto !== null) {
+            const reponseUserProfilePhoto = await axios.get(
+              `${DefaultURL}/user/get-profile-photo/${responseUser.data.id}`,
+              {
+                responseType: "arraybuffer",
+              }
+            );
+            const imageUrl = `data:image/jpeg;base64,
           ${btoa(
             new Uint8Array(reponseUserProfilePhoto.data).reduce(
               (data, byte) => data + String.fromCharCode(byte),
               ""
             )
           )}`;
-          setProfileImage(imageUrl);
+            setProfileImage(imageUrl);
+          } else {
+            setProfileImage(noProfileImage)
+          }
         } catch (err) {
           console.log(err);
         }
@@ -142,13 +147,13 @@ export default function ProfilePage() {
                 <img
                   src={profileImage}
                   className="img-fluid rounded-circle border border-4"
-                  style={{ borderColor: "white",width:"115px" }} 
+                  style={{ borderColor: "white", width: "115px",height:"115px" }}
                   alt="ProfileImage"
                 />
               </div>
             </div>
           </div>
-          <div className="container-xl" style={{marginTop:"55px"}}>
+          <div className="container-xl" style={{ marginTop: "55px" }}>
             <h1>{profileUser?.name}</h1>
             {/* Subscribe Button */}
             <div className="d-flex justify-content-center">
