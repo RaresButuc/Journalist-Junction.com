@@ -1,37 +1,57 @@
-import { useIsAuthenticated, useAuthUser } from "react-auth-kit";
+import { useIsAuthenticated } from "react-auth-kit";
 import CurrentUserInfos from "../usefull/CurrentUserInfos";
 import { useParams, useNavigate } from "react-router-dom";
 import DefaultURL from "../usefull/DefaultURL";
 import { useState, useEffect } from "react";
 import ErrorPage from "./ErrorPage";
 import axios from "axios";
+import noProfileImage from "../photos/default-profile-image.png";
 
 export default function ProfilePage() {
   const isAuthenticated = useIsAuthenticated();
   const navigate = useNavigate();
 
-  const [profileUser, setProfileUser] = useState(null);
   const [readMore, setReadMore] = useState(false);
+  const [profileUser, setProfileUser] = useState(null);
+  const [profileImage, setProfileImage] = useState(null);
 
   const [subsCount, setSubsCount] = useState(0);
   const [subButtonContent, setSubButtonContent] = useState(["", ""]);
   // Used to change the Subs Count automatically
   const [subAction, setSubAction] = useState(0);
 
-  const [userExists, setUserExists] = useState(null);
-
   const currentUser = CurrentUserInfos();
 
   const { id } = useParams();
 
   useEffect(() => {
-    if (!currentUser) return;
+    // if (!currentUser) return;
     if (id) {
       const fetchCurrentUser = async () => {
         try {
           // Fetch user
           const responseUser = await axios.get(`${DefaultURL}/user/${id}`);
+
           setProfileUser(responseUser.data);
+
+          if (responseUser.data.profilePhoto !== null) {
+            const reponseUserProfilePhoto = await axios.get(
+              `${DefaultURL}/user/get-profile-photo/${responseUser.data.id}`,
+              {
+                responseType: "arraybuffer",
+              }
+            );
+            const imageUrl = `data:image/jpeg;base64,
+          ${btoa(
+            new Uint8Array(reponseUserProfilePhoto.data).reduce(
+              (data, byte) => data + String.fromCharCode(byte),
+              ""
+            )
+          )}`;
+            setProfileImage(imageUrl);
+          } else {
+            setProfileImage(noProfileImage);
+          }
         } catch (err) {
           console.log(err);
         }
@@ -52,12 +72,16 @@ export default function ProfilePage() {
       // Fetch Is Current User Subscribed
       const fetchIsSubscribed = async () => {
         try {
-          const responseIsSubscribed = await axios.get(
-            `${DefaultURL}/user/issubscribed/${currentUser?.id}/${id}`,
-            {}
-          );
-          if (responseIsSubscribed.data) {
-            setSubButtonContent(["dark", "UnSubscribe"]);
+          if (currentUser) {
+            const responseIsSubscribed = await axios.get(
+              `${DefaultURL}/user/issubscribed/${currentUser?.id}/${id}`,
+              {}
+            );
+            if (responseIsSubscribed.data) {
+              setSubButtonContent(["dark", "UnSubscribe"]);
+            } else {
+              setSubButtonContent(["danger", "Subscribe"]);
+            }
           } else {
             setSubButtonContent(["danger", "Subscribe"]);
           }
@@ -125,15 +149,15 @@ export default function ProfilePage() {
             <div className="position-absolute top-100 start-50 translate-middle">
               <div className="profile">
                 <img
-                  src="https://i.imgur.com/JgYD2nQ.jpg"
-                  className="img-fluid rounded-circle border border-4"
-                  style={{ borderColor: "white" }} //250 cand e mare,140 cand e mic. 250 va fi default
+                  src={profileImage}
+                  className="img-fluid rounded-circle border border-4 border-white"
+                  style={{ width: "120px", height: "120px" }}
                   alt="ProfileImage"
                 />
               </div>
             </div>
           </div>
-          <div className="container-xl mt-5">
+          <div className="container-xl" style={{ marginTop: "55px" }}>
             <h1>{profileUser?.name}</h1>
             {/* Subscribe Button */}
             <div className="d-flex justify-content-center">
@@ -151,7 +175,9 @@ export default function ProfilePage() {
                   type="button"
                   className={`btn btn-${subButtonContent[0]} mr-md-3 mb-2 mb-md-0`}
                   onClick={subscribeOrUnsubscribe}
-                  disabled={currentUser?.id == id}
+                  disabled={
+                    currentUser ? (currentUser.id == id ? true : false) : false
+                  }
                 >
                   {subButtonContent[1]} - {formatNumber(subsCount)}
                 </button>

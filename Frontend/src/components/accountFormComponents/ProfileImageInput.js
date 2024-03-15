@@ -142,12 +142,14 @@ const ProfileImageInput = forwardRef(({ userId }, ref) => {
         <img
           src={photoPreview}
           className="mt-4 img-fluid rounded-circle border border-4"
-          style={{ borderColor: "white", width: "150px" }}
+          style={{ borderColor: "white", width: "150px", height: "150px" }}
           alt="ProfileImage"
         />
         <br />
         <div className="mt-2">
-          <h5 className="d-inline">{description} </h5>
+          <h5 className="d-inline" style={{ wordBreak: "break-all" }}>
+            {description}
+          </h5>
           {photoData ? (
             <button className="btn btn-danger ml-2" onClick={deleteImage}>
               X

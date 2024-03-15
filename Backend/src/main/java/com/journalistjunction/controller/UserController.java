@@ -45,13 +45,13 @@ public class UserController {
         return userService.isUserSubscriber(idCurrentUser, idSecondUser);
     }
 
-    @GetMapping(value = "/subscount/{user}")
+    @GetMapping("/subscount/{user}")
     public int userSubsCount(@PathVariable("user") Long user) {
         return userService.subscribersCount(user);
     }
 
-    @GetMapping("/profile-photo/{id}/")
-    public byte[] uploadUserProfilePhoto(@PathVariable("id") Long id) {
+    @GetMapping(value = "/get-profile-photo/{id}", produces = MediaType.IMAGE_JPEG_VALUE)
+    public byte[] getUserProfilePhoto(@PathVariable("id") Long id) {
         return userService.getUserProfilePhoto(id);
     }
 
@@ -68,8 +68,8 @@ public class UserController {
     }
 
     @PutMapping(value = "/set-profile-photo", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> uploadUserProfilePhoto( @RequestParam("file") MultipartFile file) throws IOException {
-        userService.updateUserProfilePhoto( file);
+    public ResponseEntity<String> uploadUserProfilePhoto(@RequestParam("file") MultipartFile file) throws IOException {
+        userService.updateUserProfilePhoto(file);
 
         return ResponseEntity.ok("Image Successfully Posted!");
     }
