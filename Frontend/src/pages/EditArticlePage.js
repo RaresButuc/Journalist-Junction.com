@@ -19,7 +19,7 @@ import ThumbnailDescription from "../components/articleFormComponents/ThumbnailD
 export default function EditArticlePage() {
   const { id } = useParams();
   const token = useAuthHeader();
-  console.log(token());
+
   const navigate = useNavigate();
 
   const [showAlert, setShowAlert] = useState(false);

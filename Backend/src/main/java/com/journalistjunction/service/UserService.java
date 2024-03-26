@@ -115,7 +115,7 @@ public class UserService {
         s3Service.putObject(s3Buckets.getCustomer(), "%s/%s_Profile_Image".formatted(user.getId(), user.getId()), file.getBytes());
 
         if (user.getProfilePhoto() == null) {
-            user.setProfilePhoto(new Photo(s3Buckets.getCustomer(), "%s/%s_Profile_Image".formatted(user.getId(), user.getId()), "%s's Profile Image".formatted(user.getName())));
+            user.setProfilePhoto(new Photo(s3Buckets.getCustomer(), "%s/%s_Profile_Image".formatted(user.getId(), user.getId())));
         }
 
         userRepository.save(user);

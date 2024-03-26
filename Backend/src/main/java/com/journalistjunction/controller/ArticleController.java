@@ -1,11 +1,15 @@
 package com.journalistjunction.controller;
 
 import com.journalistjunction.model.Article;
+import com.journalistjunction.model.Photo;
 import com.journalistjunction.service.ArticleService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -72,6 +76,20 @@ public class ArticleController {
     public ResponseEntity<String> removeRejection(@PathVariable("id") Long id, @PathVariable("userId") Long userId) {
         articleService.removeRejection(id, userId);
         return ResponseEntity.ok("This User Was Removed from the `Rejected Contributors` List!");
+    }
+
+    @PutMapping(value = "/upload-article-photos/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> uploadArticlePhotos(@RequestParam("files") List<MultipartFile> files, @PathVariable("id") Long id) throws IOException {
+        articleService.uploadArticlePhotos(files, id);
+
+        return ResponseEntity.ok("Images Successfully Posted!");
+    }
+
+    @PutMapping(value = "/delete-article-photos/{id}")
+    public ResponseEntity<String> deleteArticlePhotos(@RequestBody List<Photo> photos, @PathVariable("id") Long id) {
+        articleService.deleteArticlePhotos(photos, id);
+
+        return ResponseEntity.ok("Images Successfully Deleted!");
     }
 
     @DeleteMapping("/{id}")
