@@ -148,8 +148,10 @@ const ArticlePhotosInput = forwardRef(({ articleId }, ref) => {
                   src={photo.preview}
                   className="mt-4 img-fluid border border-2 border-danger"
                   style={{
-                    width: "150px",
-                    height: "150px",
+                    width: "auto",
+                    height: "auto",
+                    maxWidth: "175px",
+                    maxHeight: "175px",
                   }}
                   alt={`Preview Image_${index}`}
                 />
