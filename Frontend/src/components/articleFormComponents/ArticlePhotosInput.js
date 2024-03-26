@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useDropzone } from "react-dropzone";
 import { useMemo, useCallback, useState, useEffect, forwardRef } from "react";
-
+import ViewPhoto from "../ViewPhoto";
 import Alert from "../Alert";
 import DefaultURL from "../../usefull/DefaultURL";
 
@@ -9,6 +9,8 @@ const ArticlePhotosInput = forwardRef(({ articleId }, ref) => {
   const [photos, setPhotos] = useState([]);
   const [showAlert, setShowAlert] = useState(false);
   const [alertInfos, setAlertInfos] = useState(["", "", ""]);
+  const [viewPhotoData, setViewPhotoData] = useState(null);
+  const [viewPhotoVisible, setViewPhotoVisible] = useState(false);
 
   useEffect(() => {
     if (articleId) {
@@ -36,10 +38,15 @@ const ArticlePhotosInput = forwardRef(({ articleId }, ref) => {
   const deleteImage = (e, index) => {
     e.preventDefault();
 
-    const newArray = [...photos]; // Create a new array to avoid mutating state directly
+    const newArray = [...photos];
     newArray.splice(index, 1);
 
     setPhotos(newArray);
+  };
+
+  const viewImage = (index) => {
+    setViewPhotoData(photos[index]);
+    setViewPhotoVisible(true);
   };
 
   const baseStyle = {
@@ -148,9 +155,9 @@ const ArticlePhotosInput = forwardRef(({ articleId }, ref) => {
                 />
                 <br />
                 <div className="mt-2">
-                <button
+                  <button
                     className="btn btn-outline-success ml-2 mx-1"
-                    onClick={(e) => deleteImage(e, index)}
+                    onClick={() => viewImage(index)} // La clic pe buton, se apelează funcția viewImage
                   >
                     View
                   </button>
@@ -167,6 +174,12 @@ const ArticlePhotosInput = forwardRef(({ articleId }, ref) => {
           )}
         </div>
       </div>
+      {viewPhotoVisible && (
+        <ViewPhoto
+          photoData={viewPhotoData}
+          onClose={() => setViewPhotoVisible(false)}
+        />
+      )}
     </>
   );
 });
