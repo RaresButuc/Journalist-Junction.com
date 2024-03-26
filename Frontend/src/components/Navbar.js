@@ -16,7 +16,7 @@ export default function Navbar() {
   const [profilePhoto, setProfilePhoto] = useState(null);
 
   useEffect(() => {
-    if (currentUser) {
+    if (currentUser?.profilePhoto) {
       const fetchCurrentUserProfile = async () => {
         try {
           const reponseUserProfilePhoto = await axios.get(

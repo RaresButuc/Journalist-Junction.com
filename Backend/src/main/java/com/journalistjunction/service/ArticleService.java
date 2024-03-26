@@ -1,21 +1,31 @@
 package com.journalistjunction.service;
 
 import com.journalistjunction.model.Article;
+import com.journalistjunction.model.Photo;
 import com.journalistjunction.model.User;
 import com.journalistjunction.repository.ArticleRepository;
 import com.journalistjunction.repository.UserRepository;
+import com.journalistjunction.s3.S3Buckets;
+import com.journalistjunction.s3.S3Service;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
 public class ArticleService {
-    private final ArticleRepository articleRepository;
+
+    private final S3Service s3Service;
+    private final S3Buckets s3Buckets;
     private final UserRepository userRepository;
+    private final ArticleRepository articleRepository;
+
 
     public List<Article> getAllArticles() {
         return articleRepository.findAll();
@@ -37,7 +47,7 @@ public class ArticleService {
                 .orElseThrow(() -> new NoSuchElementException("No Article Found!"));
     }
 
-//    Update Article
+    //    Update Article
     public void updateArticleById(Long id, Article articleUpdater) {
         Article articleFromDb = articleRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("No Article Found!"));
@@ -48,6 +58,61 @@ public class ArticleService {
         copyArticleFields(articleUpdater, articleFromDb);
 
         articleRepository.save(articleFromDb);
+    }
+
+
+    public void uploadArticlePhotos(List<MultipartFile> files, Long id) throws IOException {
+        if (files.isEmpty()) {
+            return;
+        }
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        User userFromDb = (User) auth.getPrincipal();
+        Article article = articleRepository.findById(id).orElseThrow(() -> new NoSuchElementException("No Article Found!"));
+
+        if (userFromDb.getArticlesOwned().stream().noneMatch(e -> Objects.equals(e.getId(), id))) {
+            throw new IllegalStateException("No Article Found With This ID for " + userFromDb.getName());
+        }
+
+        if (article.getPhotos().size() + files.size() <= 10) {
+            for (MultipartFile file : files) {
+                String uuid = UUID.randomUUID().toString();
+                String key = userFromDb.getId() + "/Article_" + id + "/" + uuid;
+
+                List<Photo> currentPhotos = new ArrayList<>(article.getPhotos());
+                currentPhotos.add(new Photo(s3Buckets.getCustomer(), key));
+
+                article.setPhotos(currentPhotos);
+
+                s3Service.putObject(s3Buckets.getCustomer(), key, file.getBytes());
+            }
+        } else {
+            throw new IllegalStateException("Articles Can't Have More Than 10 Photos!");
+        }
+    }
+
+    public void deleteArticlePhotos(List<Photo> photosToBeDeleted, Long id) {
+        if (photosToBeDeleted.isEmpty()) {
+            return;
+        }
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        User userFromDb = (User) auth.getPrincipal();
+        Article article = articleRepository.findById(id).orElseThrow(() -> new NoSuchElementException("No Article Found!"));
+
+        if (userFromDb.getArticlesOwned().stream().noneMatch(e -> Objects.equals(e.getId(), id))) {
+            throw new IllegalStateException("No Article Found With This ID for " + userFromDb.getName());
+        }
+
+        List<String> keys = new ArrayList<>();
+        for (Photo photo : photosToBeDeleted) {
+            keys.add(photo.getKey());
+            article.setPhotos(article.getPhotos().stream().filter(e -> !e.equals(photo)).toList());
+        }
+
+        s3Service.deleteMultipleObjects(s3Buckets.getCustomer(), keys);
     }
 
     private void copyArticleFields(Article source, Article destination) {
@@ -122,8 +187,7 @@ public class ArticleService {
                         !articleFromDb.getContributors().contains(contributor) &&
                         !articleFromDb.getRejectedWorkers().contains(contributor)) {
                     articleFromDb.getContributors().add(contributor);
-                }
-                else {
+                } else {
                     throw new IllegalStateException("User " + nameContributor + " cannot be added as a contributor!");
                 }
             }
@@ -133,8 +197,7 @@ public class ArticleService {
                         !articleFromDb.getRejectedWorkers().contains(contributor)) {
                     articleFromDb.getContributors().remove(contributor);
                     articleFromDb.getRejectedWorkers().add(contributor);
-                }
-                else {
+                } else {
                     throw new IllegalStateException("User " + nameContributor + " cannot be deleted as a contributor!");
                 }
             }

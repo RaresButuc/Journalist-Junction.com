@@ -14,12 +14,13 @@ import BodyTextInput from "../components/articleFormComponents/BodyTextInput";
 import CountrySelect from "../components/accountFormComponents/CountrySelect";
 import LanguageSelect from "../components/accountFormComponents/LanguageSelect";
 import CategoriesSelect from "../components/articleFormComponents/CategoriesSelect";
+import ArticlePhotosInput from "../components/articleFormComponents/ArticlePhotosInput";
 import ThumbnailDescription from "../components/articleFormComponents/ThumbnailDescription";
 
 export default function EditArticlePage() {
   const { id } = useParams();
   const token = useAuthHeader();
-  console.log(token());
+
   const navigate = useNavigate();
 
   const [showAlert, setShowAlert] = useState(false);
@@ -481,6 +482,11 @@ export default function EditArticlePage() {
               article={currentArticle}
               id={"floatingBodyTextValue"}
               onChange={handleBodyChange}
+            />
+            <h2 className="mt-5 mb-3">Photos</h2>
+            <ArticlePhotosInput
+            // articleId={currentArticle}
+            // ref
             />
           </div>
         </div>

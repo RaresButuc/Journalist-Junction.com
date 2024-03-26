@@ -3,6 +3,7 @@ package com.journalistjunction.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -33,6 +34,7 @@ public class Article {
 
     @ManyToMany
     @JoinTable
+    @Size(min = 1, max = 10)
     private List<Category> categories;
 
     private LocalDateTime postTime;
@@ -58,6 +60,7 @@ public class Article {
     private List<User> rejectedWorkers;
 
     @ElementCollection
+    @Size(max = 10)
     private List<Photo> photos;
 
     @JsonIgnore

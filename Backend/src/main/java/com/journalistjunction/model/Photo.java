@@ -15,5 +15,4 @@ public class Photo {
 
     private String key;
 
-    private String description;
 }
