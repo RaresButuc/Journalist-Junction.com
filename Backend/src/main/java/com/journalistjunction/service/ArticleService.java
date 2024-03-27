@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -61,6 +62,7 @@ public class ArticleService {
     }
 
 
+    @Transactional
     public void uploadArticlePhotos(List<MultipartFile> files, Long id) throws IOException {
         if (files.isEmpty()) {
             return;
@@ -76,17 +78,17 @@ public class ArticleService {
         }
 
         if (article.getPhotos().size() + files.size() <= 10) {
+            List<Photo> currentPhotos = new ArrayList<>(article.getPhotos());
+
             for (MultipartFile file : files) {
                 String uuid = UUID.randomUUID().toString();
                 String key = userFromDb.getId() + "/Article_" + id + "/" + uuid;
 
-                List<Photo> currentPhotos = new ArrayList<>(article.getPhotos());
                 currentPhotos.add(new Photo(s3Buckets.getCustomer(), key));
-
-                article.setPhotos(currentPhotos);
 
                 s3Service.putObject(s3Buckets.getCustomer(), key, file.getBytes());
             }
+            article.setPhotos(currentPhotos);
         } else {
             throw new IllegalStateException("Articles Can't Have More Than 10 Photos!");
         }

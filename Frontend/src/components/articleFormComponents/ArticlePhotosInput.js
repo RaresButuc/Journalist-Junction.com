@@ -159,7 +159,7 @@ const ArticlePhotosInput = forwardRef(({ article }, ref) => {
                 <div className="mt-2">
                   <button
                     className="btn btn-outline-success ml-2 mx-1"
-                    onClick={() => viewImage(index)} // La clic pe buton, se apelează funcția viewImage
+                    onClick={() => viewImage(index)} 
                   >
                     View
                   </button>
