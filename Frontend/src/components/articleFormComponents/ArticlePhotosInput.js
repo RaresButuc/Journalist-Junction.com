@@ -5,7 +5,7 @@ import ViewPhoto from "../ViewPhoto";
 import Alert from "../Alert";
 import DefaultURL from "../../usefull/DefaultURL";
 
-const ArticlePhotosInput = forwardRef(({ articleId }, ref) => {
+const ArticlePhotosInput = forwardRef(({ article }, ref) => {
   const [photos, setPhotos] = useState([]);
   const [showAlert, setShowAlert] = useState(false);
   const [alertInfos, setAlertInfos] = useState(["", "", ""]);
@@ -13,11 +13,11 @@ const ArticlePhotosInput = forwardRef(({ articleId }, ref) => {
   const [viewPhotoVisible, setViewPhotoVisible] = useState(false);
 
   useEffect(() => {
-    if (articleId) {
+    if (article) {
       const fetchCurrentArticle = async () => {
         try {
           const responseArticle = await axios.get(
-            `${DefaultURL}/article/${articleId}`
+            `${DefaultURL}/article/${article.id}`
           );
           setPhotos(
             responseArticle.data.photos.map((e) => ({
@@ -33,7 +33,7 @@ const ArticlePhotosInput = forwardRef(({ articleId }, ref) => {
 
       fetchCurrentArticle();
     }
-  }, [articleId]);
+  }, [article]);
 
   const deleteImage = (e, index) => {
     e.preventDefault();
@@ -150,8 +150,8 @@ const ArticlePhotosInput = forwardRef(({ articleId }, ref) => {
                   style={{
                     width: "auto",
                     height: "auto",
-                    maxWidth: "175px",
-                    maxHeight: "175px",
+                    maxWidth: "200px",
+                    maxHeight: "200px",
                   }}
                   alt={`Preview Image_${index}`}
                 />
@@ -159,7 +159,7 @@ const ArticlePhotosInput = forwardRef(({ articleId }, ref) => {
                 <div className="mt-2">
                   <button
                     className="btn btn-outline-success ml-2 mx-1"
-                    onClick={() => viewImage(index)} // La clic pe buton, se apelează funcția viewImage
+                    onClick={() => viewImage(index)} 
                   >
                     View
                   </button>
