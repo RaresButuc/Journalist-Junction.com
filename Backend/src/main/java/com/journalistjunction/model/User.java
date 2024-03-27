@@ -3,6 +3,7 @@ package com.journalistjunction.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.journalistjunction.enums.Role;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,21 +22,35 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
+    @NotBlank
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @NotNull
+    @NotBlank
     private String name;
 
+    @NotNull
+    @NotBlank
     private String email;
 
+    @NotNull
+    @NotBlank
     private String password;
 
+    @NotNull
+    @NotBlank
     private String phoneNumber;
 
+    @NotNull
+    @NotBlank
     @ManyToOne
     @JoinColumn
     private Location location;
 
+    @NotNull
+    @NotBlank
     @Column(length = 500)
     private String shortAutoDescription;
 

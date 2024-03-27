@@ -150,8 +150,8 @@ const ArticlePhotosInput = forwardRef(({ articleId }, ref) => {
                   style={{
                     width: "auto",
                     height: "auto",
-                    maxWidth: "175px",
-                    maxHeight: "175px",
+                    maxWidth: "200px",
+                    maxHeight: "200px",
                   }}
                   alt={`Preview Image_${index}`}
                 />
