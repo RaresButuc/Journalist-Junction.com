@@ -5,7 +5,7 @@ import ViewPhoto from "../ViewPhoto";
 import Alert from "../Alert";
 import DefaultURL from "../../usefull/DefaultURL";
 
-const ArticlePhotosInput = forwardRef(({ articleId }, ref) => {
+const ArticlePhotosInput = forwardRef(({ article }, ref) => {
   const [photos, setPhotos] = useState([]);
   const [showAlert, setShowAlert] = useState(false);
   const [alertInfos, setAlertInfos] = useState(["", "", ""]);
@@ -13,11 +13,11 @@ const ArticlePhotosInput = forwardRef(({ articleId }, ref) => {
   const [viewPhotoVisible, setViewPhotoVisible] = useState(false);
 
   useEffect(() => {
-    if (articleId) {
+    if (article) {
       const fetchCurrentArticle = async () => {
         try {
           const responseArticle = await axios.get(
-            `${DefaultURL}/article/${articleId}`
+            `${DefaultURL}/article/${article.id}`
           );
           setPhotos(
             responseArticle.data.photos.map((e) => ({
@@ -33,7 +33,7 @@ const ArticlePhotosInput = forwardRef(({ articleId }, ref) => {
 
       fetchCurrentArticle();
     }
-  }, [articleId]);
+  }, [article]);
 
   const deleteImage = (e, index) => {
     e.preventDefault();

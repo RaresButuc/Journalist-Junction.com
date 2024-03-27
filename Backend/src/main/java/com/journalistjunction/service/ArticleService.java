@@ -92,8 +92,8 @@ public class ArticleService {
         }
     }
 
-    public void deleteArticlePhotos(List<Photo> photosToBeDeleted, Long id) {
-        if (photosToBeDeleted.isEmpty()) {
+    public void deleteArticlePhotos(List<Photo> photos, Long id) {
+        if (photos.isEmpty()) {
             return;
         }
 
@@ -105,6 +105,8 @@ public class ArticleService {
         if (userFromDb.getArticlesOwned().stream().noneMatch(e -> Objects.equals(e.getId(), id))) {
             throw new IllegalStateException("No Article Found With This ID for " + userFromDb.getName());
         }
+
+        List<Photo> photosToBeDeleted = photos.stream().filter(e -> !article.getPhotos().contains(e)).toList();
 
         List<String> keys = new ArrayList<>();
         for (Photo photo : photosToBeDeleted) {

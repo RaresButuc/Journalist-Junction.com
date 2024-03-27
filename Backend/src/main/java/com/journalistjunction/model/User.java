@@ -75,7 +75,7 @@ public class User implements UserDetails {
     private List<Article> articlesContributed;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "owner")
+    @OneToMany(mappedBy = "owner",fetch = FetchType.EAGER)
     private List<Article> articlesOwned;
 
     @JsonIgnore

@@ -1,14 +1,14 @@
 import axios from "axios";
-import ErrorPage from "./ErrorPage";
-import closeIcon from "../photos/close.png";
-import { useState, useEffect } from "react";
-import DefaultURL from "../usefull/DefaultURL";
 import { useAuthHeader } from "react-auth-kit";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router";
+
+import ErrorPage from "./ErrorPage";
+import Alert from "../components/Alert";
+import closeIcon from "../photos/close.png";
+import DefaultURL from "../usefull/DefaultURL";
 import Modal from "../components/articleFormComponents/Modal";
 import FirstLetterUppercase from "../usefull/FirstLetterUppercase";
-
-import Alert from "../components/Alert";
 import TitleInput from "../components/articleFormComponents/TitleInput";
 import BodyTextInput from "../components/articleFormComponents/BodyTextInput";
 import CountrySelect from "../components/accountFormComponents/CountrySelect";
@@ -20,6 +20,8 @@ import ThumbnailDescription from "../components/articleFormComponents/ThumbnailD
 export default function EditArticlePage() {
   const { id } = useParams();
   const token = useAuthHeader();
+
+  const photosRef = useRef([]);
 
   const navigate = useNavigate();
 
@@ -183,26 +185,58 @@ export default function EditArticlePage() {
     e.preventDefault();
 
     const headers = { Authorization: token() };
-    const data = formData(new FormData(e.target));
+    const articleData = formData(new FormData(e.target));
     const buttonTarget = e.nativeEvent.submitter.textContent;
+
+    const alreadyPostedPhotos = photosRef.current.filter((e) => e.posted);
+
+    const notYetPostedPhotos = photosRef.current
+      .filter((e) => !e.posted)
+      .map((e) => e.data);
+
+    const formDataNewPhotos = new FormData();
+    notYetPostedPhotos.forEach((file) => {
+      formDataNewPhotos.append("files", file);
+    });
 
     try {
       if (buttonTarget === "Save") {
-        const response = await axios.put(`${DefaultURL}/article/${id}`, data, {
-          headers,
-        });
+        const responseEditInfo = await axios.put(
+          `${DefaultURL}/article/${id}`,
+          articleData,
+          {
+            headers,
+          }
+        );
+
+        const responseDeletePhotos = await axios.put(
+          `${DefaultURL}/article/delete-article-photos/${id}`,
+          alreadyPostedPhotos,
+          {
+            headers,
+          }
+        );
+
+        const responsePostPhotos = await axios.put(
+          `${DefaultURL}/article/upload-article-photos/${id}`,
+          formDataNewPhotos,
+          {
+            headers,
+            "Content-Type": "multipart/form-data",
+          }
+        );
 
         window.scrollTo(0, 0);
 
         setShowAlert(true);
-        setAlertInfos(["Success!", response.data, "success"]);
+        setAlertInfos(["Success!", responseEditInfo.data, "success"]);
         setTimeout(() => {
           setShowAlert(false);
         }, 3000);
       } else if (buttonTarget === "Publish") {
         const response = await axios.put(
           `${DefaultURL}/article/${id}/true`,
-          data,
+          articleData,
           { headers }
         );
 
@@ -246,6 +280,7 @@ export default function EditArticlePage() {
       }
     } catch (err) {
       setShowAlert(true);
+      console.log(err.response.data.message);
       setAlertInfos(["Error Occured!", err.response.data.message, "danger"]);
       setTimeout(() => {
         setShowAlert(false);
@@ -484,10 +519,7 @@ export default function EditArticlePage() {
               onChange={handleBodyChange}
             />
             <h2 className="mt-5 mb-3">Photos</h2>
-            <ArticlePhotosInput
-            // articleId={currentArticle}
-            // ref
-            />
+            <ArticlePhotosInput article={currentArticle} ref={photosRef} />
           </div>
         </div>
       ) : (
