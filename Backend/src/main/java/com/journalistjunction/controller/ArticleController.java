@@ -2,6 +2,7 @@ package com.journalistjunction.controller;
 
 import com.journalistjunction.model.Article;
 import com.journalistjunction.model.Photo;
+import com.journalistjunction.model.PhotoAndByte;
 import com.journalistjunction.service.ArticleService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
@@ -76,6 +77,11 @@ public class ArticleController {
     public ResponseEntity<String> removeRejection(@PathVariable("id") Long id, @PathVariable("userId") Long userId) {
         articleService.removeRejection(id, userId);
         return ResponseEntity.ok("This User Was Removed from the `Rejected Contributors` List!");
+    }
+
+    @GetMapping(value = "/get-article-photos/{id}")
+    public List<PhotoAndByte> getArticlePhotos(@PathVariable("id") Long id) {
+        return articleService.getArticlePhotos(id);
     }
 
     @PutMapping(value = "/upload-article-photos/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

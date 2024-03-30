@@ -19,13 +19,34 @@ const ArticlePhotosInput = forwardRef(({ article }, ref) => {
           const responseArticle = await axios.get(
             `${DefaultURL}/article/${article.id}`
           );
-          setPhotos(
-            responseArticle.data.photos.map((e) => ({
-              data: e,
-              preview: e.key,
-              posted: true,
-            }))
-          );
+
+          if (responseArticle.data.photos.length !== 0) {
+            const reponseArticlePhotos = await axios.get(
+              `${DefaultURL}/article/get-article-photos/${article.id}`
+            );
+
+            const photos = reponseArticlePhotos?.data.map((photo) => {
+              console.log("bytes: " + typeof photo.bytes);
+
+              const byteString = atob(photo.bytes);
+              const byteArray = new Uint8Array(byteString.length);
+              for (let i = 0; i < byteString.length; i++) {
+                byteArray[i] = byteString.charCodeAt(i);
+              }
+
+              const imageUrl = `data:image/jpeg;base64,${photo.bytes}`;
+
+              return {
+                data: photo.photo,
+                preview: imageUrl,
+                posted: true,
+              };
+            });
+
+            setPhotos(photos);
+          } else {
+            setPhotos([]);
+          }
         } catch (err) {
           console.log(err);
         }
@@ -77,32 +98,48 @@ const ArticlePhotosInput = forwardRef(({ article }, ref) => {
     borderColor: "#ff1744",
   };
 
-  const onDrop = useCallback((acceptedFiles) => {
-    const file = acceptedFiles[0];
-
-    if (file.type.substring(0, 6) === "image/") {
-      const image = new Image();
-
-      image.onload = function () {
-        setPhotos((prevPhotos) => [
-          ...prevPhotos,
-          { data: file, preview: URL.createObjectURL(file), posted: false },
+  const onDrop = useCallback(
+    (acceptedFiles) => {
+      if (photos.length + acceptedFiles.length > 10) {
+        setShowAlert(true);
+        setAlertInfos([
+          "Error Occurred!",
+          "You Can't Add More Than 10 Photos",
+          "danger",
         ]);
-      };
+        setTimeout(() => {
+          setShowAlert(false);
+        }, 3000);
+        return;
+      }
 
-      image.src = URL.createObjectURL(file);
-    } else {
-      setShowAlert(true);
-      setAlertInfos([
-        "Be Careful!",
-        "The Selected File Is Not an Image. Try Again!",
-        "danger",
-      ]);
-      setTimeout(() => {
-        setShowAlert(false);
-      }, 3000);
-    }
-  }, []);
+      acceptedFiles.forEach((file) => {
+        if (file.type.substring(0, 6) === "image/") {
+          const image = new Image();
+
+          image.onload = function () {
+            setPhotos((prevPhotos) => [
+              ...prevPhotos,
+              { data: file, preview: URL.createObjectURL(file), posted: false },
+            ]);
+          };
+
+          image.src = URL.createObjectURL(file);
+        } else {
+          setShowAlert(true);
+          setAlertInfos([
+            "Be Careful!",
+            "The Selected File Is Not an Image. Try Again!",
+            "danger",
+          ]);
+          setTimeout(() => {
+            setShowAlert(false);
+          }, 3000);
+        }
+      });
+    },
+    [photos]
+  );
 
   const { getRootProps, getInputProps, isFocused, isDragAccept, isDragReject } =
     useDropzone({ onDrop });
@@ -159,7 +196,7 @@ const ArticlePhotosInput = forwardRef(({ article }, ref) => {
                 <div className="mt-2">
                   <button
                     className="btn btn-outline-success ml-2 mx-1"
-                    onClick={() => viewImage(index)} 
+                    onClick={() => viewImage(index)}
                   >
                     View
                   </button>

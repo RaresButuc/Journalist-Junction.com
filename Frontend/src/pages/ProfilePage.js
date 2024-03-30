@@ -41,6 +41,9 @@ export default function ProfilePage() {
                 responseType: "arraybuffer",
               }
             );
+            
+            console.log("bytes: " + typeof reponseUserProfilePhoto.data);
+
             const imageUrl = `data:image/jpeg;base64,
           ${btoa(
             new Uint8Array(reponseUserProfilePhoto.data).reduce(
@@ -48,6 +51,8 @@ export default function ProfilePage() {
               ""
             )
           )}`;
+          console.log("image URL:" + imageUrl);
+
             setProfileImage(imageUrl);
           } else {
             setProfileImage(noProfileImage);
