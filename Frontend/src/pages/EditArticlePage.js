@@ -188,48 +188,66 @@ export default function EditArticlePage() {
     const articleData = formData(new FormData(e.target));
     const buttonTarget = e.nativeEvent.submitter.textContent;
 
-    const alreadyPostedPhotos = photosRef.current.filter((e) => e.posted);
+    const photosToBeDeleted = currentArticle.photos.filter(
+      (photo) =>
+        !photosRef.current
+          .map((refPhoto) => `${refPhoto.data.bucket}/${refPhoto.data.key}`)
+          .includes(`${photo.bucket}/${photo.key}`)
+    );
 
-    const notYetPostedPhotos = photosRef.current
+    const photosToBeAdded = photosRef.current
       .filter((e) => !e.posted)
       .map((e) => e.data);
 
     const formDataNewPhotos = new FormData();
-    notYetPostedPhotos.forEach((file) => {
+    photosToBeAdded.forEach((file) => {
       formDataNewPhotos.append("files", file);
     });
 
     try {
       if (buttonTarget === "Save") {
-        const responseEditInfo = await axios.put(
+        const putRequests = [];
+
+        const editArticleInfo = await axios.put(
           `${DefaultURL}/article/${id}`,
           articleData,
           {
             headers,
           }
         );
+        putRequests.push(editArticleInfo);
 
-        const responseDeletePhotos = await axios.put(
-          `${DefaultURL}/article/delete-article-photos/${id}`,
-          alreadyPostedPhotos,
-          {
-            headers,
-          }
-        );
+        if (photosToBeDeleted.length) {
+          const deletePhotos = await axios.put(
+            `${DefaultURL}/article/delete-article-photos/${id}`,
+            photosToBeDeleted,
+            {
+              headers,
+            }
+          );
 
-        const responsePostPhotos = await axios.put(
-          `${DefaultURL}/article/upload-article-photos/${id}`,
-          formDataNewPhotos,
-          {
-            headers,
-            "Content-Type": "multipart/form-data",
-          }
-        );
+          putRequests.push(deletePhotos);
+        }
+
+        if (photosToBeAdded.length) {
+          const postPhotos = await axios.put(
+            `${DefaultURL}/article/upload-article-photos/${id}`,
+            formDataNewPhotos,
+            {
+              headers,
+              "Content-Type": "multipart/form-data",
+            }
+          );
+
+          putRequests.push(postPhotos);
+        }
+
+        await Promise.all(putRequests);
 
         window.scrollTo(0, 0);
 
         setShowAlert(true);
-        setAlertInfos(["Success!", responseEditInfo.data, "success"]);
+        setAlertInfos(["Success!", editArticleInfo.data, "success"]);
         setTimeout(() => {
           setShowAlert(false);
         }, 3000);

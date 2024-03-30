@@ -2,6 +2,7 @@ package com.journalistjunction.service;
 
 import com.journalistjunction.model.Article;
 import com.journalistjunction.model.Photo;
+import com.journalistjunction.model.PhotoAndByte;
 import com.journalistjunction.model.User;
 import com.journalistjunction.repository.ArticleRepository;
 import com.journalistjunction.repository.UserRepository;
@@ -17,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -48,7 +50,6 @@ public class ArticleService {
                 .orElseThrow(() -> new NoSuchElementException("No Article Found!"));
     }
 
-    //    Update Article
     public void updateArticleById(Long id, Article articleUpdater) {
         Article articleFromDb = articleRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("No Article Found!"));
@@ -61,6 +62,17 @@ public class ArticleService {
         articleRepository.save(articleFromDb);
     }
 
+    public List<PhotoAndByte> getArticlePhotos(Long id) {
+        Article article = articleRepository.findById(id).orElseThrow(() -> new NoSuchElementException("No Article Found!"));
+
+        List<PhotoAndByte> photos = new ArrayList<>();
+        for (Photo articlePhoto : article.getPhotos()) {
+            byte[] photo = s3Service.getObject(s3Buckets.getCustomer(), articlePhoto.getKey());
+            photos.add(new PhotoAndByte(articlePhoto, photo));
+        }
+
+        return photos;
+    }
 
     @Transactional
     public void uploadArticlePhotos(List<MultipartFile> files, Long id) throws IOException {
@@ -108,14 +120,15 @@ public class ArticleService {
             throw new IllegalStateException("No Article Found With This ID for " + userFromDb.getName());
         }
 
-        List<Photo> photosToBeDeleted = photos.stream().filter(e -> !article.getPhotos().contains(e)).toList();
+        List<String> keys = photos.stream().map(Photo::getKey).toList();
 
-        List<String> keys = new ArrayList<>();
-        for (Photo photo : photosToBeDeleted) {
-            keys.add(photo.getKey());
-            article.setPhotos(article.getPhotos().stream().filter(e -> !e.equals(photo)).toList());
-        }
+        List<Photo> updatedPhotos = article.getPhotos().stream()
+                .filter(photoInArticle -> photos.stream().noneMatch(photoToDelete -> photoInArticle.getKey().equals(photoToDelete.getKey())))
+                .collect(Collectors.toList());
 
+        article.setPhotos(updatedPhotos);
+
+        articleRepository.save(article);
         s3Service.deleteMultipleObjects(s3Buckets.getCustomer(), keys);
     }
 
@@ -127,8 +140,6 @@ public class ArticleService {
         destination.setLocation(source.getLocation());
         destination.setLanguage(source.getLanguage());
     }
-
-//    Publish or UnPublish Article
 
     public void publishOrUnPublishArticle(Long id, String decision, Article articleUpdater) {
         Article articleFromDb = articleRepository.findById(id)
@@ -239,4 +250,6 @@ public class ArticleService {
         String dayAndMonth = articlePostTime.getDayOfWeek().name() + ", " + articlePostTime.getDayOfMonth() + " " + articlePostTime.getMonth() + " " + articlePostTime.getYear();
         return hourAndSeconds + "/ " + dayAndMonth;
     }
+
+
 }
