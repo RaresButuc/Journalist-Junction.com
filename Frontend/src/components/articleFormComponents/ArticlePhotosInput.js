@@ -5,11 +5,11 @@ import ViewPhoto from "../ViewPhoto";
 import Alert from "../Alert";
 import DefaultURL from "../../usefull/DefaultURL";
 
-const ArticlePhotosInput = forwardRef(({ article }, ref) => {
+const ArticlePhotosInput = forwardRef(({ article, reload }, ref) => {
   const [photos, setPhotos] = useState([]);
   const [showAlert, setShowAlert] = useState(false);
-  const [alertInfos, setAlertInfos] = useState(["", "", ""]);
   const [viewPhotoData, setViewPhotoData] = useState(null);
+  const [alertInfos, setAlertInfos] = useState(["", "", ""]);
   const [viewPhotoVisible, setViewPhotoVisible] = useState(false);
 
   useEffect(() => {
@@ -26,8 +26,6 @@ const ArticlePhotosInput = forwardRef(({ article }, ref) => {
             );
 
             const photos = reponseArticlePhotos?.data.map((photo) => {
-              console.log("bytes: " + typeof photo.bytes);
-
               const byteString = atob(photo.bytes);
               const byteArray = new Uint8Array(byteString.length);
               for (let i = 0; i < byteString.length; i++) {
@@ -42,7 +40,7 @@ const ArticlePhotosInput = forwardRef(({ article }, ref) => {
                 posted: true,
               };
             });
-
+            console.log(photos);
             setPhotos(photos);
           } else {
             setPhotos([]);
@@ -54,7 +52,7 @@ const ArticlePhotosInput = forwardRef(({ article }, ref) => {
 
       fetchCurrentArticle();
     }
-  }, [article]);
+  }, [article, reload]);
 
   const deleteImage = (e, index) => {
     e.preventDefault();

@@ -39,6 +39,7 @@ export default function EditArticlePage() {
   });
   const [categoriesCurrent, setCategoriesCurrent] = useState([]);
   const [rejectedContributors, setRejectedContributors] = useState([]);
+  const [reloadPhotos, setReloadPhotos] = useState(false);
 
   const [selectDisabled, setSelectDisabled] = useState(false);
   const [publishButton, setPublishButton] = useState({
@@ -87,7 +88,7 @@ export default function EditArticlePage() {
     };
 
     getArticleById();
-  }, [contributors.length, rejectedContributors.length]);
+  }, [contributors.length, rejectedContributors.length, reloadPhotos]);
 
   useEffect(() => {
     setSelectDisabled(categoriesCurrent.length === 3);
@@ -188,6 +189,9 @@ export default function EditArticlePage() {
     const articleData = formData(new FormData(e.target));
     const buttonTarget = e.nativeEvent.submitter.textContent;
 
+    console.log("Current Photos: ", currentArticle.photos);
+    console.log("New Photos: ", photosRef.current);
+
     const photosToBeDeleted = currentArticle.photos.filter(
       (photo) =>
         !photosRef.current
@@ -242,15 +246,17 @@ export default function EditArticlePage() {
           putRequests.push(postPhotos);
         }
 
-        await Promise.all(putRequests);
+        Promise.all(putRequests).then(() => {
+          setReloadPhotos(!reloadPhotos);
+
+          setShowAlert(true);
+          setAlertInfos(["Success!", editArticleInfo.data, "success"]);
+          setTimeout(() => {
+            setShowAlert(false);
+          }, 3000);
+        });
 
         window.scrollTo(0, 0);
-
-        setShowAlert(true);
-        setAlertInfos(["Success!", editArticleInfo.data, "success"]);
-        setTimeout(() => {
-          setShowAlert(false);
-        }, 3000);
       } else if (buttonTarget === "Publish") {
         const response = await axios.put(
           `${DefaultURL}/article/${id}/true`,
@@ -298,7 +304,6 @@ export default function EditArticlePage() {
       }
     } catch (err) {
       setShowAlert(true);
-      console.log(err.response.data.message);
       setAlertInfos(["Error Occured!", err.response.data.message, "danger"]);
       setTimeout(() => {
         setShowAlert(false);
@@ -537,7 +542,11 @@ export default function EditArticlePage() {
               onChange={handleBodyChange}
             />
             <h2 className="mt-5 mb-3">Photos</h2>
-            <ArticlePhotosInput article={currentArticle} ref={photosRef} />
+            <ArticlePhotosInput
+              article={currentArticle}
+              reload={reloadPhotos}
+              ref={photosRef}
+            />
           </div>
         </div>
       ) : (
