@@ -51,7 +51,7 @@ export default function Navbar() {
   return (
     <div className="container" style={{ paddingBottom: 130 }}>
       <nav
-        className="navbar navbar-custom fixed-top navbar-expand-md navbar-light shadow-5-strong border-bottom border-danger "
+        className="navbar navbar-custom fixed-top navbar-expand-md navbar-light shadow-5-strong border-bottom border-danger"
         style={{ backgroundColor: "rgba(255, 255, 255,0.9)" }}
       >
         <div className="container-xl">
@@ -103,7 +103,7 @@ export default function Navbar() {
                 <li className="nav-item">
                   <div className="dropdown">
                     <button
-                      className="btn  dropdown-toggle"
+                      className="btn dropdown-toggle"
                       type="button"
                       data-bs-toggle="dropdown"
                       aria-expanded="false"
@@ -111,7 +111,7 @@ export default function Navbar() {
                       {currentUser?.profilePhoto ? (
                         <img
                           src={profilePhoto}
-                          className="img-fluid rounded-circle border border-2 border-danger"
+                          className="img-fluid rounded-circle"
                           style={{
                             borderColor: "black",
                             width: "40px",
@@ -130,7 +130,7 @@ export default function Navbar() {
                         />
                       )}
                     </button>
-                    <ul className="dropdown-menu dropdown-menu-end">
+                    <ul className="dropdown-menu dropdown-menu-end border border-danger">
                       <li>
                         <a
                           className="dropdown-item"
@@ -148,7 +148,7 @@ export default function Navbar() {
                         </a>
                       </li>
                       <li>
-                        <hr className="dropdown-divider" />
+                        <hr className="border border-danger" />
                       </li>
                       <li>
                         <a className="dropdown-item" href="/changepassoword">

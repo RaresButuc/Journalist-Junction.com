@@ -32,11 +32,16 @@ export default function RegisterPage() {
           const formData = new FormData();
           formData.append("file", photoRef.current);
 
-          await axios.put(`${DefaultURL}/user/set-profile-photo`, formData, {
-            headers,
-            "Content-Type": "multipart/form-data",
-          });
+          await axios.put(
+            `${DefaultURL}/user/set-profile-photo`,
+            formData,
+            {
+              headers,
+              "Content-Type": "multipart/form-data",
+            }
+          );
         }
+
         setTimeout(() => {
           navigate("/login");
         }, 2000);

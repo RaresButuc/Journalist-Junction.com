@@ -2,6 +2,7 @@ package com.journalistjunction.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.journalistjunction.enums.Role;
+import com.journalistjunction.model.PhotosClasses.UserProfilePhoto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -54,28 +55,23 @@ public class User implements UserDetails {
     @Column(length = 500)
     private String shortAutoDescription;
 
-    @Embedded
-    @AttributeOverrides({
-            @AttributeOverride(name = "bucket", column = @Column(name = "background_bucket")),
-            @AttributeOverride(name = "description", column = @Column(name = "background_description")),
-            @AttributeOverride(name = "key", column = @Column(name = "background_key"))
-    })
-    private Photo profileBackgroundPhoto;
+//    @Embedded
+//    @AttributeOverrides({
+//            @AttributeOverride(name = "bucket", column = @Column(name = "background_bucket")),
+//            @AttributeOverride(name = "description", column = @Column(name = "background_description")),
+//            @AttributeOverride(name = "key", column = @Column(name = "background_key"))
+//    })
+//    private Photo profileBackgroundPhoto;
 
-    @Embedded
-    @AttributeOverrides({
-            @AttributeOverride(name = "bucket", column = @Column(name = "profile_bucket")),
-            @AttributeOverride(name = "description", column = @Column(name = "profile_description")),
-            @AttributeOverride(name = "key", column = @Column(name = "profile_key"))
-    })
-    private Photo profilePhoto;
+    @OneToOne(cascade = CascadeType.ALL)
+    private UserProfilePhoto profilePhoto;
 
     @JsonIgnore
     @ManyToMany(mappedBy = "contributors")
     private List<Article> articlesContributed;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "owner",fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "owner", fetch = FetchType.EAGER)
     private List<Article> articlesOwned;
 
     @JsonIgnore
@@ -127,4 +123,5 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
 }

@@ -1,7 +1,6 @@
 package com.journalistjunction.controller;
 
 import com.journalistjunction.model.Comment;
-import com.journalistjunction.model.Photo;
 import com.journalistjunction.service.CommentService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
