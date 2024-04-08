@@ -38,6 +38,7 @@ const ArticlePhotosInput = forwardRef(({ article, reload }, ref) => {
                 data: photo.photo,
                 preview: imageUrl,
                 posted: true,
+                isThumbnail: photo.isThumbnail,
               };
             });
             console.log(photos);
@@ -53,15 +54,6 @@ const ArticlePhotosInput = forwardRef(({ article, reload }, ref) => {
       fetchCurrentArticle();
     }
   }, [article, reload]);
-
-  const deleteImage = (e, index) => {
-    e.preventDefault();
-
-    const newArray = [...photos];
-    newArray.splice(index, 1);
-
-    setPhotos(newArray);
-  };
 
   const viewImage = (index) => {
     setViewPhotoData(photos[index]);
@@ -118,7 +110,12 @@ const ArticlePhotosInput = forwardRef(({ article, reload }, ref) => {
           image.onload = function () {
             setPhotos((prevPhotos) => [
               ...prevPhotos,
-              { data: file, preview: URL.createObjectURL(file), posted: false },
+              {
+                data: file,
+                preview: URL.createObjectURL(file),
+                posted: false,
+                isThumbnail: false,
+              },
             ]);
           };
 
@@ -159,6 +156,37 @@ const ArticlePhotosInput = forwardRef(({ article, reload }, ref) => {
     }
   }, [ref, photos]);
 
+  const deleteImage = (e, index) => {
+    e.preventDefault();
+
+    const newArray = [...photos];
+    newArray.splice(index, 1);
+
+    setPhotos(newArray);
+  };
+
+  const setIsThumbnail = (e, key) => {
+    const updatedPhotos = photos.map((photo, index) => {
+      if (index === key && !photo.isThumbnail) {
+        return {
+          ...photo,
+          isThumbnail: true,
+        };
+      } else if (index === key && photo.isThumbnail) {
+        return {
+          ...photo,
+          isThumbnail: false,
+        };
+      } else {
+        return {
+          ...photo,
+          isThumbnail: false,
+        };
+      }
+    });
+    setPhotos(updatedPhotos);
+  };
+
   return (
     <>
       {showAlert ? (
@@ -178,10 +206,24 @@ const ArticlePhotosInput = forwardRef(({ article, reload }, ref) => {
             <h3 className="text-danger mt-3">No Photos Selected</h3>
           ) : (
             photos.map((photo, index) => (
-              <div className="col-xl-6 col-md-12 mx-auto" key={index}>
+              <div className="col-xl-6 col-md-12 mx-auto mt-4 " key={index}>
+                <div className="d-flex justify-content-center">
+                  <div class="form-check form-switch">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      role="switch"
+                      id="flexSwitchCheckDefault"
+                      checked={photo.isThumbnail}
+                      onClick={(e) => setIsThumbnail(e, index)}
+                    />
+                  </div>
+                  <h5>Thumbnail</h5>
+                </div>
+
                 <img
                   src={photo.preview}
-                  className="mt-4 img-fluid border border-2 border-danger"
+                  className="img-fluid border border-2 border-danger"
                   style={{
                     width: "auto",
                     height: "auto",
