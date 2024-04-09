@@ -1,5 +1,6 @@
 package com.journalistjunction.model.PhotosClasses;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.journalistjunction.model.Article;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -27,6 +28,7 @@ public class ArticlePhoto extends Photo {
     @NotNull
     @NotBlank
     @ManyToOne
+    @JsonIgnore
     private Article article;
 
     public ArticlePhoto(String bucket, String key, boolean isThumbnail, Article article) {

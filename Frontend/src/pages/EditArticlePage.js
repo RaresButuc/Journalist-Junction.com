@@ -191,7 +191,7 @@ export default function EditArticlePage() {
 
     console.log("Current Photos: ", currentArticle.photos);
     console.log("New Photos: ", photosRef.current);
-
+// console.log(photosRef.current);
     const photosToBeDeleted = currentArticle.photos.filter(
       (photo) =>
         !photosRef.current

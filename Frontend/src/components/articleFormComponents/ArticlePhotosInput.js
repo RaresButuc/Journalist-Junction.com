@@ -35,7 +35,7 @@ const ArticlePhotosInput = forwardRef(({ article, reload }, ref) => {
               const imageUrl = `data:image/jpeg;base64,${photo.bytes}`;
 
               return {
-                data: photo.photo,
+                data: photo.articlePhoto,
                 preview: imageUrl,
                 posted: true,
                 isThumbnail: photo.isThumbnail,
