@@ -5,11 +5,11 @@ import ViewPhoto from "../ViewPhoto";
 import Alert from "../Alert";
 import DefaultURL from "../../usefull/DefaultURL";
 
-const ArticlePhotosInput = forwardRef(({ article }, ref) => {
+const ArticlePhotosInput = forwardRef(({ article, reload }, ref) => {
   const [photos, setPhotos] = useState([]);
   const [showAlert, setShowAlert] = useState(false);
-  const [alertInfos, setAlertInfos] = useState(["", "", ""]);
   const [viewPhotoData, setViewPhotoData] = useState(null);
+  const [alertInfos, setAlertInfos] = useState(["", "", ""]);
   const [viewPhotoVisible, setViewPhotoVisible] = useState(false);
 
   useEffect(() => {
@@ -26,8 +26,6 @@ const ArticlePhotosInput = forwardRef(({ article }, ref) => {
             );
 
             const photos = reponseArticlePhotos?.data.map((photo) => {
-              console.log("bytes: " + typeof photo.bytes);
-
               const byteString = atob(photo.bytes);
               const byteArray = new Uint8Array(byteString.length);
               for (let i = 0; i < byteString.length; i++) {
@@ -37,12 +35,13 @@ const ArticlePhotosInput = forwardRef(({ article }, ref) => {
               const imageUrl = `data:image/jpeg;base64,${photo.bytes}`;
 
               return {
-                data: photo.photo,
+                data: photo.articlePhoto,
                 preview: imageUrl,
                 posted: true,
+                isThumbnail: photo.isThumbnail,
               };
             });
-
+            console.log(photos);
             setPhotos(photos);
           } else {
             setPhotos([]);
@@ -54,16 +53,7 @@ const ArticlePhotosInput = forwardRef(({ article }, ref) => {
 
       fetchCurrentArticle();
     }
-  }, [article]);
-
-  const deleteImage = (e, index) => {
-    e.preventDefault();
-
-    const newArray = [...photos];
-    newArray.splice(index, 1);
-
-    setPhotos(newArray);
-  };
+  }, [article, reload]);
 
   const viewImage = (index) => {
     setViewPhotoData(photos[index]);
@@ -120,7 +110,12 @@ const ArticlePhotosInput = forwardRef(({ article }, ref) => {
           image.onload = function () {
             setPhotos((prevPhotos) => [
               ...prevPhotos,
-              { data: file, preview: URL.createObjectURL(file), posted: false },
+              {
+                data: file,
+                preview: URL.createObjectURL(file),
+                posted: false,
+                isThumbnail: false,
+              },
             ]);
           };
 
@@ -161,6 +156,37 @@ const ArticlePhotosInput = forwardRef(({ article }, ref) => {
     }
   }, [ref, photos]);
 
+  const deleteImage = (e, index) => {
+    e.preventDefault();
+
+    const newArray = [...photos];
+    newArray.splice(index, 1);
+
+    setPhotos(newArray);
+  };
+
+  const setIsThumbnail = (e, key) => {
+    const updatedPhotos = photos.map((photo, index) => {
+      if (index === key && !photo.isThumbnail) {
+        return {
+          ...photo,
+          isThumbnail: true,
+        };
+      } else if (index === key && photo.isThumbnail) {
+        return {
+          ...photo,
+          isThumbnail: false,
+        };
+      } else {
+        return {
+          ...photo,
+          isThumbnail: false,
+        };
+      }
+    });
+    setPhotos(updatedPhotos);
+  };
+
   return (
     <>
       {showAlert ? (
@@ -180,10 +206,24 @@ const ArticlePhotosInput = forwardRef(({ article }, ref) => {
             <h3 className="text-danger mt-3">No Photos Selected</h3>
           ) : (
             photos.map((photo, index) => (
-              <div className="col-xl-6 col-md-12 mx-auto" key={index}>
+              <div className="col-xl-6 col-md-12 mx-auto mt-4 " key={index}>
+                <div className="d-flex justify-content-center">
+                  <div class="form-check form-switch">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      role="switch"
+                      id="flexSwitchCheckDefault"
+                      checked={photo.isThumbnail}
+                      onClick={(e) => setIsThumbnail(e, index)}
+                    />
+                  </div>
+                  <h5>Thumbnail</h5>
+                </div>
+
                 <img
                   src={photo.preview}
-                  className="mt-4 img-fluid border border-2 border-danger"
+                  className="img-fluid border border-2 border-danger"
                   style={{
                     width: "auto",
                     height: "auto",

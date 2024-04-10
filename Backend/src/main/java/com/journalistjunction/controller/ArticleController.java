@@ -1,8 +1,8 @@
 package com.journalistjunction.controller;
 
 import com.journalistjunction.model.Article;
-import com.journalistjunction.model.Photo;
-import com.journalistjunction.model.PhotoAndByte;
+import com.journalistjunction.model.PhotosClasses.ArticlePhoto;
+import com.journalistjunction.model.PhotosClasses.ArticlePhotoAndByte;
 import com.journalistjunction.service.ArticleService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
@@ -80,7 +80,7 @@ public class ArticleController {
     }
 
     @GetMapping(value = "/get-article-photos/{id}")
-    public List<PhotoAndByte> getArticlePhotos(@PathVariable("id") Long id) {
+    public List<ArticlePhotoAndByte> getArticlePhotos(@PathVariable("id") Long id) {
         return articleService.getArticlePhotos(id);
     }
 
@@ -92,7 +92,7 @@ public class ArticleController {
     }
 
     @PutMapping(value = "/delete-article-photos/{id}")
-    public ResponseEntity<String> deleteArticlePhotos(@RequestBody List<Photo> photos, @PathVariable("id") Long id) {
+    public ResponseEntity<String> deleteArticlePhotos(@RequestBody List<ArticlePhoto> photos, @PathVariable("id") Long id) {
         articleService.deleteArticlePhotos(photos, id);
 
         return ResponseEntity.ok("Images Successfully Deleted!");

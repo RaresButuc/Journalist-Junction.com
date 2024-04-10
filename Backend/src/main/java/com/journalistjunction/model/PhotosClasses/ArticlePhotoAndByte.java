@@ -1,4 +1,4 @@
-package com.journalistjunction.model;
+package com.journalistjunction.model.PhotosClasses;
 
 import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.*;
@@ -10,11 +10,11 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Embeddable
-public class PhotoAndByte {
+public class ArticlePhotoAndByte {
 
     @NotNull
     @NotBlank
-    private Photo photo;
+    private ArticlePhoto articlePhoto;
 
     @NotNull
     @NotBlank

@@ -1,6 +1,6 @@
-package com.journalistjunction.model;
+package com.journalistjunction.model.PhotosClasses;
 
-import jakarta.persistence.*;
+import jakarta.persistence.MappedSuperclass;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
@@ -8,8 +8,7 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@Embeddable
+@MappedSuperclass
 public class Photo {
 
     @NotNull

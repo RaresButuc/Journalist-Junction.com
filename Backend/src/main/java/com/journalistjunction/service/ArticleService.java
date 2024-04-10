@@ -1,9 +1,9 @@
 package com.journalistjunction.service;
 
-import com.journalistjunction.model.Article;
-import com.journalistjunction.model.Photo;
-import com.journalistjunction.model.PhotoAndByte;
-import com.journalistjunction.model.User;
+import com.journalistjunction.model.*;
+import com.journalistjunction.model.PhotosClasses.ArticlePhoto;
+import com.journalistjunction.model.PhotosClasses.Photo;
+import com.journalistjunction.model.PhotosClasses.ArticlePhotoAndByte;
 import com.journalistjunction.repository.ArticleRepository;
 import com.journalistjunction.repository.UserRepository;
 import com.journalistjunction.s3.S3Buckets;
@@ -28,6 +28,7 @@ public class ArticleService {
     private final S3Buckets s3Buckets;
     private final UserRepository userRepository;
     private final ArticleRepository articleRepository;
+    private final ArticlePhotoService articlePhotoService;
 
 
     public List<Article> getAllArticles() {
@@ -62,13 +63,13 @@ public class ArticleService {
         articleRepository.save(articleFromDb);
     }
 
-    public List<PhotoAndByte> getArticlePhotos(Long id) {
+    public List<ArticlePhotoAndByte> getArticlePhotos(Long id) {
         Article article = articleRepository.findById(id).orElseThrow(() -> new NoSuchElementException("No Article Found!"));
 
-        List<PhotoAndByte> photos = new ArrayList<>();
-        for (Photo articlePhoto : article.getPhotos()) {
+        List<ArticlePhotoAndByte> photos = new ArrayList<>();
+        for (ArticlePhoto articlePhoto : article.getPhotos()) {
             byte[] photo = s3Service.getObject(s3Buckets.getCustomer(), articlePhoto.getKey());
-            photos.add(new PhotoAndByte(articlePhoto, photo));
+            photos.add(new ArticlePhotoAndByte(articlePhoto, photo));
         }
 
         return photos;
@@ -90,23 +91,24 @@ public class ArticleService {
         }
 
         if (article.getPhotos().size() + files.size() <= 10) {
-            List<Photo> currentPhotos = new ArrayList<>(article.getPhotos());
 
             for (MultipartFile file : files) {
                 String uuid = UUID.randomUUID().toString();
                 String key = userFromDb.getId() + "/Article_" + id + "/" + uuid;
 
-                currentPhotos.add(new Photo(s3Buckets.getCustomer(), key));
+                ArticlePhoto newArticlePhoto = articlePhotoService.createArticlePhoto(new ArticlePhoto(s3Buckets.getCustomer(), key, false, article));
 
+                article.getPhotos().add(newArticlePhoto);
                 s3Service.putObject(s3Buckets.getCustomer(), key, file.getBytes());
             }
-            article.setPhotos(currentPhotos);
+
+            articleRepository.save(article);
         } else {
             throw new IllegalStateException("Articles Can't Have More Than 10 Photos!");
         }
     }
 
-    public void deleteArticlePhotos(List<Photo> photos, Long id) {
+    public void deleteArticlePhotos(List<ArticlePhoto> photos, Long id) {
         if (photos.isEmpty()) {
             return;
         }
@@ -122,8 +124,8 @@ public class ArticleService {
 
         List<String> keys = photos.stream().map(Photo::getKey).toList();
 
-        List<Photo> updatedPhotos = article.getPhotos().stream()
-                .filter(photoInArticle -> photos.stream().noneMatch(photoToDelete -> photoInArticle.getKey().equals(photoToDelete.getKey())))
+        List<ArticlePhoto> updatedPhotos = article.getPhotos().stream()
+                .filter(photoInArticle -> photos.stream().noneMatch(photoToDelete -> photoInArticle.getId().equals(photoToDelete.getId())))
                 .collect(Collectors.toList());
 
         article.setPhotos(updatedPhotos);

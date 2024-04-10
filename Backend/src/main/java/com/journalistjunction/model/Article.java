@@ -1,8 +1,8 @@
 package com.journalistjunction.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.journalistjunction.model.PhotosClasses.ArticlePhoto;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
@@ -59,9 +59,9 @@ public class Article {
     @JoinTable
     private List<User> rejectedWorkers;
 
-    @ElementCollection
+    @OneToMany
     @Size(max = 10)
-    private List<Photo> photos;
+    private List<ArticlePhoto> photos;
 
     @JsonIgnore
     @OneToMany(mappedBy = "to")

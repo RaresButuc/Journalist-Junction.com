@@ -1,7 +1,7 @@
 package com.journalistjunction.service;
 
-import com.journalistjunction.model.Photo;
 import com.journalistjunction.model.User;
+import com.journalistjunction.model.PhotosClasses.UserProfilePhoto;
 import com.journalistjunction.repository.UserRepository;
 import com.journalistjunction.s3.S3Buckets;
 import com.journalistjunction.s3.S3Service;
@@ -114,9 +114,7 @@ public class UserService {
 
         s3Service.putObject(s3Buckets.getCustomer(), "%s/%s_Profile_Image".formatted(user.getId(), user.getId()), file.getBytes());
 
-        if (user.getProfilePhoto() == null) {
-            user.setProfilePhoto(new Photo(s3Buckets.getCustomer(), "%s/%s_Profile_Image".formatted(user.getId(), user.getId())));
-        }
+        user.setProfilePhoto(new UserProfilePhoto(s3Buckets.getCustomer(), "%s/%s_Profile_Image".formatted(user.getId(), user.getId()), user));
 
         userRepository.save(user);
     }
