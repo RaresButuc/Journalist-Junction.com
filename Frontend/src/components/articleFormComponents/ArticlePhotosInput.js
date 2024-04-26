@@ -1,8 +1,9 @@
 import axios from "axios";
 import { useDropzone } from "react-dropzone";
 import { useMemo, useCallback, useState, useEffect, forwardRef } from "react";
-import ViewPhoto from "../ViewPhoto";
+
 import Alert from "../Alert";
+import ViewPhoto from "../ViewPhoto";
 import DefaultURL from "../../usefull/DefaultURL";
 
 const ArticlePhotosInput = forwardRef(({ article, reload }, ref) => {
@@ -38,10 +39,10 @@ const ArticlePhotosInput = forwardRef(({ article, reload }, ref) => {
                 data: photo.articlePhoto,
                 preview: imageUrl,
                 posted: true,
-                isThumbnail: photo.isThumbnail,
+                isThumbnail: photo.articlePhoto.thumbnail,
               };
             });
-            console.log(photos);
+
             setPhotos(photos);
           } else {
             setPhotos([]);
@@ -225,8 +226,6 @@ const ArticlePhotosInput = forwardRef(({ article, reload }, ref) => {
                   src={photo.preview}
                   className="img-fluid border border-2 border-danger"
                   style={{
-                    width: "auto",
-                    height: "auto",
                     maxWidth: "200px",
                     maxHeight: "200px",
                   }}

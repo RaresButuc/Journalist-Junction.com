@@ -189,9 +189,6 @@ export default function EditArticlePage() {
     const articleData = formData(new FormData(e.target));
     const buttonTarget = e.nativeEvent.submitter.textContent;
 
-    console.log("Current Photos: ", currentArticle.photos);
-    console.log("New Photos: ", photosRef.current);
-// console.log(photosRef.current);
     const photosToBeDeleted = currentArticle.photos.filter(
       (photo) =>
         !photosRef.current
@@ -203,9 +200,28 @@ export default function EditArticlePage() {
       .filter((e) => !e.posted)
       .map((e) => e.data);
 
+    const filesDTOToBeAdded = photosRef.current
+      .filter((e) => !e.posted)
+      .map((e) => ({
+        fileName: e.data.name,
+        isThumbnail: e.isThumbnail,
+      }));
+
+    const photoChangeIsThumbnailStatus = photosRef.current
+      .filter((e) => e.posted && e.data.thumbnail !== e.isThumbnail)
+      .map((e) => ({
+        id: e.data.id,
+        newStatus: e.isThumbnail,
+      }));
+
     const formDataNewPhotos = new FormData();
+
     photosToBeAdded.forEach((file) => {
       formDataNewPhotos.append("files", file);
+    });
+
+    filesDTOToBeAdded.forEach((file) => {
+      formDataNewPhotos.append("fileDTOList", JSON.stringify(file));
     });
 
     try {
@@ -233,6 +249,26 @@ export default function EditArticlePage() {
           putRequests.push(deletePhotos);
         }
 
+        if (photoChangeIsThumbnailStatus.length) {
+          const formDataChangeisThumbnailStatus = new FormData();
+          photoChangeIsThumbnailStatus.forEach((file) => {
+            formDataChangeisThumbnailStatus.append(
+              "decisions",
+              JSON.stringify(file)
+            );
+          });
+
+          const changeIsThumbnailStatus = await axios.put(
+            `${DefaultURL}/article-photo/change-status/${id}`,
+            formDataChangeisThumbnailStatus,
+            {
+              headers,
+            }
+          );
+
+          putRequests.push(changeIsThumbnailStatus);
+        }
+
         if (photosToBeAdded.length) {
           const postPhotos = await axios.put(
             `${DefaultURL}/article/upload-article-photos/${id}`,
@@ -242,7 +278,6 @@ export default function EditArticlePage() {
               "Content-Type": "multipart/form-data",
             }
           );
-
           putRequests.push(postPhotos);
         }
 
@@ -258,51 +293,86 @@ export default function EditArticlePage() {
 
         window.scrollTo(0, 0);
       } else if (buttonTarget === "Publish") {
+        const putRequests = [];
+
+        const editArticleInfo = await axios.put(
+          `${DefaultURL}/article/${id}`,
+          articleData,
+          {
+            headers,
+          }
+        );
+        putRequests.push(editArticleInfo);
+
         const response = await axios.put(
           `${DefaultURL}/article/${id}/true`,
           articleData,
           { headers }
         );
+        putRequests.push(response);
 
-        setPublishState({
-          state: "Published",
-          color: "success",
+        Promise.all(putRequests).then(() => {
+          setPublishState({
+            state: "Published",
+            color: "success",
+          });
+
+          setPublishButton({
+            value: "UnPublish",
+            color: "danger",
+          });
+
+          setShowAlert(true);
+          setAlertInfos(["Success!", response.data, "success"]);
+
+          window.scrollTo(0, 0);
+
+          setTimeout(() => {
+            navigate(`/read-article/${id}`);
+          }, 3000);
         });
-
-        setPublishButton({
-          value: "UnPublish",
-          color: "danger",
-        });
-
-        setShowAlert(true);
-        setAlertInfos(["Success!", response.data, "success"]);
-        setTimeout(() => {
-          navigate(`/read-article/${id}`);
-        }, 3000);
       } else if (buttonTarget === "UnPublish") {
+        const putRequests = [];
+
+        const editArticleInfo = await axios.put(
+          `${DefaultURL}/article/${id}`,
+          articleData,
+          {
+            headers,
+          }
+        );
+        putRequests.push(editArticleInfo);
+
         const response = await axios.put(
           `${DefaultURL}/article/${id}/false`,
           {},
           { headers }
         );
+        putRequests.push(response);
 
-        setPublishState({
-          state: "UnPublished",
-          color: "danger",
+        Promise.all(putRequests).then(() => {
+          setPublishState({
+            state: "UnPublished",
+            color: "danger",
+          });
+
+          setPublishButton({
+            value: "Publish",
+            color: "success",
+          });
+
+          setShowAlert(true);
+          setAlertInfos(["Success!", response.data, "success"]);
+
+          window.scrollTo(0, 0);
+
+          setTimeout(() => {
+            setShowAlert(false);
+          }, 3000);
         });
-
-        setPublishButton({
-          value: "Publish",
-          color: "success",
-        });
-
-        setShowAlert(true);
-        setAlertInfos(["Success!", response.data, "success"]);
-        setTimeout(() => {
-          setShowAlert(false);
-        }, 3000);
       }
     } catch (err) {
+      console.log(err);
       setShowAlert(true);
       setAlertInfos(["Error Occured!", err.response.data.message, "danger"]);
       setTimeout(() => {

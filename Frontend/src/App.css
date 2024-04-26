@@ -234,7 +234,7 @@ body {
 
 /* Loader Typewriter */
 
-.loader-container  {
+.loader-container {
   width: 300px;
   height: 280px;
   position: absolute;
@@ -376,7 +376,7 @@ body {
   position: absolute;
   bottom: 0;
   left: calc(50% - 40px);
-  background-color: #FFF;
+  background-color: #fff;
   border-radius: 0 0 70px 70px / 0 0 110px 110px;
 }
 
@@ -387,7 +387,7 @@ body {
   position: absolute;
   top: 6px;
   right: -13px;
-  border: 5px solid #FFF;
+  border: 5px solid #fff;
   border-radius: 50%;
 }
 
@@ -445,12 +445,12 @@ body {
 
   40% {
     bottom: 50px;
-    opacity: .5;
+    opacity: 0.5;
   }
 
   80% {
     bottom: 80px;
-    opacity: .3;
+    opacity: 0.3;
   }
 
   100% {
@@ -467,12 +467,12 @@ body {
 
   40% {
     bottom: 70px;
-    opacity: .5;
+    opacity: 0.5;
   }
 
   80% {
     bottom: 80px;
-    opacity: .3;
+    opacity: 0.3;
   }
 
   100% {
@@ -529,3 +529,24 @@ body {
   background-color: #000;
 }
 
+/* Title Article Style */
+
+.article-title {
+  font-family: "Playfair Display", serif;
+  font-weight: 900;
+  font-size: 70px;
+  text-transform: uppercase;
+  display: inline-block;
+  line-height: 72px;
+  margin-bottom: 20px;
+}
+
+/* UnderTitle Style */
+
+.article-undertitle {
+  font-weight: 400;
+  font-style: italic;
+  font-size: 25px;
+  box-sizing: border-box;
+  padding: 10px 0 10px 0;
+}

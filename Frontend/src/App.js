@@ -10,6 +10,7 @@ import ProfilePage from "./pages/ProfilePage";
 import RegisterPage from "./pages/RegisterPage";
 import EditArticlePage from "./pages/EditArticlePage";
 import PostArticlePage from "./pages/PostArticlePage";
+import ReadArticlePage from "./pages/ReadArticlePage";
 
 import "./App.css";
 
@@ -24,7 +25,12 @@ function App() {
 
             <Route
               path="*"
-              element={<ErrorPage message={"404 Not Found!"} message2={"Return To Main Page"} />}
+              element={
+                <ErrorPage
+                  message={"404 Not Found!"}
+                  message2={"Return To Main Page"}
+                />
+              }
             />
             <Route path="/login" element={<LoginPage />} />
             {/* <Route path="/forget-password" element={<ForgetPassword />} />
@@ -62,6 +68,10 @@ function App() {
                 </RequireAuth>
               }
             ></Route>*/}
+            <Route
+              path="/read-article/:id"
+              element={<ReadArticlePage />}
+            ></Route>
             <Route
               path="/edit-article/:id"
               // path="edit-article/:id"

@@ -26,8 +26,8 @@ public class MainApplication {
 
     @PostConstruct
     public void seedDatabase() {
-        initDbCategories.seedDBCategory();
-        initDbLanguages.seedDBLanguage();
-        initDbLocations.seedDBLocations();
+//        initDbCategories.seedDBCategory();
+//        initDbLanguages.seedDBLanguage();
+//        initDbLocations.seedDBLocations();
     }
 }

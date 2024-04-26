@@ -1,5 +1,6 @@
-package com.journalistjunction.model.PhotosClasses;
+package com.journalistjunction.DTO;
 
+import com.journalistjunction.model.PhotosClasses.ArticlePhoto;
 import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -10,7 +11,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Embeddable
-public class ArticlePhotoAndByte {
+public class ArticlePhotoAndByteDTO {
 
     @NotNull
     @NotBlank
