@@ -1,16 +1,20 @@
 package com.journalistjunction.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.journalistjunction.DTO.ArticlePhotoAndByteDTO;
+import com.journalistjunction.DTO.FileDTO;
 import com.journalistjunction.model.Article;
 import com.journalistjunction.model.PhotosClasses.ArticlePhoto;
-import com.journalistjunction.model.PhotosClasses.ArticlePhotoAndByte;
 import com.journalistjunction.service.ArticleService;
 import lombok.AllArgsConstructor;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -38,6 +42,12 @@ public class ArticleController {
     @GetMapping("/date/{id}")
     public String getArticleDateInString(@PathVariable("id") Long id) {
         return articleService.localDateTimeToString(id);
+    }
+
+    @GetMapping("/ispublished/{id}")
+    public boolean isArticlePublished(@PathVariable("id") Long id) {
+        return articleService.getArticleIsPublished(id);
+
     }
 
     @GetMapping("/user/{id}")
@@ -79,14 +89,41 @@ public class ArticleController {
         return ResponseEntity.ok("This User Was Removed from the `Rejected Contributors` List!");
     }
 
+    @GetMapping(value = "/get-article-thumbnail/{id}")
+    public ArticlePhotoAndByteDTO getArticleThumbnail(@PathVariable("id") Long id) {
+        return articleService.getArticleThumbnail(id);
+    }
+
+    @GetMapping(value = "/get-nonThumbnail-article-photos/{id}")
+    public List<ArticlePhotoAndByteDTO> getNonThumbnailArticlePhotos(@PathVariable("id") Long id) {
+        return articleService.getNonThumbnailArticlePhotos(id);
+    }
+
     @GetMapping(value = "/get-article-photos/{id}")
-    public List<ArticlePhotoAndByte> getArticlePhotos(@PathVariable("id") Long id) {
+    public List<ArticlePhotoAndByteDTO> getArticlePhotos(@PathVariable("id") Long id) {
         return articleService.getArticlePhotos(id);
     }
 
-    @PutMapping(value = "/upload-article-photos/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> uploadArticlePhotos(@RequestParam("files") List<MultipartFile> files, @PathVariable("id") Long id) throws IOException {
-        articleService.uploadArticlePhotos(files, id);
+    @PutMapping(value = "/upload-article-photos/{id}")
+    public ResponseEntity<String> uploadArticlePhotos(@RequestParam("files") List<MultipartFile> photos, @PathVariable("id") Long id, @RequestParam("fileDTOList") List<String> fileDTOList) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+
+        List<String> DTOsConfirmed = new ArrayList<>(fileDTOList.isEmpty() ? Collections.emptyList() :
+                fileDTOList.size() == 1 ||
+                        (fileDTOList.get(0).startsWith("{") && !fileDTOList.get(0).endsWith("{") &&
+                                !fileDTOList.get(1).startsWith("{") && fileDTOList.get(1).endsWith("}")) ?
+                        Collections.singletonList(fileDTOList.get(0) + "," + fileDTOList.get(1)) :
+                        fileDTOList);
+
+        List<FileDTO> filesDTO = DTOsConfirmed.stream().map(e -> {
+            try {
+                return mapper.readValue(e, FileDTO.class);
+            } catch (JsonProcessingException ex) {
+                throw new RuntimeException(ex);
+            }
+        }).toList();
+
+        articleService.uploadArticlePhotos(photos, id, filesDTO);
 
         return ResponseEntity.ok("Images Successfully Posted!");
     }
