@@ -186,7 +186,9 @@ public class ArticleService {
         validateArticle(articleFromDb, articleUpdater, decision);
 
         if (decision.equals("true")) {
-            articleFromDb.setPostTime(LocalDateTime.now());
+            if (articleFromDb.getPostTime() == null) {
+                articleFromDb.setPostTime(LocalDateTime.now());
+            }
             copyArticleFields(articleUpdater, articleFromDb);
             articleFromDb.setPublished(true);
         } else {

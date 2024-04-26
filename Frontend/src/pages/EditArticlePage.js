@@ -62,10 +62,12 @@ export default function EditArticlePage() {
         setPublishState(
           data.published
             ? {
+                isPublished: data.published,
                 state: "Published",
                 color: "success",
               }
             : {
+                isPublished: data.published,
                 state: "UnPublished",
                 color: "danger",
               }
@@ -228,14 +230,33 @@ export default function EditArticlePage() {
       if (buttonTarget === "Save") {
         const putRequests = [];
 
-        const editArticleInfo = await axios.put(
-          `${DefaultURL}/article/${id}`,
-          articleData,
-          {
-            headers,
-          }
-        );
-        putRequests.push(editArticleInfo);
+        // if (
+        //   !publishState.isPublished ||
+        //   (publishState.isPublished &&
+        //     photosRef.current.filter((e) => e.isThumbnail).length > 0)
+        // ) {
+          const editArticleInfo = await axios.put(
+            `${DefaultURL}/article/${id}`,
+            articleData,
+            {
+              headers,
+            }
+          );
+
+          putRequests.push(editArticleInfo);
+        // } else {
+        //   setShowAlert(true);
+        //   setAlertInfos([
+        //     "Error Occured!",
+        //     "There Should Be An Image Set As Thumbnail For The Article!",
+        //     "danger",
+        //   ]);
+        //   setTimeout(() => {
+        //     setShowAlert(false);
+        //   }, 3000);
+        //   setReloadPhotos(!reloadPhotos);
+        //   return;
+        // }
 
         if (photosToBeDeleted.length) {
           const deletePhotos = await axios.put(
@@ -285,7 +306,7 @@ export default function EditArticlePage() {
           setReloadPhotos(!reloadPhotos);
 
           setShowAlert(true);
-          setAlertInfos(["Success!", editArticleInfo.data, "success"]);
+          setAlertInfos(["Success!", putRequests[0].data, "success"]);
           setTimeout(() => {
             setShowAlert(false);
           }, 3000);
