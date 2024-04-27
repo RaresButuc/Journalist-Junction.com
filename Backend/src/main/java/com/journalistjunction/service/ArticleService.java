@@ -58,7 +58,7 @@ public class ArticleService {
         return articleRepository.save(article);
     }
 
-    public void updateArticleById(Long id, Article articleUpdater) {
+    public Article updateArticleById(Long id, Article articleUpdater) {
         Article articleFromDb = articleRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("No Article Found!"));
 
@@ -67,7 +67,7 @@ public class ArticleService {
         }
         copyArticleFields(articleUpdater, articleFromDb);
 
-        articleRepository.save(articleFromDb);
+        return articleRepository.save(articleFromDb);
     }
 
     public ArticlePhotoAndByteDTO getArticleThumbnail(Long id) {

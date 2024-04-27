@@ -230,34 +230,95 @@ export default function EditArticlePage() {
       if (buttonTarget === "Save") {
         const putRequests = [];
 
-        // if (
-        //   !publishState.isPublished ||
-        //   (publishState.isPublished &&
-        //     photosRef.current.filter((e) => e.isThumbnail).length > 0)
-        // ) {
-          const editArticleInfo = await axios.put(
-            `${DefaultURL}/article/${id}`,
-            articleData,
-            {
-              headers,
-            }
-          );
+        const isCurrentThumbnailDeleted =
+          photosToBeDeleted.filter((e) => e.thumbnail).length === 1;
+        const isAnyNewThumbnailUploaded =
+          filesDTOToBeAdded.filter((e) => e.isThumbnail).length === 1;
 
-          putRequests.push(editArticleInfo);
-        // } else {
-        //   setShowAlert(true);
-        //   setAlertInfos([
-        //     "Error Occured!",
-        //     "There Should Be An Image Set As Thumbnail For The Article!",
-        //     "danger",
-        //   ]);
-        //   setTimeout(() => {
-        //     setShowAlert(false);
-        //   }, 3000);
-        //   setReloadPhotos(!reloadPhotos);
-        //   return;
-        // }
+        const isCurrentThumbnailUnset =
+          photoChangeIsThumbnailStatus.filter((e) => !e.newStatus).length === 1;
+        const isAnyNewThumbnailSet =
+          photoChangeIsThumbnailStatus.filter((e) => e.newStatus).length === 1;
 
+        const editArticleInfo = await axios.put(
+          `${DefaultURL}/article/${id}`,
+          articleData,
+          {
+            headers,
+          }
+        );
+
+        putRequests.push(editArticleInfo);
+
+        // Looking For Errors in Photos Uploading
+        if (publishState.isPublished) {
+          if (
+            isCurrentThumbnailDeleted &&
+            !isAnyNewThumbnailUploaded &&
+            photosToBeAdded.length
+          ) {
+            const dontDeleteThumbnailWithoutUploadingOne = await axios.get(
+              `${DefaultURL}/article-photo/is-any-other-thumbnail-uploaded-or-chosen/${publishState.isPublished}/${isCurrentThumbnailDeleted}/${isAnyNewThumbnailUploaded}`,
+              {
+                headers,
+              }
+            );
+
+            putRequests.push(dontDeleteThumbnailWithoutUploadingOne);
+          }
+
+          if (
+            isCurrentThumbnailUnset &&
+            !isAnyNewThumbnailUploaded &&
+            photosToBeAdded.length
+          ) {
+            const dontUnsetAThumbnailWithoutChoosingOneFromTheNewPhotos =
+              await axios.get(
+                `${DefaultURL}/article-photo/dont-unset-a-thumbnail-without-choosing-one/${publishState.isPublished}/${isCurrentThumbnailUnset}/${isAnyNewThumbnailUploaded}`,
+                {
+                  headers,
+                }
+              );
+
+            putRequests.push(
+              dontUnsetAThumbnailWithoutChoosingOneFromTheNewPhotos
+            );
+          }
+
+          if (
+            isCurrentThumbnailDeleted &&
+            !isAnyNewThumbnailSet &&
+            !photoChangeIsThumbnailStatus.length
+          ) {
+            const dontDeleteThumbnailWithoutChoosingOneExistent =
+              await axios.get(
+                `${DefaultURL}/article-photo/is-any-other-thumbnail-uploaded-or-chosen/${publishState.isPublished}/${isCurrentThumbnailDeleted}/${isAnyNewThumbnailSet}`,
+                {
+                  headers,
+                }
+              );
+
+            putRequests.push(dontDeleteThumbnailWithoutChoosingOneExistent);
+          }
+
+          if (
+            isCurrentThumbnailUnset &&
+            !isAnyNewThumbnailSet &&
+            !isAnyNewThumbnailUploaded
+          ) {
+            const dontUnsetAThumbnailWithoutChoosingOneExistent =
+              await axios.get(
+                `${DefaultURL}/article-photo/dont-unset-a-thumbnail-without-choosing-one/${publishState.isPublished}/${isCurrentThumbnailUnset}/${isAnyNewThumbnailSet}`,
+                {
+                  headers,
+                }
+              );
+
+            putRequests.push(dontUnsetAThumbnailWithoutChoosingOneExistent);
+          }
+        }
+
+        // Other Commands
         if (photosToBeDeleted.length) {
           const deletePhotos = await axios.put(
             `${DefaultURL}/article/delete-article-photos/${id}`,
@@ -306,7 +367,11 @@ export default function EditArticlePage() {
           setReloadPhotos(!reloadPhotos);
 
           setShowAlert(true);
-          setAlertInfos(["Success!", putRequests[0].data, "success"]);
+          setAlertInfos([
+            "Success!",
+            "Modifications Successfully Saved!",
+            "success",
+          ]);
           setTimeout(() => {
             setShowAlert(false);
           }, 3000);
@@ -315,6 +380,49 @@ export default function EditArticlePage() {
         window.scrollTo(0, 0);
       } else if (buttonTarget === "Publish") {
         const putRequests = [];
+
+        if (photosToBeDeleted.length) {
+          const deletePhotos = await axios.put(
+            `${DefaultURL}/article/delete-article-photos/${id}`,
+            photosToBeDeleted,
+            {
+              headers,
+            }
+          );
+
+          putRequests.push(deletePhotos);
+        }
+
+        if (photosToBeAdded.length) {
+          const postPhotos = await axios.put(
+            `${DefaultURL}/article/upload-article-photos/${id}`,
+            formDataNewPhotos,
+            {
+              headers,
+              "Content-Type": "multipart/form-data",
+            }
+          );
+          putRequests.push(postPhotos);
+        }
+        if (photoChangeIsThumbnailStatus.length) {
+          const formDataChangeisThumbnailStatus = new FormData();
+          photoChangeIsThumbnailStatus.forEach((file) => {
+            formDataChangeisThumbnailStatus.append(
+              "decisions",
+              JSON.stringify(file)
+            );
+          });
+
+          const changeIsThumbnailStatus = await axios.put(
+            `${DefaultURL}/article-photo/change-status/${id}`,
+            formDataChangeisThumbnailStatus,
+            {
+              headers,
+            }
+          );
+
+          putRequests.push(changeIsThumbnailStatus);
+        }
 
         const editArticleInfo = await axios.put(
           `${DefaultURL}/article/${id}`,
@@ -327,7 +435,7 @@ export default function EditArticlePage() {
 
         const response = await axios.put(
           `${DefaultURL}/article/${id}/true`,
-          articleData,
+          editArticleInfo.data,
           { headers }
         );
         putRequests.push(response);
@@ -395,6 +503,7 @@ export default function EditArticlePage() {
     } catch (err) {
       console.log(err);
       setShowAlert(true);
+      setReloadPhotos(!reloadPhotos);
       setAlertInfos(["Error Occured!", err.response.data.message, "danger"]);
       setTimeout(() => {
         setShowAlert(false);
@@ -632,7 +741,7 @@ export default function EditArticlePage() {
               id={"floatingBodyTextValue"}
               onChange={handleBodyChange}
             />
-            <h2 className="mt-5 mb-3">Photos</h2>
+            <h2 className="mt-5 mb-3">Photos *</h2>
             <ArticlePhotosInput
               article={currentArticle}
               reload={reloadPhotos}

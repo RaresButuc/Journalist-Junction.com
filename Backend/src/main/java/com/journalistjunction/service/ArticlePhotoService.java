@@ -46,13 +46,6 @@ public class ArticlePhotoService {
             throw new IllegalStateException("No Article Found With This ID for " + userFromDb.getName());
         }
 
-        if (article.isPublished() &&
-                decisions.size() == 1 &&
-                !decisions.getFirst().getNewStatusAsBoolean() &&
-                getArticlePhotoById(decisions.getFirst().getId()).isThumbnail()) {
-            throw new IllegalStateException("There Should Be An Image Set As Thumbnail For The Article!");
-        }
-
         for (ChangeIsThumbnailStatusDTO decision : decisions) {
             if (article.getPhotos().stream().anyMatch(e -> Objects.equals(e.getId(), decision.getId()))) {
                 ArticlePhoto currentPhotoArticle = getArticlePhotoById(decision.getId());
@@ -62,6 +55,18 @@ public class ArticlePhotoService {
             } else {
                 throw new IllegalStateException("An Error Has Occurred While Trying To Change The Thumbnail Of The Article. Please Try Again!");
             }
+        }
+    }
+
+    public void dontDeleteThumbnailWithoutAddingOne(boolean isArticlePublished, boolean isCurrentThumbnailDeleted, boolean isAnyNewThumbnailSet) {
+        if (isArticlePublished && isCurrentThumbnailDeleted && !isAnyNewThumbnailSet) {
+            throw new IllegalStateException("You Can't Delete A Thumbnail Photo Without Uploading Or Choosing One, While The Article is Already Published!");
+        }
+    }
+
+    public void dontUnsetAThumbnailWithoutChoosingOne(boolean isArticlePublished, boolean isCurrentThumbnailUnset, boolean isAnyNewThumbnailSet) {
+        if (isArticlePublished && isCurrentThumbnailUnset && !isAnyNewThumbnailSet) {
+            throw new IllegalStateException("You Can't Unset A Thumbnail Photo Without Uploading Or Choosing One, While The Article is Already Published!");
         }
     }
 }
