@@ -3,6 +3,7 @@ package com.journalistjunction.service;
 import com.journalistjunction.DTO.ArticlePhotoAndByteDTO;
 import com.journalistjunction.DTO.FileDTO;
 import com.journalistjunction.model.Article;
+import com.journalistjunction.model.Category;
 import com.journalistjunction.model.PhotosClasses.ArticlePhoto;
 import com.journalistjunction.model.PhotosClasses.Photo;
 import com.journalistjunction.model.User;
@@ -29,12 +30,34 @@ public class ArticleService {
     private final S3Service s3Service;
     private final S3Buckets s3Buckets;
     private final UserRepository userRepository;
+    private final CategoryService categoryService;
     private final ArticleRepository articleRepository;
     private final ArticlePhotoService articlePhotoService;
 
 
     public List<Article> getAllArticles() {
         return articleRepository.findAll();
+    }
+
+    public List<Article> getPostedArticlesByCategory(String category) {
+        List<Article> articles = new ArrayList<>(articleRepository.findAll().stream().filter(e -> e.isPublished() && e.getCategories().stream().anyMatch(i -> i.getNameOfCategory().equals(category))).toList());
+
+        articles.sort(Comparator.comparing(Article::getPostTime));
+
+        return articles;
+    }
+
+    public HashMap<String, List<Article>> getPostedArticlesByCategoryFrontPage() {
+        HashMap<String, List<Article>> articlesByCateg = new HashMap<>();
+
+        for (Category category : categoryService.getAllCategories()) {
+            List<Article> articles = getPostedArticlesByCategory(category.getNameOfCategory()).stream().limit(5).toList();
+            articles.sort(Comparator.comparing(Article::getPostTime));
+
+            articlesByCateg.put(category.getNameOfCategory(), articles);
+        }
+
+        return articlesByCateg;
     }
 
     public List<Article> getAllPostedArticles() {

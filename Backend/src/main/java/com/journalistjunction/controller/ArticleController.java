@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -32,6 +33,16 @@ public class ArticleController {
     @GetMapping("/posted")
     public List<Article> getAllReadyToBePostedArticles() {
         return articleService.getAllPostedArticles();
+    }
+
+    @GetMapping("/posted/{category}")
+    public List<Article> getNewestPostedArticleByCategory(@PathVariable("category") String category) {
+        return articleService.getPostedArticlesByCategory(category);
+    }
+
+    @GetMapping("/front-page-articles")
+    public HashMap<String, List<Article>> getNewestPostedArticleFrontPage() {
+        return articleService.getPostedArticlesByCategoryFrontPage();
     }
 
     @GetMapping("/{id}")
