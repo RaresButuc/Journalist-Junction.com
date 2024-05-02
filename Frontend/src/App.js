@@ -8,6 +8,7 @@ import ErrorPage from "./pages/ErrorPage";
 import LoginPage from "./pages/LoginPage";
 import ProfilePage from "./pages/ProfilePage";
 import RegisterPage from "./pages/RegisterPage";
+import PhotosGallery from "./pages/PhotosGallery";
 import EditArticlePage from "./pages/EditArticlePage";
 import PostArticlePage from "./pages/PostArticlePage";
 import ReadArticlePage from "./pages/ReadArticlePage";
@@ -71,6 +72,10 @@ function App() {
             <Route
               path="/read-article/:id"
               element={<ReadArticlePage />}
+            ></Route>
+            <Route 
+            path="/view-photos/:id" 
+            element={<PhotosGallery />}
             ></Route>
             <Route
               path="/edit-article/:id"
