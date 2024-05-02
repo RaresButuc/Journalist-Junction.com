@@ -6,12 +6,6 @@ export default function PhotosPreview({ articleId, articlePhotos }) {
   useEffect(() => {
     if (articlePhotos) {
       const nonThumbnailPhotos = articlePhotos.map((photo) => {
-        const byteString = atob(photo.bytes);
-        const byteArray = new Uint8Array(byteString.length);
-        for (let i = 0; i < byteString.length; i++) {
-          byteArray[i] = byteString.charCodeAt(i);
-        }
-
         return `data:image/jpeg;base64,${photo.bytes}`;
       });
       setPhotos(nonThumbnailPhotos);

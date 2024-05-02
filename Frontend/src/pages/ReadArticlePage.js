@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
 import DefaultURL from "../usefull/DefaultURL";
-import PhotosPreview from "../components/PhotoGallery";
+import PhotosPreview from "../components/PhotosPreview";
 import FirstLetterUppercase from "../usefull/FirstLetterUppercase";
 
 export default function ReadArticlePage() {
@@ -32,14 +32,8 @@ export default function ReadArticlePage() {
             const reponseThumbnailArticlePhoto = await axios.get(
               `${DefaultURL}/article/get-article-thumbnail/${id}`
             );
+
             const thumbnail = reponseThumbnailArticlePhoto.data;
-            const thumbnailByteString = atob(thumbnail.bytes);
-            const thumbnailByteArray = new Uint8Array(
-              thumbnailByteString.length
-            );
-            for (let i = 0; i < thumbnailByteString.length; i++) {
-              thumbnailByteArray[i] = thumbnailByteString.charCodeAt(i);
-            }
             const thumbnailImageUrl = `data:image/jpeg;base64,${thumbnail.bytes}`;
             setThumbnail(thumbnailImageUrl);
 
