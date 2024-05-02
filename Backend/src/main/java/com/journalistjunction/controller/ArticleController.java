@@ -61,9 +61,8 @@ public class ArticleController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> editArticle(@PathVariable("id") Long id, @RequestBody Article articleEdited) {
-        articleService.updateArticleById(id, articleEdited);
-        return ResponseEntity.ok("Modifications Successfully Saved!");
+    public Article editArticle(@PathVariable("id") Long id, @RequestBody Article articleEdited) {
+        return articleService.updateArticleById(id, articleEdited);
     }
 
     @PutMapping("/{id}/{decision}")

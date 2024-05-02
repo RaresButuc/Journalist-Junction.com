@@ -1,8 +1,9 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
-
 import { useParams, useNavigate } from "react-router-dom";
+
 import DefaultURL from "../usefull/DefaultURL";
+import PhotosPreview from "../components/PhotosPreview";
 import FirstLetterUppercase from "../usefull/FirstLetterUppercase";
 
 export default function ReadArticlePage() {
@@ -12,6 +13,7 @@ export default function ReadArticlePage() {
   const [date, setDate] = useState(null);
   const [article, setArticle] = useState(null);
   const [thumbnail, setThumbnail] = useState(null);
+  const [nonThumbnail, setNonThumbnail] = useState(null);
 
   useEffect(() => {
     const fetchArticle = async () => {
@@ -26,18 +28,24 @@ export default function ReadArticlePage() {
             );
             setArticle(responseArticle.data);
 
+            // Get Article Thumbnail
             const reponseThumbnailArticlePhoto = await axios.get(
               `${DefaultURL}/article/get-article-thumbnail/${id}`
             );
-            const photo = reponseThumbnailArticlePhoto.data;
-            const byteString = atob(photo.bytes);
-            const byteArray = new Uint8Array(byteString.length);
-            for (let i = 0; i < byteString.length; i++) {
-              byteArray[i] = byteString.charCodeAt(i);
-            }
-            const imageUrl = `data:image/jpeg;base64,${photo.bytes}`;
-            setThumbnail(imageUrl);
 
+            const thumbnail = reponseThumbnailArticlePhoto.data;
+            const thumbnailImageUrl = `data:image/jpeg;base64,${thumbnail.bytes}`;
+            setThumbnail(thumbnailImageUrl);
+
+            // Get Article Non-Thumbnail Photos
+
+            const reponseNonThumbnailArticlePhoto = await axios.get(
+              `${DefaultURL}/article/get-nonThumbnail-article-photos/${id}`
+            );
+
+            setNonThumbnail(reponseNonThumbnailArticlePhoto.data);
+
+            // Get Article Date
             const response = await axios.get(
               `${DefaultURL}/article/date/${responseArticle.data.id}`
             );
@@ -46,7 +54,7 @@ export default function ReadArticlePage() {
             navigate("/an-error-has-occured");
           }
         } catch (error) {
-          // navigate("/an-error-has-occured");
+          navigate("/an-error-has-occured");
         }
       }
     };
@@ -140,13 +148,13 @@ export default function ReadArticlePage() {
         className="img-fluid mb-5"
         style={{
           maxWidth: "1150px",
-          // maxHeight: "1150px",
         }}
       />
       <div
         className="h4 fw-light text-start"
         dangerouslySetInnerHTML={{ __html: article?.body }}
       />
+      <PhotosPreview articleId={article?.id} articlePhotos={nonThumbnail} />
     </div>
   );
 }

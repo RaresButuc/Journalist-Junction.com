@@ -24,6 +24,20 @@ public class ArticlePhotoController {
         return articlePhotoService.getArticlePhotoById(id);
     }
 
+    @GetMapping("/is-any-other-thumbnail-uploaded-or-chosen/{isArticlePublished}/{isCurrentThumbnailDeleted}/{isAnyNewThumbnailUploaded}")
+    public void dontDeleteThumbnailWithoutAddingOne(@PathVariable("isArticlePublished") boolean isArticlePublished,
+                                                    @PathVariable("isCurrentThumbnailDeleted") boolean isCurrentThumbnailDeleted,
+                                                    @PathVariable("isAnyNewThumbnailUploaded") boolean isAnyNewThumbnailUploaded) {
+        articlePhotoService.dontDeleteThumbnailWithoutAddingOne(isArticlePublished, isCurrentThumbnailDeleted, isAnyNewThumbnailUploaded);
+    }
+
+    @GetMapping("/dont-unset-a-thumbnail-without-choosing-one/{isArticlePublished}/{isCurrentThumbnailUnset}/{isAnyNewThumbnailUploaded}")
+    public void dontUnsetAThumbnailWithoutChoosingOne(@PathVariable("isArticlePublished") boolean isArticlePublished,
+                                                      @PathVariable("isCurrentThumbnailUnset") boolean isCurrentThumbnailUnset,
+                                                      @PathVariable("isAnyNewThumbnailUploaded") boolean isAnyNewThumbnailSet) {
+        articlePhotoService.dontUnsetAThumbnailWithoutChoosingOne(isArticlePublished, isCurrentThumbnailUnset, isAnyNewThumbnailSet);
+    }
+
     @PutMapping("/change-status/{id}")
     public void setPhotoAsThumbnailOrNot(@PathVariable("id") Long id, @RequestParam("decisions") List<String> decisions) {
         ObjectMapper mapper = new ObjectMapper();

@@ -57,4 +57,16 @@ public class ArticlePhotoService {
             }
         }
     }
+
+    public void dontDeleteThumbnailWithoutAddingOne(boolean isArticlePublished, boolean isCurrentThumbnailDeleted, boolean isAnyNewThumbnailSet) {
+        if (isArticlePublished && isCurrentThumbnailDeleted && !isAnyNewThumbnailSet) {
+            throw new IllegalStateException("You Can't Delete A Thumbnail Photo Without Uploading Or Choosing One, While The Article is Already Published!");
+        }
+    }
+
+    public void dontUnsetAThumbnailWithoutChoosingOne(boolean isArticlePublished, boolean isCurrentThumbnailUnset, boolean isAnyNewThumbnailSet) {
+        if (isArticlePublished && isCurrentThumbnailUnset && !isAnyNewThumbnailSet) {
+            throw new IllegalStateException("You Can't Unset A Thumbnail Photo Without Uploading Or Choosing One, While The Article is Already Published!");
+        }
+    }
 }
