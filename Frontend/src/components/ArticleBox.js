@@ -27,7 +27,7 @@ export default function ArticleBox({ articles }) {
     <div className="container-xl">
       {articles &&
         articles.map((article, index) => (
-          <div className="container-xl mt-3" key={index}>
+          <div className="container-xl mt-4" key={index}>
             <a
               href={`/read-article/${article.id}`}
               style={{

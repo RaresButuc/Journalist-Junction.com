@@ -42,7 +42,7 @@ public class ArticleService {
     public List<Article> getPostedArticlesByCategory(String category) {
         List<Article> articles = new ArrayList<>(articleRepository.findAll().stream().filter(e -> e.isPublished() && e.getCategories().stream().anyMatch(i -> i.getNameOfCategory().equals(category))).toList());
 
-        articles.sort(Comparator.comparing(Article::getPostTime));
+        articles.sort(Comparator.comparing(Article::getPostTime).reversed());
 
         return articles;
     }
@@ -52,7 +52,7 @@ public class ArticleService {
 
         for (Category category : categoryService.getAllCategories()) {
             List<Article> articles = getPostedArticlesByCategory(category.getNameOfCategory()).stream().limit(5).collect(Collectors.toList());
-            articles.sort(Comparator.comparing(Article::getPostTime));
+            articles.sort(Comparator.comparing(Article::getPostTime).reversed());
 
             articlesByCateg.put(category.getNameOfCategory(), articles);
         }

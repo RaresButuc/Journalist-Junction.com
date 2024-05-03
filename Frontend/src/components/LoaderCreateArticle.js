@@ -5,23 +5,23 @@ export default function LoaderTypewriter() {
       style={{ height: "55vh" }} // Adjust the height of the container
     >
       <div className="loader-container">
-        <div class="coffee-header">
-          <div class="coffee-header__buttons coffee-header__button-one"></div>
-          <div class="coffee-header__buttons coffee-header__button-two"></div>
-          <div class="coffee-header__display"></div>
-          <div class="coffee-header__details"></div>
+        <div className="coffee-header">
+          <div className="coffee-header__buttons coffee-header__button-one"></div>
+          <div className="coffee-header__buttons coffee-header__button-two"></div>
+          <div className="coffee-header__display"></div>
+          <div className="coffee-header__details"></div>
         </div>
-        <div class="coffee-medium">
-          <div class="coffe-medium__exit"></div>
-          <div class="coffee-medium__arm"></div>
-          <div class="coffee-medium__liquid"></div>
-          <div class="coffee-medium__smoke coffee-medium__smoke-one"></div>
-          <div class="coffee-medium__smoke coffee-medium__smoke-two"></div>
-          <div class="coffee-medium__smoke coffee-medium__smoke-three"></div>
-          <div class="coffee-medium__smoke coffee-medium__smoke-for"></div>
-          <div class="coffee-medium__cup"></div>
+        <div className="coffee-medium">
+          <div className="coffe-medium__exit"></div>
+          <div className="coffee-medium__arm"></div>
+          <div className="coffee-medium__liquid"></div>
+          <div className="coffee-medium__smoke coffee-medium__smoke-one"></div>
+          <div className="coffee-medium__smoke coffee-medium__smoke-two"></div>
+          <div className="coffee-medium__smoke coffee-medium__smoke-three"></div>
+          <div className="coffee-medium__smoke coffee-medium__smoke-for"></div>
+          <div className="coffee-medium__cup"></div>
         </div>
-        <div class="coffee-footer"></div>
+        <div className="coffee-footer"></div>
       </div>
 
       <div className="col-12" style={{ marginTop: "580px" }}>

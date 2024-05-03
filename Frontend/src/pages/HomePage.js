@@ -32,10 +32,26 @@ export default function HomePage() {
       <div className="col-xl-8 col-sm-12">
         {articles?.map((e) => (
           <>
-            <h1 className="article-title d-flex justify-content-center my-5 text-decoration-underline">
+            <a
+              className="article-title h2 d-flex justify-content-center my-5 text-decoration-underline"
+              href={`/articles-category/${e.key}`}
+            >
               {e.key}
-            </h1>
-            <ArticleBox articles={e.value} />
+            </a>
+            {!e.value.length ? (
+              <h2 className="text-danger">
+                No Articles Available On This Category Yet!
+              </h2>
+            ) : (
+              <>
+                <ArticleBox articles={e.value} />
+                {e.value.length > 5 ? (
+                  <button className="btn btn-outline-success">
+                    See More Articles On This Category
+                  </button>
+                ) : null}
+              </>
+            )}
           </>
         ))}
       </div>
