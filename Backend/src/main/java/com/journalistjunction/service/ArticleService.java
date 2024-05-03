@@ -51,7 +51,7 @@ public class ArticleService {
         HashMap<String, List<Article>> articlesByCateg = new HashMap<>();
 
         for (Category category : categoryService.getAllCategories()) {
-            List<Article> articles = getPostedArticlesByCategory(category.getNameOfCategory()).stream().limit(5).toList();
+            List<Article> articles = getPostedArticlesByCategory(category.getNameOfCategory()).stream().limit(5).collect(Collectors.toList());
             articles.sort(Comparator.comparing(Article::getPostTime));
 
             articlesByCateg.put(category.getNameOfCategory(), articles);
