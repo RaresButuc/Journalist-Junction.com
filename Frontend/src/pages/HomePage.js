@@ -8,7 +8,7 @@ export default function HomePage() {
   const [articles, setArticles] = useState(null);
 
   useEffect(() => {
-    const getAllNews = async () => {
+    const getAllArticles = async () => {
       const response = await axios.get(
         `${DefaultURL}/article/front-page-articles`
       );
@@ -17,11 +17,11 @@ export default function HomePage() {
           return { key, value };
         }
       );
-      arrayFromObject.map((e) => console.log(e));
+
       setArticles(arrayFromObject);
     };
 
-    getAllNews();
+    getAllArticles();
   }, []);
 
   return (

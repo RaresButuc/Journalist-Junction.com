@@ -6,23 +6,27 @@ import FirstLetterUppercase from "../usefull/FirstLetterUppercase";
 import LocalDateTimeToString from "../usefull/LocalDateTimeToString";
 
 export default function ArticleBox({ articles }) {
-  const [thumbnails, setThumbnails] = useState(null);
+  const [thumbnails, setThumbnails] = useState([]);
 
   useEffect(() => {
     if (articles) {
       const getThumbnails = async () => {
-        // const reponseThumbnailArticlePhoto = await axios.get(
-        //   `${DefaultURL}/article/get-article-thumbnail/${id}`
-        // );
-
-        // const thumbnail = reponseThumbnailArticlePhoto.data;
-        // const thumbnailImageUrl = `data:image/jpeg;base64,${thumbnail.bytes}`;
-        // setThumbnails(thumbnailImageUrl);
+        const newThumbnails = await Promise.all(
+          articles.map(async (article) => {
+            const responseThumbnailArticlePhoto = await axios.get(
+              `${DefaultURL}/article/get-article-thumbnail/${article.id}`
+            );
+            const thumbnailImageUrl = `data:image/jpeg;base64,${responseThumbnailArticlePhoto.data.bytes}`;
+            return thumbnailImageUrl;
+          })
+        );
+        setThumbnails(newThumbnails);
       };
-      
-      getThumbnails()
+
+      getThumbnails();
     }
   }, [articles]);
+
   return (
     <div className="container-xl">
       {articles &&
@@ -37,11 +41,11 @@ export default function ArticleBox({ articles }) {
             >
               <div className="d-xl-flex align-items-center border-bottom border-danger">
                 <img
-                  className="img-fluid col-xl-5 col-sm-12 mb-3"
-                  src="https://www.state.gov/wp-content/uploads/2022/01/shutterstock_248799484-scaled.jpg"
+                  className="img-fluid col-xl-6 col-sm-12 mb-3"
+                  src={thumbnails[index]}
                   style={{ borderRadius: 16 }}
                 />
-                <div className="col-xl-7 col-sm-12">
+                <div className="col-xl-6 col-sm-12">
                   <h3 className="mb-4">{article.title}</h3>
                   <p className="container-xl">{article.thumbnailDescription}</p>
                   <h5>Categories:</h5>
@@ -57,8 +61,8 @@ export default function ArticleBox({ articles }) {
                       {FirstLetterUppercase(categ.nameOfCategory)}
                     </a>
                   ))}
-                  <div className="d-flex justify-content-between mt-5">
-                    <h6 className="d-flex justify-content-start ms-3">
+                  <div className="d-flex justify-content-between ms-3 mt-3">
+                    <h6 className="d-flex justify-content-start">
                       Author:
                       <a
                         className="ms-2"
