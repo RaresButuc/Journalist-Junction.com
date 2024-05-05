@@ -209,9 +209,9 @@ const ArticlePhotosInput = forwardRef(({ article, reload }, ref) => {
             photos.map((photo, index) => (
               <div className="col-xl-6 col-md-12 mx-auto mt-4 " key={index}>
                 <div className="d-flex justify-content-center">
-                  <div class="form-check form-switch">
+                  <div className="form-check form-switch">
                     <input
-                      class="form-check-input"
+                      className="form-check-input"
                       type="checkbox"
                       role="switch"
                       id="flexSwitchCheckDefault"
