@@ -43,7 +43,7 @@ export default function PostArticlePage() {
 
       setShowLoader(true);
       setTimeout(() => {
-        navigate(`/edit-article/${res.data.id}`);
+        navigate(`/article/edit/${res.data.id}`);
       }, 5000);
     } catch (err) {
       console.error("Request error:", err);
@@ -65,7 +65,7 @@ export default function PostArticlePage() {
                   style={{ width: "18rem" }}
                 >
                   <a
-                    href={`/edit-article/${e.id}`}
+                    href={`/article/edit/${e.id}`}
                     style={{ textDecoration: "none", color: "black" }}
                   >
                     <img

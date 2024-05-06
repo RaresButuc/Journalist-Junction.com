@@ -2,6 +2,7 @@ package com.journalistjunction.service;
 
 import com.journalistjunction.DTO.ArticlePhotoAndByteDTO;
 import com.journalistjunction.DTO.FileDTO;
+import com.journalistjunction.DTO.HomePageArticles;
 import com.journalistjunction.model.Article;
 import com.journalistjunction.model.Category;
 import com.journalistjunction.model.PhotosClasses.ArticlePhoto;
@@ -12,6 +13,9 @@ import com.journalistjunction.repository.UserRepository;
 import com.journalistjunction.s3.S3Buckets;
 import com.journalistjunction.s3.S3Service;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -22,6 +26,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @AllArgsConstructor
@@ -39,29 +44,68 @@ public class ArticleService {
         return articleRepository.findAll();
     }
 
-    public List<Article> getPostedArticlesByCategory(String category) {
-        List<Article> articles = new ArrayList<>(articleRepository.findAll().stream().filter(e -> e.isPublished() && e.getCategories().stream().anyMatch(i -> i.getNameOfCategory().equals(category))).toList());
-
-        articles.sort(Comparator.comparing(Article::getPostTime).reversed());
-
-        return articles;
-    }
-
-    public HashMap<String, List<Article>> getPostedArticlesByCategoryFrontPage() {
-        HashMap<String, List<Article>> articlesByCateg = new HashMap<>();
+    public List<HomePageArticles> getPostedArticlesByCategoryFrontPage() {
+        List<HomePageArticles> articlesHomePage = new ArrayList<>();
 
         for (Category category : categoryService.getAllCategories()) {
-            List<Article> articles = getPostedArticlesByCategory(category.getNameOfCategory()).stream().limit(5).collect(Collectors.toList());
-            articles.sort(Comparator.comparing(Article::getPostTime).reversed());
+            Stream<Article> filteredByCategory = getArticlesByIsPublishedAndCategory(articleRepository.findAll(), category.getNameOfCategory());
+            boolean isLongerThan5 = filteredByCategory.toList().size() > 5;
+            List<Article> articles = getArticlesByIsPublishedAndCategory(articleRepository.findAll(), category.getNameOfCategory())
+                    .sorted(Comparator.comparing(Article::getPostTime).reversed())
+                    .limit(5)
+                    .collect(Collectors.toList());
 
-            articlesByCateg.put(category.getNameOfCategory(), articles);
+            articlesHomePage.add(new HomePageArticles(category.getNameOfCategory(), articles, isLongerThan5));
         }
 
-        return articlesByCateg;
+        return articlesHomePage;
     }
 
-    public List<Article> getAllPostedArticles() {
-        return articleRepository.findAllByPublishedIsTrue();
+    public Page<Article> getAllPostedArticlesByInputAndCategory(String input, String category, int currentPage, int itemsPerPage) {
+        PageRequest pageRequest = PageRequest.of(currentPage, itemsPerPage);
+        List<Article> articles;
+
+        if (category != null) {
+            if (input != null) {
+                articles = articleRepository
+                        .findAllByPublishedIsTrueAndBodyContainingIgnoreCase(input)
+                        .stream()
+                        .filter(e -> e.getCategories().stream()
+                                .anyMatch(i -> i.getNameOfCategory().equals(category)))
+                        .sorted(Comparator.comparing(Article::getPostTime).reversed())
+                        .collect(Collectors.toList());
+            } else {
+                articles = getArticlesByIsPublishedAndCategory(articleRepository.findAll(), category)
+                        .sorted(Comparator.comparing(Article::getPostTime).reversed())
+                        .collect(Collectors.toList());
+            }
+        } else {
+            if (input != null) {
+                articles = articleRepository
+                        .findAllByPublishedIsTrueAndBodyContainingIgnoreCase(input)
+                        .stream().sorted(Comparator.comparing(Article::getPostTime).reversed())
+                        .collect(Collectors.toList());
+            } else {
+                articles = articleRepository.findAllByPublishedIsTrue()
+                        .stream()
+                        .sorted(Comparator.comparing(Article::getPostTime).reversed())
+                        .collect(Collectors.toList());
+            }
+        }
+
+        List<Article> sublist = articles.subList(
+                (int) pageRequest.getOffset(),
+                Math.min((int) pageRequest.getOffset() + pageRequest.getPageSize(), articles.size())
+        );
+
+        return new PageImpl<>(sublist, pageRequest, articles.size());
+    }
+
+    public Stream<Article> getArticlesByIsPublishedAndCategory(List<Article> articles, String category) {
+        return articles
+                .stream()
+                .filter(e -> e.isPublished() && e.getCategories().stream()
+                        .anyMatch(i -> i.getNameOfCategory().equals(category)));
     }
 
     public Article getArticleById(Long id) {
