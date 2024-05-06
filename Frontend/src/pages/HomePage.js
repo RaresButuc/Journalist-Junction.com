@@ -1,8 +1,8 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 
-import ArticleBox from "../components/ArticleBox";
 import DefaultURL from "../usefull/DefaultURL";
+import ArticleBox from "../components/ArticleBox";
 
 export default function HomePage() {
   const [articles, setArticles] = useState(null);
@@ -12,15 +12,9 @@ export default function HomePage() {
       const response = await axios.get(
         `${DefaultURL}/article/front-page-articles`
       );
-      const arrayFromObject = Object.entries(response.data).map(
-        ([key, value]) => {
-          return { key, value };
-        }
-      );
 
-      setArticles(arrayFromObject);
+      setArticles(response.data);
     };
-
     getAllArticles();
   }, []);
 
@@ -34,22 +28,21 @@ export default function HomePage() {
           <>
             <a
               className="article-title h2 d-flex justify-content-center my-5 text-decoration-underline"
-              href={`/articles-category/${e.key}`}
+              href={`/articles-category/${e.category}`}
             >
-              {e.key}
+              {e.category}
             </a>
-            {!e.value.length ? (
+            {!e.articles.length ? (
               <h2 className="text-danger">
                 No Articles Available On This Category Yet!
               </h2>
             ) : (
               <>
-                <ArticleBox articles={e.value} />
-                {e.value.length > 5 ? (
-                  <button className="btn btn-outline-success">
-                    See More Articles On This Category
-                  </button>
-                ) : null}
+                <ArticleBox
+                  articles={e.articles}
+                  category={e.category}
+                  isLongerThan5={e.listLongerThan5}
+                />
               </>
             )}
           </>

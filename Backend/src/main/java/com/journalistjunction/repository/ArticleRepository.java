@@ -15,5 +15,4 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
 
     List<Article> findAllByPublishedIsTrueAndBodyContainingIgnoreCase(String input);
 
-    List<Article> findAllByBodyContainingIgnoreCase(String input);
 }

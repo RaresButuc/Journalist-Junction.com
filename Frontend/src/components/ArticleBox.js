@@ -5,7 +5,7 @@ import DefaultURL from "../usefull/DefaultURL";
 import FirstLetterUppercase from "../usefull/FirstLetterUppercase";
 import LocalDateTimeToString from "../usefull/LocalDateTimeToString";
 
-export default function ArticleBox({ articles }) {
+export default function ArticleBox({ category, articles, isLongerThan5 }) {
   const [thumbnails, setThumbnails] = useState([]);
 
   useEffect(() => {
@@ -33,7 +33,7 @@ export default function ArticleBox({ articles }) {
         articles.map((article, index) => (
           <div className="container-xl mt-4" key={index}>
             <a
-              href={`/read-article/${article.id}`}
+              href={`/article/read/${article.id}`}
               style={{
                 textDecoration: "none",
                 color: "black",
@@ -81,6 +81,14 @@ export default function ArticleBox({ articles }) {
             </a>
           </div>
         ))}
+      {articles && isLongerThan5 ? (
+        <a
+          className="btn btn-outline-success my-4"
+          style={{ fontSize: "25px" }}
+        >
+          See More {FirstLetterUppercase(category)} Articles..
+        </a>
+      ) : null}
     </div>
   );
 }

@@ -70,7 +70,7 @@ function App() {
               }
             ></Route>*/}
             <Route
-              path="/read-article/:id"
+              path="/article/read/:id"
               element={<ReadArticlePage />}
             ></Route>
             <Route 
@@ -78,7 +78,7 @@ function App() {
             element={<PhotosGallery />}
             ></Route>
             <Route
-              path="/edit-article/:id"
+              path="/article/edit/:id"
               // path="edit-article/:id"
               element={
                 <RequireAuth loginPath="/login">

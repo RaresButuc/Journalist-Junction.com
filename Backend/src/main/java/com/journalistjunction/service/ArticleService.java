@@ -2,6 +2,7 @@ package com.journalistjunction.service;
 
 import com.journalistjunction.DTO.ArticlePhotoAndByteDTO;
 import com.journalistjunction.DTO.FileDTO;
+import com.journalistjunction.DTO.HomePageArticles;
 import com.journalistjunction.model.Article;
 import com.journalistjunction.model.Category;
 import com.journalistjunction.model.PhotosClasses.ArticlePhoto;
@@ -43,40 +44,21 @@ public class ArticleService {
         return articleRepository.findAll();
     }
 
-//    public Page<Article> getPostedArticlesByCategory(String category, String input, int currentPage, int itemsPerPage) {
-//        PageRequest pageRequest = PageRequest.of(currentPage, itemsPerPage);
-//        List<Article> articles;
-//        if (input == null) {
-//            articles = getArticlesByIsPublishedAndCategory(articleRepository.findAll(), category)
-//                    .sorted(Comparator.comparing(Article::getPostTime).reversed())
-//                    .toList();
-//        } else {
-//            articles = getArticlesByIsPublishedAndCategory(articleRepository.findAllByBodyContainingIgnoreCase(input), category)
-//                    .sorted(Comparator.comparing(Article::getPostTime).reversed())
-//                    .toList();
-//        }
-//
-//        List<Article> sublist = articles.subList(
-//                (int) pageRequest.getOffset(),
-//                Math.min((int) pageRequest.getOffset() + pageRequest.getPageSize(), articles.size())
-//        );
-//
-//        return new PageImpl<>(sublist, pageRequest, articles.size());
-//    }
-
-    public HashMap<String, List<Article>> getPostedArticlesByCategoryFrontPage() {
-        HashMap<String, List<Article>> articlesByCateg = new HashMap<>();
+    public List<HomePageArticles> getPostedArticlesByCategoryFrontPage() {
+        List<HomePageArticles> articlesHomePage = new ArrayList<>();
 
         for (Category category : categoryService.getAllCategories()) {
+            Stream<Article> filteredByCategory = getArticlesByIsPublishedAndCategory(articleRepository.findAll(), category.getNameOfCategory());
+            boolean isLongerThan5 = filteredByCategory.toList().size() > 5;
             List<Article> articles = getArticlesByIsPublishedAndCategory(articleRepository.findAll(), category.getNameOfCategory())
-                    .limit(5)
                     .sorted(Comparator.comparing(Article::getPostTime).reversed())
+                    .limit(5)
                     .collect(Collectors.toList());
 
-            articlesByCateg.put(category.getNameOfCategory(), articles);
+            articlesHomePage.add(new HomePageArticles(category.getNameOfCategory(), articles, isLongerThan5));
         }
 
-        return articlesByCateg;
+        return articlesHomePage;
     }
 
     public Page<Article> getAllPostedArticlesByInputAndCategory(String input, String category, int currentPage, int itemsPerPage) {

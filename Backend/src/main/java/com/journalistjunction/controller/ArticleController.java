@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.journalistjunction.DTO.ArticlePhotoAndByteDTO;
 import com.journalistjunction.DTO.FileDTO;
+import com.journalistjunction.DTO.HomePageArticles;
 import com.journalistjunction.model.Article;
 import com.journalistjunction.model.PhotosClasses.ArticlePhoto;
 import com.journalistjunction.service.ArticleService;
@@ -31,11 +32,6 @@ public class ArticleController {
         return articleService.getAllArticles();
     }
 
-//    @GetMapping("/all-posted")
-//    public List<Article> getAllReadyToBePostedArticles(@RequestParam(name = "input", required = false) String input) {
-//        return articleService.getAllPostedArticles(input);
-//    }
-
     @GetMapping("/posted")
     public Page<Article> getNewestPostedArticleByCategory(@RequestParam(name = "category", required = false) String category,
                                                           @RequestParam(name = "input", required = false) String input,
@@ -45,7 +41,7 @@ public class ArticleController {
     }
 
     @GetMapping("/front-page-articles")
-    public HashMap<String, List<Article>> getNewestPostedArticleFrontPage() {
+    public List<HomePageArticles> getNewestPostedArticleFrontPage() {
         return articleService.getPostedArticlesByCategoryFrontPage();
     }
 

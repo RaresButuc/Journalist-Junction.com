@@ -457,7 +457,7 @@ export default function EditArticlePage() {
           window.scrollTo(0, 0);
 
           setTimeout(() => {
-            navigate(`/read-article/${id}`);
+            navigate(`/article/read/${id}`);
           }, 3000);
         });
       } else if (buttonTarget === "UnPublish") {
