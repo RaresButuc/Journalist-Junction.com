@@ -8,6 +8,7 @@ import com.journalistjunction.model.Article;
 import com.journalistjunction.model.PhotosClasses.ArticlePhoto;
 import com.journalistjunction.service.ArticleService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,14 +31,17 @@ public class ArticleController {
         return articleService.getAllArticles();
     }
 
-    @GetMapping("/posted")
-    public List<Article> getAllReadyToBePostedArticles() {
-        return articleService.getAllPostedArticles();
-    }
+//    @GetMapping("/all-posted")
+//    public List<Article> getAllReadyToBePostedArticles(@RequestParam(name = "input", required = false) String input) {
+//        return articleService.getAllPostedArticles(input);
+//    }
 
-    @GetMapping("/posted/{category}")
-    public List<Article> getNewestPostedArticleByCategory(@PathVariable("category") String category) {
-        return articleService.getPostedArticlesByCategory(category);
+    @GetMapping("/posted")
+    public Page<Article> getNewestPostedArticleByCategory(@RequestParam(name = "category", required = false) String category,
+                                                          @RequestParam(name = "input", required = false) String input,
+                                                          @RequestParam(name = "currentpage") int currentPage,
+                                                          @RequestParam(name = "itemsperpage") int itemsPerPage) {
+        return articleService.getAllPostedArticlesByInputAndCategory(input, category, currentPage, itemsPerPage);
     }
 
     @GetMapping("/front-page-articles")
