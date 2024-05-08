@@ -28,7 +28,7 @@ export default function HomePage() {
           <>
             <a
               className="article-title h2 d-flex justify-content-center my-5 text-decoration-underline"
-              href={`/articles-category/${e.category}`}
+              href={`/article/search?category=${e.category}&pagenumber=1`}
             >
               {e.category}
             </a>

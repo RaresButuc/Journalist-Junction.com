@@ -20,6 +20,7 @@ export default function ArticleBox({ category, articles, isLongerThan5 }) {
             return thumbnailImageUrl;
           })
         );
+
         setThumbnails(newThumbnails);
       };
 
@@ -31,7 +32,7 @@ export default function ArticleBox({ category, articles, isLongerThan5 }) {
     <div className="container-xl">
       {articles &&
         articles.map((article, index) => (
-          <div className="container-xl mt-4" key={index}>
+          <div className="container-xl mt-5" key={index}>
             <a
               href={`/article/read/${article.id}`}
               style={{
@@ -42,6 +43,7 @@ export default function ArticleBox({ category, articles, isLongerThan5 }) {
               <div className="d-xl-flex align-items-center border-bottom border-danger">
                 <img
                   className="img-fluid col-xl-6 col-sm-12 mb-3"
+                  alt={article.title}
                   src={thumbnails[index]}
                   style={{ borderRadius: 16 }}
                 />
@@ -51,7 +53,7 @@ export default function ArticleBox({ category, articles, isLongerThan5 }) {
                   <h5>Categories:</h5>
                   {article.categories.map((categ) => (
                     <a
-                      href={`/articles-category/${categ.nameOfCategory}`}
+                      href={`/article/search?pagenumber=1&category=${categ.nameOfCategory}`}
                       className="btn btn-outline-success btn-sm ms-2 my-2"
                       style={{
                         borderRadius: 10,
@@ -83,7 +85,8 @@ export default function ArticleBox({ category, articles, isLongerThan5 }) {
         ))}
       {articles && isLongerThan5 ? (
         <a
-          className="btn btn-outline-success my-4"
+          className="btn btn-outline-success mt-4"
+          href={`/article/search?category=${category}&pagenumber=1`}
           style={{ fontSize: "25px" }}
         >
           See More {FirstLetterUppercase(category)} Articles..

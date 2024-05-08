@@ -65,10 +65,10 @@ public class ArticleService {
         PageRequest pageRequest = PageRequest.of(currentPage, itemsPerPage);
         List<Article> articles;
 
-        if (category != null) {
-            if (input != null) {
+        if (!Objects.equals(category, "null")) {
+            if (!Objects.equals(input, "null")) {
                 articles = articleRepository
-                        .findAllByPublishedIsTrueAndBodyContainingIgnoreCase(input)
+                        .findAllByPublishedIsTrueAndTitleContainingIgnoreCase(input)
                         .stream()
                         .filter(e -> e.getCategories().stream()
                                 .anyMatch(i -> i.getNameOfCategory().equals(category)))
@@ -80,9 +80,9 @@ public class ArticleService {
                         .collect(Collectors.toList());
             }
         } else {
-            if (input != null) {
+            if (!Objects.equals(input, "null")) {
                 articles = articleRepository
-                        .findAllByPublishedIsTrueAndBodyContainingIgnoreCase(input)
+                        .findAllByPublishedIsTrueAndTitleContainingIgnoreCase(input)
                         .stream().sorted(Comparator.comparing(Article::getPostTime).reversed())
                         .collect(Collectors.toList());
             } else {
@@ -92,7 +92,6 @@ public class ArticleService {
                         .collect(Collectors.toList());
             }
         }
-
         List<Article> sublist = articles.subList(
                 (int) pageRequest.getOffset(),
                 Math.min((int) pageRequest.getOffset() + pageRequest.getPageSize(), articles.size())

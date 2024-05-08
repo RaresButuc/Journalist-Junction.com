@@ -12,6 +12,7 @@ import PhotosGallery from "./pages/PhotosGallery";
 import EditArticlePage from "./pages/EditArticlePage";
 import PostArticlePage from "./pages/PostArticlePage";
 import ReadArticlePage from "./pages/ReadArticlePage";
+import SearchArticlePage from "./pages/SearchArticlePage";
 
 import "./App.css";
 
@@ -73,13 +74,9 @@ function App() {
               path="/article/read/:id"
               element={<ReadArticlePage />}
             ></Route>
-            <Route 
-            path="/view-photos/:id" 
-            element={<PhotosGallery />}
-            ></Route>
+            <Route path="/view-photos/:id" element={<PhotosGallery />}></Route>
             <Route
               path="/article/edit/:id"
-              // path="edit-article/:id"
               element={
                 <RequireAuth loginPath="/login">
                   <EditArticlePage />
@@ -87,13 +84,16 @@ function App() {
               }
             ></Route>
             <Route
-              path="/post-article/:id"
-              // path="edit-article/:id"
+              path="/article/post/:id"
               element={
                 <RequireAuth loginPath="/login">
                   <PostArticlePage />
                 </RequireAuth>
               }
+            ></Route>
+            <Route
+              path="/article/search"
+              element={<SearchArticlePage />}
             ></Route>
           </Routes>
         </Router>
