@@ -83,7 +83,7 @@ export default function Navbar() {
                 <a
                   className="nav-link fw-bold mx-2 mt-2 text-danger"
                   aria-current="page"
-                  href="/all-ads"
+                  href="/article/trending"
                 >
                   Trending
                 </a>
@@ -93,7 +93,7 @@ export default function Navbar() {
                 <a
                   className="nav-link font-weight-bold mx-2 mt-2 text-dark"
                   aria-current="page"
-                  href="/all-ads"
+                  href="/article/search?pagenumber=1"
                 >
                   Search an Article
                 </a>
@@ -142,7 +142,7 @@ export default function Navbar() {
                       <li>
                         <a
                           className="dropdown-item"
-                          href={`/post-article/${currentUser?.id}`}
+                          href={`/article/post/${currentUser?.id}`}
                         >
                           Post New Article
                         </a>
