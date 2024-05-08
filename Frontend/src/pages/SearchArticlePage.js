@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 
 import ChangeLink from "../usefull/ChangeLink";
 import DefaultURL from "../usefull/DefaultURL";
@@ -9,7 +9,7 @@ import Pagination from "../components/Pagination";
 
 export default function SearchArticlePage() {
   const navigate = useNavigate();
-  const inputValue = useRef();
+  const [searchInput, setSearchInput] = useState("");
 
   const [allArticles, setArticles] = useState(null);
   const [paginationDetails, setPaginationDetails] = useState(null);
@@ -54,16 +54,16 @@ export default function SearchArticlePage() {
           type="text"
           className="form-control"
           placeholder="What Are You Looking For?"
-          ref={inputValue}
+          onChange={(e) => setSearchInput(e.target.value)}
         />
-        <button
+        <a
           className="btn btn-outline-success"
           type="button"
           id="button-addon2"
-          onClick={() => ChangeLink("input", inputValue.current.value)}
+          href={`/article/search?pagenumber=1&input=${searchInput}`} // Folosim valoarea din starea locală în link
         >
           Search
-        </button>
+        </a>
         <a
           className="btn btn-outline-danger"
           href="/article/search?pagenumber=1"
