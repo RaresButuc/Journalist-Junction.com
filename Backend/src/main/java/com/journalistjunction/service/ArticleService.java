@@ -68,7 +68,7 @@ public class ArticleService {
         if (!Objects.equals(category, "null")) {
             if (!Objects.equals(input, "null")) {
                 articles = articleRepository
-                        .findAllByPublishedIsTrueAndBodyContainingIgnoreCase(input)
+                        .findAllByPublishedIsTrueAndTitleContainingIgnoreCase(input)
                         .stream()
                         .filter(e -> e.getCategories().stream()
                                 .anyMatch(i -> i.getNameOfCategory().equals(category)))
@@ -82,7 +82,7 @@ public class ArticleService {
         } else {
             if (!Objects.equals(input, "null")) {
                 articles = articleRepository
-                        .findAllByPublishedIsTrueAndBodyContainingIgnoreCase(input)
+                        .findAllByPublishedIsTrueAndTitleContainingIgnoreCase(input)
                         .stream().sorted(Comparator.comparing(Article::getPostTime).reversed())
                         .collect(Collectors.toList());
             } else {

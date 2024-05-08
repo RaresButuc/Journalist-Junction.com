@@ -1,13 +1,15 @@
 import axios from "axios";
-import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useState, useEffect, useRef } from "react";
 
+import ChangeLink from "../usefull/ChangeLink";
 import DefaultURL from "../usefull/DefaultURL";
 import ArticleBox from "../components/ArticleBox";
 import Pagination from "../components/Pagination";
 
 export default function SearchArticlePage() {
   const navigate = useNavigate();
+  const inputValue = useRef();
 
   const [allArticles, setArticles] = useState(null);
   const [paginationDetails, setPaginationDetails] = useState(null);
@@ -40,7 +42,6 @@ export default function SearchArticlePage() {
     };
 
     fetchArticles();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -53,14 +54,22 @@ export default function SearchArticlePage() {
           type="text"
           className="form-control"
           placeholder="What Are You Looking For?"
+          ref={inputValue}
         />
         <button
           className="btn btn-outline-success"
           type="button"
           id="button-addon2"
+          onClick={() => ChangeLink("input", inputValue.current.value)}
         >
           Search
         </button>
+        <a
+          className="btn btn-outline-danger"
+          href="/article/search?pagenumber=1"
+        >
+          Reset Filters
+        </a>
       </div>
 
       {allArticles ? (

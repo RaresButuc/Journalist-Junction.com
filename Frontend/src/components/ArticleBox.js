@@ -53,7 +53,7 @@ export default function ArticleBox({ category, articles, isLongerThan5 }) {
                   <h5>Categories:</h5>
                   {article.categories.map((categ) => (
                     <a
-                      href={`/articles-category/${categ.nameOfCategory}`}
+                      href={`/article/search?pagenumber=1&category=${categ.nameOfCategory}`}
                       className="btn btn-outline-success btn-sm ms-2 my-2"
                       style={{
                         borderRadius: 10,
