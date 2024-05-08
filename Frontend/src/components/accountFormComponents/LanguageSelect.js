@@ -36,15 +36,15 @@ function CountrySelect({ article }, ref) {
       ref={ref}
       options={allLanguages}
       defaultValue={{
-        label: article.language ? (
+        label: article && article.language ? (
           <LanguageLocationOptionLabel
             cca2={article.language.cca2}
             value={`${article.language.languageNameEnglish} (${article.language.languageNameNative})`}
           />
         ) : (
-          "Select The Language of Your Article"
+          "Select The Language of The Article"
         ),
-        value: article.language ? article.language.id : null,
+        value: article && article.language ? article.language.id : null,
       }}
       menuPortalTarget={document.body}
       styles={{

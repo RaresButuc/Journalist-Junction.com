@@ -51,7 +51,7 @@ function CountrySelect({ user, article }, ref) {
             value={user.location.country}
           />
         ) : (
-          "Select Your Residence Country"
+          "Select a Country"
         ),
         value: article
           ? article.location

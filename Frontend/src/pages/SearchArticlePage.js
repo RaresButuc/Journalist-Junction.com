@@ -7,6 +7,8 @@ import DefaultURL from "../usefull/DefaultURL";
 import ArticleBox from "../components/ArticleBox";
 import Pagination from "../components/Pagination";
 import FirstLetterUppercase from "../usefull/FirstLetterUppercase";
+import CountrySelect from "../components/accountFormComponents/CountrySelect";
+import LanguageSelect from "../components/accountFormComponents/LanguageSelect";
 
 import art from "../photos/CategoriesIcons/art.png";
 import books from "../photos/CategoriesIcons/books.png";
@@ -78,6 +80,7 @@ export default function SearchArticlePage() {
     };
 
     fetchArticles();
+    // eslint-disable-next-line
   }, []);
 
   return (
@@ -113,7 +116,11 @@ export default function SearchArticlePage() {
                 >
                   <h5> {FirstLetterUppercase(e)}</h5>
                 </div>
-                <img className="img-fluid mb-2" src={categoriesPhotos[index]} />
+                <img
+                  className="img-fluid mb-2"
+                  alt={e}
+                  src={categoriesPhotos[index]}
+                />
               </button>
             ))}
         </div>
@@ -130,7 +137,7 @@ export default function SearchArticlePage() {
           className="btn btn-outline-success"
           type="button"
           id="button-addon2"
-          href={`/article/search?pagenumber=1&input=${searchInput}`} // Folosim valoarea din starea locală în link
+          href={`/article/search?pagenumber=1&input=${searchInput}`}
         >
           Search
         </a>
@@ -140,6 +147,18 @@ export default function SearchArticlePage() {
         >
           Reset Filters
         </a>
+      </div>
+
+      <div className="row mt-5 d-flex justify-content-center border-bottom border-danger">
+        <h2 className="article-title" style={{ fontSize: "50px" }}>
+          Filter By:
+        </h2>
+        <div className="col-xl-4 mb-5">
+          <CountrySelect />
+        </div>
+        <div className="col-xl-4">
+          <LanguageSelect />
+        </div>
       </div>
 
       {allArticles ? (
