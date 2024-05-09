@@ -3,7 +3,7 @@
 ## Project Description 
 "Journalist-Junction.com" is a vibrant and innovative space that encourages creativity and the free expression of ideas. Here, every individual has the opportunity to share captivating stories and unique opinions, covering a wide range of topics - from art and life to technology and crafts. With a diverse and enthusiastic community, Journalis Junction provides a friendly and inclusive environment where writing enthusiasts can develop their talents, share their experiences with the world, and be easily discovered by readers.
 
-//////////////////////////
+![1](https://github.com/RaresButuc/Journalist-Junction.com/assets/116391767/e7b7a037-36c7-4fd1-bd65-4759ff1a28bc)
 
 ### Technologies Used
 
@@ -34,6 +34,7 @@ During development, we encountered a few challenges that managed to teach us imp
 - Learning and Working With S3(AWS);
 
 ### Future Plans
+
 Our future plans for "Journalis-Junction.com" platform include:
 
 - Including "little cards" on the Home Page that will Contain the Latest News depending on the country of the logged or unLogged User.
@@ -50,8 +51,8 @@ Our future plans for "Journalis-Junction.com" platform include:
     - Ensure you have the latest LTS (Long Term Support) version of Java Development Kit (JDK) installed on your system.
     - If needed, reload Maven dependencies by right-clicking the `pom.xml` file and selecting "Maven -> Reload Project."
     - Create an SQL Database called "journalistjunction" and inside "resources -> application.properties" enter your spring datasource password
-    - 
-//////////////////////////
+     
+![2](https://github.com/RaresButuc/Journalist-Junction.com/assets/116391767/02d0e02a-a39c-4bfd-b97a-20642058b359)
 
 2. **Run the Server:**
     - Start the backend server by running the `MainApplication` class.
@@ -129,15 +130,15 @@ d. All articles available dependng on the sorting,filtering or keywords criteria
 
 - Click the `Become a Member` navbar-button to register into the webisite(all fields must be completed).
 
-/////////////////////
+![11](https://github.com/RaresButuc/Journalist-Junction.com/assets/116391767/c1755a57-3851-40a4-bd56-93ad3c750b88)
 
 - Click the `Log In` navbar-button to log into the webisite.
   
-/////////////////////
+![12](https://github.com/RaresButuc/Journalist-Junction.com/assets/116391767/11f4d15f-2703-4f87-bd23-d4f0138e5961)
 
 Once logged into the website,as a user,you have acces to the following buttons:
 
-/////////////////////
+![13](https://github.com/RaresButuc/Journalist-Junction.com/assets/116391767/505535de-074d-4b71-b832-7e6eed1d5fed)
 
 - `Profile` Page,where everyone can see informations about you(In the future, the users will be able to add social media platforms for a better connection with their audience);
 
@@ -149,5 +150,4 @@ Once logged into the website,as a user,you have acces to the following buttons:
 
 -- `Edit` Page is an individual page for every article started,that represents the control panel of any of these entities. This offers us all the neccessary tools to add all kinds of informations in it,from simple text,to high quality photos. Also,you have to add informations like the language of the article,and the location where it was written from or the place it is about. Those kind of data will help the article to be easily filtered and found by people interested in the topic of it,and looking for a specific language or zone;
 
-////////////////////
-
+![16](https://github.com/RaresButuc/Journalist-Junction.com/assets/116391767/35e37065-af4a-44eb-bc78-f7863889afcf)
