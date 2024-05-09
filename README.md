@@ -42,7 +42,7 @@ Our future plans for "Journalis-Junction.com" platform include:
 - Possibility for the creator of the Article to include new contributors.
 
 - Paid Subscription Plans for Viewers: The Paid Subscription option will make possible for a speciffic journalist viewers to be able to read some private or subscription-only articles.
-- 
+  
 ## Setup
 
 ### Backend Setup:
