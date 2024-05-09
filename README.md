@@ -15,6 +15,8 @@ In the development of Trade-My-Skills, we harnessed an array of technologies, ea
 
 - React: Renowned for its capacity to construct interactive and dynamic UI components, React served as our primary library for web application development.
 
+- S3 (AWS): This service is the foundation of the functionality to post different photos on articles;
+
 - PostgreSQL: Acting as our primary database management system, PostgreSQL ensured efficient data storage and retrieval.
 
 - Postman: Facilitated API testing and validation, ensuring the reliability and functionality of our APIs.
