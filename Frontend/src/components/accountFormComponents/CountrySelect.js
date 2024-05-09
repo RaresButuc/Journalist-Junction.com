@@ -1,11 +1,14 @@
 import axios from "axios";
 import Select from "react-select";
-import DefaultURL from "../../usefull/DefaultURL";
 import { forwardRef, useState, useEffect } from "react";
+
+import DefaultURL from "../../usefull/DefaultURL";
+import ChangeLink from "../../usefull/ChangeLink";
+import FirstLetterUppercase from "../../usefull/FirstLetterUppercase";
 import LanguageLocationOptionLabel from "../articleFormComponents/LanguageLocationOptionLabel";
 
 function CountrySelect({ user, article }, ref) {
-  const [allCountries, setAllCountries] = useState([]);
+  const [allCountries, setAllCountries] = useState(null);
 
   useEffect(() => {
     const fetchCountries = async () => {
@@ -16,7 +19,7 @@ function CountrySelect({ user, article }, ref) {
           label: (
             <LanguageLocationOptionLabel
               cca2={location.cca2}
-              value={location.country}
+              value={FirstLetterUppercase(location.country)}
             />
           ),
         }));
@@ -28,12 +31,16 @@ function CountrySelect({ user, article }, ref) {
     };
 
     fetchCountries();
-  }, [article]);
+  }, [article, user, ref]);
 
-  return (
+  return allCountries ? (
     <Select
       name="countryInput"
       ref={ref}
+      onChange={(e) =>
+        ref ? ChangeLink("country", e.label.props.value.split(" ")[0].charAt(0).toLowerCase() +
+        e.label.props.value.split(" ")[0].slice(1)) : null
+      }
       options={allCountries}
       defaultValue={{
         label: article ? (
@@ -51,7 +58,7 @@ function CountrySelect({ user, article }, ref) {
             value={user.location.country}
           />
         ) : (
-          "Select Your Residence Country"
+          "Select a Country"
         ),
         value: article
           ? article.location
@@ -70,7 +77,7 @@ function CountrySelect({ user, article }, ref) {
         }),
       }}
     />
-  );
+  ) : null;
 }
 
 export default forwardRef(CountrySelect);

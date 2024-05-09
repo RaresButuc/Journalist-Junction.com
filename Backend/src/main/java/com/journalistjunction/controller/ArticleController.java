@@ -33,11 +33,15 @@ public class ArticleController {
     }
 
     @GetMapping("/posted")
-    public Page<Article> getNewestPostedArticleByCategory(@RequestParam(name = "category", required = false) String category,
-                                                          @RequestParam(name = "input", required = false) String input,
-                                                          @RequestParam(name = "currentpage") int currentPage,
-                                                          @RequestParam(name = "itemsperpage") int itemsPerPage) {
-        return articleService.getAllPostedArticlesByInputAndCategory(input, category, currentPage, itemsPerPage);
+    public Page<Article> getNewestPostedArticleByCategory(
+            @RequestParam(name = "currentpage") int currentPage,
+            @RequestParam(name = "itemsperpage") int itemsPerPage,
+            @RequestParam(name = "input", required = false) String input,
+            @RequestParam(name = "country", required = false) String country,
+            @RequestParam(name = "language", required = false) String language,
+            @RequestParam(name = "category", required = false) String category
+    ) {
+        return articleService.getAllPostedArticlesByInputAndCategory(input, category, country, language, currentPage, itemsPerPage);
     }
 
     @GetMapping("/front-page-articles")

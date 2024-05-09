@@ -1,13 +1,16 @@
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 import ChangeLink from "../usefull/ChangeLink";
 import DefaultURL from "../usefull/DefaultURL";
 import ArticleBox from "../components/ArticleBox";
 import Pagination from "../components/Pagination";
 import FirstLetterUppercase from "../usefull/FirstLetterUppercase";
+import CountrySelect from "../components/accountFormComponents/CountrySelect";
+import LanguageSelect from "../components/accountFormComponents/LanguageSelect";
 
+import closeIcon from "../photos/close.png";
 import art from "../photos/CategoriesIcons/art.png";
 import books from "../photos/CategoriesIcons/books.png";
 import crafts from "../photos/CategoriesIcons/crafts.png";
@@ -21,6 +24,9 @@ import travel from "../photos/CategoriesIcons/travel.png";
 
 export default function SearchArticlePage() {
   const navigate = useNavigate();
+
+  const country = useRef();
+  const language = useRef();
 
   const [allArticles, setArticles] = useState(null);
 
@@ -42,6 +48,9 @@ export default function SearchArticlePage() {
   const [searchInput, setSearchInput] = useState("");
   const [paginationDetails, setPaginationDetails] = useState(null);
 
+  const [countryFilter, setCountryFilter] = useState(null);
+  const [languageFilter, setLanguageFilter] = useState(null);
+
   useEffect(() => {
     const fetchArticles = async () => {
       try {
@@ -51,12 +60,18 @@ export default function SearchArticlePage() {
         const inputParam = new URLSearchParams(window.location.search).get(
           "input"
         );
+        const countryParam = new URLSearchParams(window.location.search).get(
+          "country"
+        );
+        const languageParam = new URLSearchParams(window.location.search).get(
+          "language"
+        );
         const pageNumberParam = new URLSearchParams(window.location.search).get(
           "pagenumber"
         );
 
         const responseArticles = await axios.get(
-          `${DefaultURL}/article/posted?category=${categoryParam}&input=${inputParam}&currentpage=${
+          `${DefaultURL}/article/posted?category=${categoryParam}&input=${inputParam}&country=${countryParam}&language=${languageParam}&currentpage=${
             pageNumberParam - 1
           }&itemsperpage=10`
         );
@@ -68,6 +83,14 @@ export default function SearchArticlePage() {
         );
         setCurrentCategory(categoryParam);
 
+        if (countryParam !== null && countryParam !== "null") {
+          setCountryFilter(countryParam);
+        }
+
+        if (languageParam !== null && languageParam !== "null") {
+          setLanguageFilter(languageParam);
+        }
+
         const responseCategories = await axios.get(`${DefaultURL}/category`);
         setCategories(
           responseCategories.data.map((e) => e.nameOfCategory).sort()
@@ -78,6 +101,7 @@ export default function SearchArticlePage() {
     };
 
     fetchArticles();
+    // eslint-disable-next-line
   }, []);
 
   return (
@@ -113,7 +137,11 @@ export default function SearchArticlePage() {
                 >
                   <h5> {FirstLetterUppercase(e)}</h5>
                 </div>
-                <img className="img-fluid mb-2" src={categoriesPhotos[index]} />
+                <img
+                  className="img-fluid mb-2"
+                  alt={e}
+                  src={categoriesPhotos[index]}
+                />
               </button>
             ))}
         </div>
@@ -130,7 +158,7 @@ export default function SearchArticlePage() {
           className="btn btn-outline-success"
           type="button"
           id="button-addon2"
-          href={`/article/search?pagenumber=1&input=${searchInput}`} // Folosim valoarea din starea locală în link
+          href={`/article/search?pagenumber=1&input=${searchInput}`}
         >
           Search
         </a>
@@ -138,8 +166,54 @@ export default function SearchArticlePage() {
           className="btn btn-outline-danger"
           href="/article/search?pagenumber=1"
         >
-          Reset Filters
+          Reset All Filters
         </a>
+      </div>
+
+      <div className="row mt-5 d-flex justify-content-center border-bottom border-danger">
+        <h2 className="article-title" style={{ fontSize: "50px" }}>
+          Filter By:
+        </h2>
+        <div className="col-xl-4 mb-5">
+          <CountrySelect ref={country} />
+          {countryFilter !== null ? (
+            <div className="border border-success border-2 mt-3 d-inline-block">
+              <h5 className="d-inline me-2 ms-2">
+                {FirstLetterUppercase(countryFilter)}
+              </h5>
+              <input
+                className="d-inline mt-1 me-2"
+                type="image"
+                src={closeIcon}
+                style={{ width: "22px" }}
+                onClick={() => {
+                  ChangeLink("country", null);
+                  setCountryFilter(null);
+                }}
+              />
+            </div>
+          ) : null}
+        </div>
+        <div className="col-xl-4 mb-5">
+          <LanguageSelect ref={language} />
+          {languageFilter !== null ? (
+            <div className="border border-success border-2 mt-3 d-inline-block">
+              <h5 className="d-inline me-2 ms-2">
+                {FirstLetterUppercase(languageFilter)}
+              </h5>
+              <input
+                className="d-inline mt-1 me-2"
+                type="image"
+                src={closeIcon}
+                style={{ width: "22px" }}
+                onClick={() => {
+                  ChangeLink("language", null);
+                  setLanguageFilter(null);
+                }}
+              />
+            </div>
+          ) : null}
+        </div>
       </div>
 
       {allArticles ? (

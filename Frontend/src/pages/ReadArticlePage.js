@@ -92,7 +92,7 @@ export default function ReadArticlePage() {
           <b className="ms-2">{article?.views}</b>
         </h6>
 
-        <h1 style={{ paddingTop: "50px" }} className="article-title mt-5">
+        <h1  className="article-title mt-5">
           {article?.title}
         </h1>
         <h4 className="article-undertitle col d-flex justify-content-center mt-5">
@@ -110,7 +110,9 @@ export default function ReadArticlePage() {
         <div className="row mb-4">
           <h4 className="article-undertitle col d-flex justify-content-center ms-5 mt-5">
             Location:
-            <b className="ms-2 text-danger">{article?.location.country}</b>
+            <b className="ms-2 text-danger">
+              {FirstLetterUppercase(article?.location.country)}
+            </b>
             <img
               className="mx-2"
               data-toggle="tooltip"
@@ -122,11 +124,8 @@ export default function ReadArticlePage() {
 
           <h4 className="article-undertitle col d-flex justify-content-center me-5 mt-5">
             Language:
-            <b
-              className="ms-2 text-danger"
-              // style={{ color: "#9370DB" }}
-            >
-              {article?.language.languageNameEnglish} /{" "}
+            <b className="ms-2 text-danger">
+              {FirstLetterUppercase(article?.language.languageNameEnglish)} /{" "}
               {article?.language.languageNameNative}
             </b>
             <img
