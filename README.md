@@ -1,4 +1,4 @@
-# JournalistJunction.com
+# Journalist-Junction.com
 
 ## Project Description 
 "Journalist-Junction.com" is a vibrant and innovative space that encourages creativity and the free expression of ideas. Here, every individual has the opportunity to share captivating stories and unique opinions, covering a wide range of topics - from art and life to technology and crafts. With a diverse and enthusiastic community, Journalis Junction provides a friendly and inclusive environment where writing enthusiasts can develop their talents, share their experiences with the world, and be easily discovered by readers.
