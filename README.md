@@ -7,7 +7,7 @@
 
 ### Technologies Used
 
-In the development of Trade-My-Skills, we harnessed an array of technologies, each serving a vital role:
+During the the development of "Journalist-Junction.com", we harnessed an array of technologies, each serving a vital role:
 
 - Java with Spring Boot: This combination allowed us to expedite Java application development while enabling the creation of vital APIs and database repositories;
 
