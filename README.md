@@ -77,3 +77,75 @@ Our future plans for "Journalis-Junction.com" platform include:
     - Click on the link provided in the terminal to open the page and experience "Journalist-Junction.com"!
   
 
+
+## Pages
+
+- Home
+
+While scrolling down you can see the 5 newest articles on every category. You can read their titles, thumbnail descriptions, thumbnail image and see the categories they are included in.
+
+There are 3 posibilities regarding these sections:
+a. If a category currently has more than 5 articles, down below the 5th article,there will be a button that will help us redirect to see a list of all articles included in that category;
+
+///////////////////
+
+b. If a category has less than 5 articles in total,there will be shown only these ones,without the button mentioned earlier;
+
+/////////////////////
+
+c. If a category doesn't have any article included in it, this message could be seen;
+
+/////////////////////
+
+Also,in the near future there will be 2 more sections on the right of the screen: a mini-weather app and mini-cards below it containing recent news regarding the country the user is from;
+
+- Trending
+
+This page will display the articles with the most views, related to the most recent period when they were posted (In short, the articles that received the most interest in the last days/last week);
+
+- Search an Article
+
+Click the `Search an Article` navbar-button to acces the page where all the articles are listed;
+
+/////////////////////
+
+a. Every article can be filtered by a category mentioned above:
+
+/////////////////////
+
+b. Articles can be filtered by the language or the location set for the articles:
+
+/////////////////////
+
+c. Articles can be find by title using the keyword mentioned in the input:
+
+/////////////////////
+
+d. All articles available dependng on the sorting,filtering or keywords criterias will be shown on the screen. Also, you will be able to search throw all of them using the pagination below:
+
+/////////////////////
+
+- Click the `Become a Member` navbar-button to register into the webisite(all fields must be completed).
+
+/////////////////////
+
+- Click the `Log In` navbar-button to log into the webisite.
+  
+/////////////////////
+
+Once logged into the website,as a user,you have acces to the following buttons:
+
+/////////////////////
+
+- `Profile` Page,where everyone can see informations about you(In the future, the users will be able to add social media platforms for a better connection with their audience);
+
+/////////////////////
+
+- `Post New Article` Page is you general Control Panel where you can see every project you started. A button that stands out is the one on the right,that, once pressed, will initialize a new project and will redirect you to the edit page of that article;
+
+/////////////////////
+
+-- `Edit` Page is an individual page for every article started,that represents the control panel of any of these entities. This offers us all the neccessary tools to add all kinds of informations in it,from simple text,to high quality photos. Also,you have to add informations like the language of the article,and the location where it was written from or the place it is about. Those kind of data will help the article to be easily filtered and found by people interested in the topic of it,and looking for a specific language or zone;
+
+////////////////////
+
