@@ -33,7 +33,7 @@ public class InitDbLocations {
 
             for (JsonNode node : jsonNode) {
                 Location location = Location.builder()
-                        .country(node.get("name").get("common").asText())
+                        .country(node.get("name").get("common").asText().toLowerCase())
                         .cca2(node.get("cca2").asText())
                         .build();
 

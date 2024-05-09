@@ -1,8 +1,11 @@
 import axios from "axios";
 import Select from "react-select";
-import DefaultURL from "../../usefull/DefaultURL";
 import { forwardRef, useState, useEffect } from "react";
+
+import DefaultURL from "../../usefull/DefaultURL";
+import FirstLetterUppercase from "../../usefull/FirstLetterUppercase";
 import LanguageLocationOptionLabel from "../articleFormComponents/LanguageLocationOptionLabel";
+import ChangeLink from "../../usefull/ChangeLink";
 
 function CountrySelect({ article }, ref) {
   const [allLanguages, setAllLanguages] = useState([]);
@@ -16,7 +19,9 @@ function CountrySelect({ article }, ref) {
           label: (
             <LanguageLocationOptionLabel
               cca2={language.cca2}
-              value={`${language.languageNameEnglish} (${language.languageNameNative})`}
+              value={`${FirstLetterUppercase(language.languageNameEnglish)} (${
+                language.languageNameNative
+              })`}
             />
           ),
         }));
@@ -35,15 +40,25 @@ function CountrySelect({ article }, ref) {
       name="languageInput"
       ref={ref}
       options={allLanguages}
+      onChange={(e) =>
+        ref
+          ? ChangeLink(
+              "language",
+              e.label.props.value.split(" ")[0].charAt(0).toLowerCase() +
+                e.label.props.value.split(" ")[0].slice(1)
+            )
+          : null
+      }
       defaultValue={{
-        label: article && article.language ? (
-          <LanguageLocationOptionLabel
-            cca2={article.language.cca2}
-            value={`${article.language.languageNameEnglish} (${article.language.languageNameNative})`}
-          />
-        ) : (
-          "Select The Language of The Article"
-        ),
+        label:
+          article && article.language ? (
+            <LanguageLocationOptionLabel
+              cca2={article.language.cca2}
+              value={`${article.language.languageNameEnglish} (${article.language.languageNameNative})`}
+            />
+          ) : (
+            "Select The Language of The Article"
+          ),
         value: article && article.language ? article.language.id : null,
       }}
       menuPortalTarget={document.body}

@@ -61,37 +61,87 @@ public class ArticleService {
         return articlesHomePage;
     }
 
-    public Page<Article> getAllPostedArticlesByInputAndCategory(String input, String category, int currentPage, int itemsPerPage) {
+    public Page<Article> getAllPostedArticlesByInputAndCategory(String input, String category, String country, String language, int currentPage, int itemsPerPage) {
         PageRequest pageRequest = PageRequest.of(currentPage, itemsPerPage);
         List<Article> articles;
 
-        if (!Objects.equals(category, "null")) {
-            if (!Objects.equals(input, "null")) {
-                articles = articleRepository
-                        .findAllByPublishedIsTrueAndTitleContainingIgnoreCase(input)
-                        .stream()
-                        .filter(e -> e.getCategories().stream()
-                                .anyMatch(i -> i.getNameOfCategory().equals(category)))
-                        .sorted(Comparator.comparing(Article::getPostTime).reversed())
-                        .collect(Collectors.toList());
+        if (category.equals("null")) {
+            if (country.equals("null")) {
+                if (input.equals("null")) {
+                    if (language.equals("null")) {
+                        articles = articleRepository.findAllByPublishedIsTrueOrderByPostTimeDesc();
+                    } else {
+                        articles = articleRepository.findAllByPublishedIsTrueAndLanguage_LanguageNameEnglishOrderByPostTimeDesc(language);
+                    }
+                } else {
+                    if (language.equals("null")) {
+                        articles = articleRepository.findAllByPublishedIsTrueAndTitleContainingIgnoreCaseOrderByPostTimeDesc(input);
+                    } else {
+                        articles = articleRepository.findAllByPublishedIsTrueAndAndTitleContainingIgnoreCaseAndLanguage_LanguageNameEnglishOrderByPostTimeDesc(input, language);
+                    }
+                }
             } else {
-                articles = getArticlesByIsPublishedAndCategory(articleRepository.findAll(), category)
-                        .sorted(Comparator.comparing(Article::getPostTime).reversed())
-                        .collect(Collectors.toList());
+                if (input.equals("null")) {
+                    if (language.equals("null")) {
+                        articles = articleRepository.findAllByPublishedIsTrueAndLocation_CountryOrderByPostTimeDesc(country);
+                    } else {
+                        articles = articleRepository.findAllByPublishedIsTrueAndLocation_CountryAndLanguage_LanguageNameEnglishOrderByPostTimeDesc(country, language);
+                    }
+                } else {
+                    if (language.equals("null")) {
+                        articles = articleRepository.findAllByPublishedIsTrueAndLocation_CountryAndTitleContainingIgnoreCaseOrderByPostTimeDesc(country, input);
+                    } else {
+                        articles = articleRepository.findAllByPublishedIsTrueAndLocation_CountryAndTitleContainingIgnoreCaseAndLanguage_LanguageNameEnglishOrderByPostTimeDesc(country, input, language);
+                    }
+                }
             }
         } else {
-            if (!Objects.equals(input, "null")) {
-                articles = articleRepository
-                        .findAllByPublishedIsTrueAndTitleContainingIgnoreCase(input)
-                        .stream().sorted(Comparator.comparing(Article::getPostTime).reversed())
-                        .collect(Collectors.toList());
+            if (country.equals("null")) {
+                if (input.equals("null")) {
+                    if (language.equals("null")) {
+                        articles = getArticlesByIsPublishedAndCategory(articleRepository.findAll(), category)
+                                .collect(Collectors.toList());
+                    } else {
+                        articles = getArticlesByIsPublishedAndCategory(articleRepository.findAll(), category)
+                                .filter(e -> e.getLanguage().getLanguageNameEnglish().equals(language))
+                                .collect(Collectors.toList());
+                    }
+                } else {
+                    if (language.equals("null")) {
+                        articles = getArticlesByIsPublishedAndCategory(articleRepository.findAll(), category)
+                                .filter(e -> e.getTitle().toLowerCase().contains(input.toLowerCase()))
+                                .collect(Collectors.toList());
+                    } else {
+                        articles = getArticlesByIsPublishedAndCategory(articleRepository.findAll(), category)
+                                .filter(e -> e.getLanguage().getLanguageNameEnglish().equals(language) && e.getTitle().toLowerCase().contains(input.toLowerCase()))
+                                .collect(Collectors.toList());
+                    }
+                }
             } else {
-                articles = articleRepository.findAllByPublishedIsTrue()
-                        .stream()
-                        .sorted(Comparator.comparing(Article::getPostTime).reversed())
-                        .collect(Collectors.toList());
+                if (input.equals("null")) {
+                    if (language.equals("null")) {
+                        articles = getArticlesByIsPublishedAndCategory(articleRepository.findAll(), category)
+                                .filter(e -> e.getLocation().getCountry().equals(country))
+                                .collect(Collectors.toList());
+                    } else {
+                        articles = getArticlesByIsPublishedAndCategory(articleRepository.findAll(), category)
+                                .filter(e -> e.getLocation().getCountry().equals(country) && e.getLanguage().getLanguageNameEnglish().equals(language))
+                                .collect(Collectors.toList());
+                    }
+                } else {
+                    if (language.equals("null")) {
+                        articles = getArticlesByIsPublishedAndCategory(articleRepository.findAll(), category)
+                                .filter(e -> e.getLocation().getCountry().equals(country) && e.getTitle().toLowerCase().contains(input.toLowerCase()))
+                                .collect(Collectors.toList());
+                    } else {
+                        articles = getArticlesByIsPublishedAndCategory(articleRepository.findAll(), category)
+                                .filter(e -> e.getLocation().getCountry().equals(country) && e.getTitle().toLowerCase().contains(input.toLowerCase()) && e.getLanguage().getLanguageNameEnglish().equals(language))
+                                .collect(Collectors.toList());
+                    }
+                }
             }
         }
+
         List<Article> sublist = articles.subList(
                 (int) pageRequest.getOffset(),
                 Math.min((int) pageRequest.getOffset() + pageRequest.getPageSize(), articles.size())
@@ -104,7 +154,8 @@ public class ArticleService {
         return articles
                 .stream()
                 .filter(e -> e.isPublished() && e.getCategories().stream()
-                        .anyMatch(i -> i.getNameOfCategory().equals(category)));
+                        .anyMatch(i -> i.getNameOfCategory().equals(category)))
+                .sorted(Comparator.comparing(Article::getPostTime).reversed());
     }
 
     public Article getArticleById(Long id) {
@@ -174,7 +225,8 @@ public class ArticleService {
     }
 
     @Transactional
-    public void uploadArticlePhotos(List<MultipartFile> files, Long id, List<FileDTO> filesDTO) throws IOException {
+    public void uploadArticlePhotos(List<MultipartFile> files, Long id, List<FileDTO> filesDTO) throws
+            IOException {
         if (files.isEmpty()) {
             return;
         }

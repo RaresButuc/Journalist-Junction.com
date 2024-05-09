@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 import ChangeLink from "../usefull/ChangeLink";
 import DefaultURL from "../usefull/DefaultURL";
@@ -10,6 +10,7 @@ import FirstLetterUppercase from "../usefull/FirstLetterUppercase";
 import CountrySelect from "../components/accountFormComponents/CountrySelect";
 import LanguageSelect from "../components/accountFormComponents/LanguageSelect";
 
+import closeIcon from "../photos/close.png";
 import art from "../photos/CategoriesIcons/art.png";
 import books from "../photos/CategoriesIcons/books.png";
 import crafts from "../photos/CategoriesIcons/crafts.png";
@@ -23,6 +24,9 @@ import travel from "../photos/CategoriesIcons/travel.png";
 
 export default function SearchArticlePage() {
   const navigate = useNavigate();
+
+  const country = useRef();
+  const language = useRef();
 
   const [allArticles, setArticles] = useState(null);
 
@@ -44,6 +48,9 @@ export default function SearchArticlePage() {
   const [searchInput, setSearchInput] = useState("");
   const [paginationDetails, setPaginationDetails] = useState(null);
 
+  const [countryFilter, setCountryFilter] = useState(null);
+  const [languageFilter, setLanguageFilter] = useState(null);
+
   useEffect(() => {
     const fetchArticles = async () => {
       try {
@@ -53,12 +60,18 @@ export default function SearchArticlePage() {
         const inputParam = new URLSearchParams(window.location.search).get(
           "input"
         );
+        const countryParam = new URLSearchParams(window.location.search).get(
+          "country"
+        );
+        const languageParam = new URLSearchParams(window.location.search).get(
+          "language"
+        );
         const pageNumberParam = new URLSearchParams(window.location.search).get(
           "pagenumber"
         );
 
         const responseArticles = await axios.get(
-          `${DefaultURL}/article/posted?category=${categoryParam}&input=${inputParam}&currentpage=${
+          `${DefaultURL}/article/posted?category=${categoryParam}&input=${inputParam}&country=${countryParam}&language=${languageParam}&currentpage=${
             pageNumberParam - 1
           }&itemsperpage=10`
         );
@@ -69,6 +82,14 @@ export default function SearchArticlePage() {
           dataArticles.content.length > 0 ? dataArticles.content : null
         );
         setCurrentCategory(categoryParam);
+
+        if (countryParam !== null && countryParam !== "null") {
+          setCountryFilter(countryParam);
+        }
+
+        if (languageParam !== null && languageParam !== "null") {
+          setLanguageFilter(languageParam);
+        }
 
         const responseCategories = await axios.get(`${DefaultURL}/category`);
         setCategories(
@@ -145,7 +166,7 @@ export default function SearchArticlePage() {
           className="btn btn-outline-danger"
           href="/article/search?pagenumber=1"
         >
-          Reset Filters
+          Reset All Filters
         </a>
       </div>
 
@@ -154,10 +175,44 @@ export default function SearchArticlePage() {
           Filter By:
         </h2>
         <div className="col-xl-4 mb-5">
-          <CountrySelect />
+          <CountrySelect ref={country} />
+          {countryFilter !== null ? (
+            <div className="border border-success border-2 mt-3 d-inline-block">
+              <h5 className="d-inline me-2 ms-2">
+                {FirstLetterUppercase(countryFilter)}
+              </h5>
+              <input
+                className="d-inline mt-1 me-2"
+                type="image"
+                src={closeIcon}
+                style={{ width: "22px" }}
+                onClick={() => {
+                  ChangeLink("country", null);
+                  setCountryFilter(null);
+                }}
+              />
+            </div>
+          ) : null}
         </div>
-        <div className="col-xl-4">
-          <LanguageSelect />
+        <div className="col-xl-4 mb-5">
+          <LanguageSelect ref={language} />
+          {languageFilter !== null ? (
+            <div className="border border-success border-2 mt-3 d-inline-block">
+              <h5 className="d-inline me-2 ms-2">
+                {FirstLetterUppercase(languageFilter)}
+              </h5>
+              <input
+                className="d-inline mt-1 me-2"
+                type="image"
+                src={closeIcon}
+                style={{ width: "22px" }}
+                onClick={() => {
+                  ChangeLink("language", null);
+                  setLanguageFilter(null);
+                }}
+              />
+            </div>
+          ) : null}
         </div>
       </div>
 
