@@ -6,6 +6,7 @@ import "react-image-gallery/styles/css/image-gallery.css";
 
 import ErrorPage from "./ErrorPage";
 import DefaultURL from "../usefull/DefaultURL";
+import backButton from "../photos/back-button.png";
 
 export default function PhotosGallery() {
   const { id } = useParams();
@@ -60,7 +61,17 @@ export default function PhotosGallery() {
   }, [id]);
 
   return galleryPhotos ? (
-    <div className="contianer-xl ps-5 pe-5 ms-5 me-5">
+    <div className="ps-5 pe-5 ms-5 me-5">
+      <div className="mb-3">
+        <a
+          className="d-flex justify-content-center"
+          href={`/article/read/${id}`}
+          style={{ textDecoration: "none" }}
+        >
+          <img src={backButton} style={{ maxHeight: "40px" }} />
+          <h3 className="ms-2 text-success">Back To Article</h3>
+        </a>
+      </div>
       <ImageGallery items={galleryPhotos} showPlayButton={false} />
     </div>
   ) : (

@@ -15,7 +15,6 @@ function CategoriesSelect({ action, id, disabled, currentChosenCategs }, ref) {
 
       setAllCategories(
         res.data
-          .sort((a, b) => a.nameOfCategory.localeCompare(b.nameOfCategory))
           .filter(
             (e) => !currentChosenCategs.some((element) => element.id === e.id)
           )
