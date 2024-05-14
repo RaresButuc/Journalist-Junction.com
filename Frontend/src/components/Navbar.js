@@ -171,7 +171,7 @@ export default function Navbar() {
                       aria-current="page"
                       href="/register"
                     >
-                      Become a member
+                      Become a Member
                     </a>
                   </li>
 

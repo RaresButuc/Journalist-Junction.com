@@ -16,16 +16,16 @@ public class InitDbCategories {
 
     public void seedDBCategory() {
         List<Category> categories = List.of(
-                Category.builder().nameOfCategory("fashion").build(),
-                Category.builder().nameOfCategory("travel").build(),
-                Category.builder().nameOfCategory("sports").build(),
-                Category.builder().nameOfCategory("crafts").build(),
-                Category.builder().nameOfCategory("health").build(),
+                Category.builder().nameOfCategory("art").build(),
                 Category.builder().nameOfCategory("books").build(),
-                Category.builder().nameOfCategory("music").build(),
-                Category.builder().nameOfCategory("tech").build(),
+                Category.builder().nameOfCategory("crafts").build(),
+                Category.builder().nameOfCategory("fashion").build(),
+                Category.builder().nameOfCategory("health").build(),
                 Category.builder().nameOfCategory("home").build(),
-                Category.builder().nameOfCategory("art").build()
+                Category.builder().nameOfCategory("music").build(),
+                Category.builder().nameOfCategory("sports").build(),
+                Category.builder().nameOfCategory("tech").build(),
+                Category.builder().nameOfCategory("travel").build()
         );
 
         categoryRepository.saveAllAndFlush(categories);

@@ -175,7 +175,7 @@ export default function RegisterPage() {
         </div>
         <p className="mt-2">
           Already a member?{" "}
-          <a href="/register" style={{ color: "#f84e45" }}>
+          <a href="/login" style={{ color: "#f84e45" }}>
             Log In HERE
           </a>
         </p>
