@@ -550,3 +550,9 @@ body {
   box-sizing: border-box;
   padding: 10px 0 10px 0;
 }
+
+/* Pagination Colors */
+
+.page-link {
+ color: #dc3545
+}

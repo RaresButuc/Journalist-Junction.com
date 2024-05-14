@@ -149,6 +149,11 @@ public class ArticleController {
         return ResponseEntity.ok("Images Successfully Deleted!");
     }
 
+    @PutMapping(value = "/add-view/{id}")
+    public void increaseViewCount(@PathVariable("id") Long id) {
+        articleService.increaseArticleViewCount(id);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteArticle(@PathVariable("id") Long id) {
         articleService.deleteArticleById(id);

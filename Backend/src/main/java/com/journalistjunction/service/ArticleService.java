@@ -163,6 +163,10 @@ public class ArticleService {
                 .orElseThrow(() -> new NoSuchElementException("No Article Found!"));
     }
 
+    public List<Article> getArticlesByUserId(Long id) {
+        return articleRepository.findAllByOwnerId(id);
+    }
+
     public boolean getArticleIsPublished(Long id) {
         return getArticleById(id).isPublished();
     }
@@ -392,9 +396,15 @@ public class ArticleService {
         articleRepository.save(articleFromDb);
     }
 
-    public List<Article> getArticlesByUserId(Long id) {
-        return articleRepository.findAllByOwnerId(id);
+    public void increaseArticleViewCount(Long id) {
+        Article articleFromDb = articleRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("No Article Found!"));
+
+        articleFromDb.setViews(articleFromDb.getViews() + 1);
+
+        articleRepository.save(articleFromDb);
     }
+
 
     public void deleteArticleById(Long id) {
         articleRepository.deleteById(id);

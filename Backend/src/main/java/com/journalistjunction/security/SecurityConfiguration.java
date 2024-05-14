@@ -29,11 +29,10 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth ->
                         auth
+                                .requestMatchers("/**", "/user/**", "/article/add-view/").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/article").authenticated()
                                 .requestMatchers(HttpMethod.PUT, "/article/**").authenticated()
                                 .requestMatchers(HttpMethod.DELETE, "/article/**").authenticated()
-                                .requestMatchers("/**", "/user/**").permitAll()
-                                // .requestMatchers("/postofer").hasRole("CUSTOMER")
                                 .anyRequest()
                                 .authenticated()
                 ).sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
