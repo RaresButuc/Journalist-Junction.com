@@ -4,23 +4,43 @@ import { useMemo, useCallback, useState, useEffect, forwardRef } from "react";
 
 import Alert from "../Alert";
 import DefaultURL from "../../usefull/DefaultURL";
+import noProfileImage from "../../photos/default-profile-image.png";
 
 const ProfileImageInput = forwardRef(({ userId }, ref) => {
-  const [photoData, setPhotoData] = useState(null);
+  const [photoData, setPhotoData] = useState(noProfileImage);
   const [showAlert, setShowAlert] = useState(false);
   const [alertInfos, setAlertInfos] = useState(["", "", ""]);
   const [description, setDescription] = useState("No Image Selected*");
-  const [photoPreview, setPhotoPreview] = useState(
-    "https://www.pngall.com/wp-content/uploads/5/Profile-PNG-File.png"
-  );
+  const [photoPreview, setPhotoPreview] = useState(noProfileImage);
 
   useEffect(() => {
     if (userId) {
       const fetchCurrentUser = async () => {
         try {
-          const responseUser = await axios.get(`${DefaultURL}/user/${userId}`);
-          setPhotoData(responseUser.data.profilePhoto);
-          setDescription(responseUser.data.profilePhoto.description);
+          const reponseUserProfilePhoto = await axios.get(
+            `${DefaultURL}/user/get-profile-photo/${userId}`,
+            {
+              responseType: "arraybuffer",
+            }
+          );
+
+          const imageUrl = `data:image/jpeg;base64,
+        ${btoa(
+          new Uint8Array(reponseUserProfilePhoto.data).reduce(
+            (data, byte) => data + String.fromCharCode(byte),
+            ""
+          )
+        )}`;
+          setPhotoPreview(
+            reponseUserProfilePhoto.data.byteLength === 0
+              ? noProfileImage
+              : imageUrl
+          );
+          setDescription(
+            reponseUserProfilePhoto.data.byteLength === 0
+              ? "No Profile Image*"
+              : "Current Profile Image*"
+          );
         } catch (err) {
           console.log(err);
         }
@@ -34,9 +54,7 @@ const ProfileImageInput = forwardRef(({ userId }, ref) => {
     e.preventDefault();
     setPhotoData(null);
     setDescription("No Image Selected*");
-    setPhotoPreview(
-      "https://www.pngall.com/wp-content/uploads/5/Profile-PNG-File.png"
-    );
+    setPhotoPreview(noProfileImage);
   };
 
   const baseStyle = {
@@ -147,11 +165,14 @@ const ProfileImageInput = forwardRef(({ userId }, ref) => {
         />
         <br />
         <div className="mt-2">
-          <h5 className="d-inline" style={{ wordBreak: "break-all" }}>
+          <h5 className="me-3 d-inline" style={{ wordBreak: "break-all" }}>
             {description}
           </h5>
           {photoData ? (
-            <button className="btn btn-danger ml-2" onClick={deleteImage}>
+            <button
+              className="btn btn-danger rounded-circle ml-2"
+              onClick={deleteImage}
+            >
               X
             </button>
           ) : null}

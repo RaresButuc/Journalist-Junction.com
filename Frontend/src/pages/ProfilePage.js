@@ -6,9 +6,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import ErrorPage from "./ErrorPage";
 import DefaultURL from "../usefull/DefaultURL";
 import CurrentUserInfos from "../usefull/CurrentUserInfos";
-import noProfileImage from "../photos/default-profile-image.png";
 import FirstLetterUppercase from "../usefull/FirstLetterUppercase";
 
+import noProfileImage from "../photos/default-profile-image.png";
 import defaultbackgroundprofile from "../photos/defaultbackgroundprofile.png";
 
 export default function ProfilePage() {
