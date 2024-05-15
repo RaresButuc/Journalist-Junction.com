@@ -1,11 +1,15 @@
-import { useIsAuthenticated } from "react-auth-kit";
-import CurrentUserInfos from "../usefull/CurrentUserInfos";
-import { useParams, useNavigate } from "react-router-dom";
-import DefaultURL from "../usefull/DefaultURL";
-import { useState, useEffect } from "react";
-import ErrorPage from "./ErrorPage";
 import axios from "axios";
+import { useState, useEffect } from "react";
+import { useIsAuthenticated } from "react-auth-kit";
+import { useParams, useNavigate } from "react-router-dom";
+
+import ErrorPage from "./ErrorPage";
+import DefaultURL from "../usefull/DefaultURL";
+import CurrentUserInfos from "../usefull/CurrentUserInfos";
 import noProfileImage from "../photos/default-profile-image.png";
+import FirstLetterUppercase from "../usefull/FirstLetterUppercase";
+
+import defaultbackgroundprofile from "../photos/defaultbackgroundprofile.png";
 
 export default function ProfilePage() {
   const isAuthenticated = useIsAuthenticated();
@@ -14,9 +18,12 @@ export default function ProfilePage() {
   const [readMore, setReadMore] = useState(false);
   const [profileUser, setProfileUser] = useState(null);
   const [profileImage, setProfileImage] = useState(null);
+  const [backgroundImage, setBackgroundImage] = useState(null);
 
   const [subsCount, setSubsCount] = useState(0);
   const [subButtonContent, setSubButtonContent] = useState(["", ""]);
+
+  const [showEditButton, setShowEditButton] = useState(null);
   // Used to change the Subs Count automatically
   const [subAction, setSubAction] = useState(0);
 
@@ -34,6 +41,10 @@ export default function ProfilePage() {
 
           setProfileUser(responseUser.data);
 
+          setShowEditButton(
+            isAuthenticated() && responseUser.data.id === Number(id)
+          );
+
           if (responseUser.data.profilePhoto !== null) {
             const reponseUserProfilePhoto = await axios.get(
               `${DefaultURL}/user/get-profile-photo/${responseUser.data.id}`,
@@ -41,8 +52,6 @@ export default function ProfilePage() {
                 responseType: "arraybuffer",
               }
             );
-            
-            console.log("bytes: " + typeof reponseUserProfilePhoto.data);
 
             const imageUrl = `data:image/jpeg;base64,
           ${btoa(
@@ -51,11 +60,15 @@ export default function ProfilePage() {
               ""
             )
           )}`;
-          console.log("image URL:" + imageUrl);
 
             setProfileImage(imageUrl);
           } else {
             setProfileImage(noProfileImage);
+          }
+
+          if (responseUser.data.profileBackgroundPhoto !== null) {
+          } else {
+            setBackgroundImage(defaultbackgroundprofile);
           }
         } catch (err) {
           console.log(err);
@@ -99,7 +112,7 @@ export default function ProfilePage() {
       fetchIsSubscribed();
       fetchCurrentUser();
     }
-  }, [subAction, currentUser, id]);
+  }, [subAction, currentUser, id, isAuthenticated()]);
 
   function formatNumber(number) {
     if (number < 1000) {
@@ -146,7 +159,7 @@ export default function ProfilePage() {
         <div className="container-xl">
           <div className="position-relative">
             <img
-              src="https://wallpapercave.com/wp/wp7500280.jpg"
+              src={backgroundImage}
               className="img-fluid"
               style={{ width: "100%" }} // Aici pana cand voi avea optiunea de crop,cu 423px height
               alt="BackgroundImage"
@@ -163,10 +176,25 @@ export default function ProfilePage() {
             </div>
           </div>
           <div className="container-xl" style={{ marginTop: "55px" }}>
+            <div className="d-flex justify-content-center"></div>
             <h1>{profileUser?.name}</h1>
+
             {/* Subscribe Button */}
-            <div className="d-flex justify-content-center">
+
+            <div className="d-flex justify-content-center mb-3 mb-md-0">
+              {showEditButton ? (
+                <a
+                  type="button"
+                  className="btn btn-success"
+                  href={`/profile/edit/${id}`}
+                >
+                  Edit Profile
+                </a>
+              ) : null}
               <span
+                className={`${
+                  showEditButton ? "ms-3" : null
+                } d-flex justify-content-center`}
                 data-toggle="tooltip"
                 title={
                   currentUser?.id == id
@@ -178,7 +206,7 @@ export default function ProfilePage() {
               >
                 <button
                   type="button"
-                  className={`btn btn-${subButtonContent[0]} mr-md-3 mb-2 mb-md-0`}
+                  className={`btn btn-${subButtonContent[0]} mr-md-3`}
                   onClick={subscribeOrUnsubscribe}
                   disabled={
                     currentUser ? (currentUser.id == id ? true : false) : false
@@ -200,9 +228,11 @@ export default function ProfilePage() {
                   data-toggle="tooltip"
                   src={`https://flagsapi.com/${profileUser?.location?.cca2}/flat/24.png`}
                   alt={profileUser?.location?.cca2}
-                  title={profileUser?.location?.country}
+                  title={FirstLetterUppercase(profileUser?.location?.country)}
                 />
-                <p className="d-inline">({profileUser?.location?.country})</p>
+                <p className="d-inline">
+                  ({FirstLetterUppercase(profileUser?.location?.country)})
+                </p>
                 <br />
                 <br />
                 <p className="d-inline fw-medium text-break text-start text-end">

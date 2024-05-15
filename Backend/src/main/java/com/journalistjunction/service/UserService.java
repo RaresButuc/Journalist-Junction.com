@@ -101,7 +101,6 @@ public class UserService {
         User userFromDb = (User) auth.getPrincipal();
 
         userFromDb.setName(updatedUser.getName());
-        userFromDb.setEmail(updatedUser.getEmail());
         userFromDb.setPhoneNumber(updatedUser.getPhoneNumber());
         userFromDb.setLocation(updatedUser.getLocation());
         userFromDb.setShortAutoDescription(updatedUser.getShortAutoDescription());

@@ -2,6 +2,7 @@ package com.journalistjunction.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.journalistjunction.enums.Role;
+import com.journalistjunction.model.PhotosClasses.UserBackgroundPhoto;
 import com.journalistjunction.model.PhotosClasses.UserProfilePhoto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -55,13 +56,8 @@ public class User implements UserDetails {
     @Column(length = 500)
     private String shortAutoDescription;
 
-//    @Embedded
-//    @AttributeOverrides({
-//            @AttributeOverride(name = "bucket", column = @Column(name = "background_bucket")),
-//            @AttributeOverride(name = "description", column = @Column(name = "background_description")),
-//            @AttributeOverride(name = "key", column = @Column(name = "background_key"))
-//    })
-//    private Photo profileBackgroundPhoto;
+    @OneToOne(cascade = CascadeType.ALL)
+    private UserBackgroundPhoto profileBackgroundPhoto;
 
     @OneToOne(cascade = CascadeType.ALL)
     private UserProfilePhoto profilePhoto;
