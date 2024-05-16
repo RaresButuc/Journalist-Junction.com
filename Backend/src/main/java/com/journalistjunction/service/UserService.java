@@ -100,6 +100,9 @@ public class UserService {
 
         User userFromDb = (User) auth.getPrincipal();
 
+        if(userFromDb.getName().isBlank() || userFromDb.getPhoneNumber().isBlank() || userFromDb.getLocation().getCountry().isBlank() || userFromDb.getShortAutoDescription().isBlank()) {
+            throw new IllegalArgumentException("All Fields Should Be Completed!");
+        }
         userFromDb.setName(updatedUser.getName());
         userFromDb.setPhoneNumber(updatedUser.getPhoneNumber());
         userFromDb.setLocation(updatedUser.getLocation());

@@ -43,6 +43,7 @@ public class User implements UserDetails {
 
     @NotNull
     @NotBlank
+    @Column(length = 10)
     private String phoneNumber;
 
     @NotNull
