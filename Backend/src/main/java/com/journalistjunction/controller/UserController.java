@@ -74,6 +74,11 @@ public class UserController {
         return ResponseEntity.ok("Image Successfully Posted!");
     }
 
+    @PutMapping(value = "/delete-profile-photo")
+    public void deleteUserProfilePhoto() throws IOException {
+        userService.deleteUserProfilePhoto();
+    }
+
     @PutMapping("/edit-user")
     public ResponseEntity<String> editUser(@RequestBody User user) {
         userService.updateUserById(user);

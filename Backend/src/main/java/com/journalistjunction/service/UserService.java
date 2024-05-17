@@ -100,8 +100,10 @@ public class UserService {
 
         User userFromDb = (User) auth.getPrincipal();
 
+        if (userFromDb.getName().isBlank() || userFromDb.getPhoneNumber().isBlank() || userFromDb.getLocation().getCountry().isBlank() || userFromDb.getShortAutoDescription().isBlank()) {
+            throw new IllegalArgumentException("All Fields Should Be Completed!");
+        }
         userFromDb.setName(updatedUser.getName());
-        userFromDb.setEmail(updatedUser.getEmail());
         userFromDb.setPhoneNumber(updatedUser.getPhoneNumber());
         userFromDb.setLocation(updatedUser.getLocation());
         userFromDb.setShortAutoDescription(updatedUser.getShortAutoDescription());
@@ -112,9 +114,25 @@ public class UserService {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
 
+        if (user.getProfilePhoto() == null) {
+            user.setProfilePhoto(new UserProfilePhoto(s3Buckets.getCustomer(), "%s/%s_Profile_Image".formatted(user.getId(), user.getId()), user));
+        }
         s3Service.putObject(s3Buckets.getCustomer(), "%s/%s_Profile_Image".formatted(user.getId(), user.getId()), file.getBytes());
 
-        user.setProfilePhoto(new UserProfilePhoto(s3Buckets.getCustomer(), "%s/%s_Profile_Image".formatted(user.getId(), user.getId()), user));
+
+        userRepository.save(user);
+    }
+
+    public void deleteUserProfilePhoto() throws IOException {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) auth.getPrincipal();
+
+        if (user.getProfilePhoto() == null) {
+            return;
+        } else {
+            s3Service.deleteAnObject(s3Buckets.getCustomer(), "%s/%s_Profile_Image".formatted(user.getId(), user.getId()));
+            user.setProfilePhoto(null);
+        }
 
         userRepository.save(user);
     }

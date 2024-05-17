@@ -2,8 +2,8 @@ import { forwardRef, useState } from "react";
 
 function ShortDescriptionInput({ user, id }, ref) {
   const [warning, setWarning] = useState(false);
-  const [charactersTextArea, setCharactersTextArea] = useState(0);
-  const [colorOfText, setColorOfText] = useState("succes");
+  const [charactersTextArea, setCharactersTextArea] = useState(user ? user.shortAutoDescription.length :0);
+  const [colorOfText, setColorOfText] = useState("success");
 
   const countingCharactersDescription = (e) => {
     setCharactersTextArea(e.target.value.length);

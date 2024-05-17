@@ -12,6 +12,7 @@ import PhotosGallery from "./pages/PhotosGallery";
 import EditArticlePage from "./pages/EditArticlePage";
 import PostArticlePage from "./pages/PostArticlePage";
 import ReadArticlePage from "./pages/ReadArticlePage";
+import EditProfilePage from "./pages/EditProfilePage";
 import SearchArticlePage from "./pages/SearchArticlePage";
 
 import "./App.css";
@@ -44,6 +45,7 @@ function App() {
             <Route path="/contact" element={<Contact />} />*/}
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/profile/:id" element={<ProfilePage />} />
+            <Route path="/profile/edit/:id" element={<EditProfilePage />} />
 
             {/* <Route path="/ad/:id" element={<AdDetail />} />
             <Route

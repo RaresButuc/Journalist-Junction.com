@@ -4,11 +4,14 @@ import { useParams, useNavigate } from "react-router-dom";
 
 import DefaultURL from "../usefull/DefaultURL";
 import PhotosPreview from "../components/PhotosPreview";
+import CurrentUserInfos from "../usefull/CurrentUserInfos";
 import FirstLetterUppercase from "../usefull/FirstLetterUppercase";
 
 export default function ReadArticlePage() {
   const { id } = useParams();
   const navigate = useNavigate();
+
+  const currentUser = CurrentUserInfos();
 
   const [date, setDate] = useState(null);
   const [article, setArticle] = useState(null);
@@ -28,6 +31,19 @@ export default function ReadArticlePage() {
             );
             setArticle(responseArticle.data);
 
+            // Get Article Date
+            const responseDate = await axios.get(
+              `${DefaultURL}/article/date/${responseArticle.data.id}`
+            );
+            setDate(responseDate.data);
+
+            // Set Viewed
+            if (currentUser?.id !== responseArticle.data.owner.id) {
+              await axios.put(
+                `${DefaultURL}/article/add-view/${responseArticle.data.id}`
+              );
+            }
+
             // Get Article Thumbnail
             const reponseThumbnailArticlePhoto = await axios.get(
               `${DefaultURL}/article/get-article-thumbnail/${id}`
@@ -44,12 +60,6 @@ export default function ReadArticlePage() {
             );
 
             setNonThumbnail(reponseNonThumbnailArticlePhoto.data);
-
-            // Get Article Date
-            const response = await axios.get(
-              `${DefaultURL}/article/date/${responseArticle.data.id}`
-            );
-            setDate(response.data);
           } else {
             navigate("/an-error-has-occured");
           }
@@ -60,11 +70,11 @@ export default function ReadArticlePage() {
     };
 
     fetchArticle();
-  }, [id]);
+  }, [id, currentUser]);
 
   return (
     <div className="container-xl">
-      <div>
+      <div className="container-xl">
         <div className="row">
           <div className="col d-flex justify-content-start me-3">
             {article?.categories.map((categ) => (
@@ -92,9 +102,7 @@ export default function ReadArticlePage() {
           <b className="ms-2">{article?.views}</b>
         </h6>
 
-        <h1  className="article-title mt-5">
-          {article?.title}
-        </h1>
+        <h1 className="article-title mt-5">{article?.title}</h1>
         <h4 className="article-undertitle col d-flex justify-content-center mt-5">
           {article?.contributors.length ? "Contributors" : "Author"}:
           <a
