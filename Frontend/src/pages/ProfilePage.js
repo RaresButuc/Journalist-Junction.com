@@ -32,7 +32,6 @@ export default function ProfilePage() {
   const { id } = useParams();
 
   useEffect(() => {
-    // if (!currentUser) return;
     if (id) {
       const fetchCurrentUser = async () => {
         try {
@@ -41,9 +40,7 @@ export default function ProfilePage() {
 
           setProfileUser(responseUser.data);
 
-          setShowEditButton(
-            isAuthenticated() && responseUser.data.id === Number(id)
-          );
+          setShowEditButton(isAuthenticated() && currentUser.id === Number(id));
 
           if (responseUser.data.profilePhoto !== null) {
             const reponseUserProfilePhoto = await axios.get(

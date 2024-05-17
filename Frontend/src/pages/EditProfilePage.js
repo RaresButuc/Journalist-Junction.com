@@ -43,20 +43,20 @@ export default function EditProfilePage() {
         await axios.put(`${DefaultURL}/user/edit-user`, values, {
           headers,
         });
-
-        if (photoRef.current.name !== undefined) {
+        console.log(photoRef.current);
+        if (photoRef.current && typeof photoRef.current.name === String) {
           const formData = new FormData();
           formData.append("file", photoRef.current);
-          await axios.put(
-            `${DefaultURL}/user/set-profile-photo`,
-            formData,
-            {
-              headers,
-              "Content-Type": "multipart/form-data",
-            }
-          );
+          await axios.put(`${DefaultURL}/user/set-profile-photo`, formData, {
+            headers,
+            "Content-Type": "multipart/form-data",
+          });
+        } else if (photoRef.current === null) {
+          await axios.put(`${DefaultURL}/user/delete-profile-photo`, null, {
+            headers,
+          });
         }
-
+        console.log("A iesit");
         setShowAlert(true);
         setAlertInfos([
           "Congratulations!",
@@ -79,7 +79,11 @@ export default function EditProfilePage() {
       }
     } catch (err) {
       setShowAlert(true);
-      setAlertInfos(["Be Careful!", err.response.data.message, "danger"]);
+      setAlertInfos([
+        "Be Careful!",
+        "An Error Has Occurred! Please Try Again Carefully!",
+        "danger",
+      ]);
       setTimeout(() => {
         setShowAlert(false);
       }, 3000);
