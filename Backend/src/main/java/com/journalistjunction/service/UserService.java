@@ -2,6 +2,7 @@ package com.journalistjunction.service;
 
 import com.journalistjunction.model.User;
 import com.journalistjunction.model.PhotosClasses.UserProfilePhoto;
+import com.journalistjunction.repository.UserProfilePhotoRepository;
 import com.journalistjunction.repository.UserRepository;
 import com.journalistjunction.s3.S3Buckets;
 import com.journalistjunction.s3.S3Service;
@@ -23,6 +24,8 @@ public class UserService {
     private final UserRepository userRepository;
     private final S3Service s3Service;
     private final S3Buckets s3Buckets;
+
+    private final UserProfilePhotoRepository userProfilePhotoRepository;
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
@@ -49,8 +52,12 @@ public class UserService {
     }
 
     public byte[] getUserProfilePhoto(Long id) {
-        userRepository.findById(id)
+        User user = userRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("No User Found!"));
+
+        if (user.getProfilePhoto() == null) {
+            return null;
+        }
 
         return s3Service.getObject(s3Buckets.getCustomer(), "%s/%s_Profile_Image".formatted(id, id));
     }
@@ -114,13 +121,20 @@ public class UserService {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
 
+        UserProfilePhoto userProfilePhoto = new UserProfilePhoto();
+
         if (user.getProfilePhoto() == null) {
-            user.setProfilePhoto(new UserProfilePhoto(s3Buckets.getCustomer(), "%s/%s_Profile_Image".formatted(user.getId(), user.getId()), user));
+            userProfilePhoto.setUser(user);
+            userProfilePhoto.setBucket(s3Buckets.getCustomer());
+            userProfilePhoto.setKey("%s/%s_Profile_Image".formatted(user.getId(), user.getId()));
+
+            user.setProfilePhoto(userProfilePhoto);
+
+            userProfilePhotoRepository.save(userProfilePhoto);
+            userRepository.save(user);
         }
+
         s3Service.putObject(s3Buckets.getCustomer(), "%s/%s_Profile_Image".formatted(user.getId(), user.getId()), file.getBytes());
-
-
-        userRepository.save(user);
     }
 
     public void deleteUserProfilePhoto() throws IOException {
@@ -130,8 +144,8 @@ public class UserService {
         if (user.getProfilePhoto() == null) {
             return;
         } else {
-            s3Service.deleteAnObject(s3Buckets.getCustomer(), "%s/%s_Profile_Image".formatted(user.getId(), user.getId()));
             user.setProfilePhoto(null);
+            s3Service.deleteAnObject(s3Buckets.getCustomer(), "%s/%s_Profile_Image".formatted(user.getId(), user.getId()));
         }
 
         userRepository.save(user);

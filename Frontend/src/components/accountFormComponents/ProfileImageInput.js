@@ -7,11 +7,11 @@ import DefaultURL from "../../usefull/DefaultURL";
 import noProfileImage from "../../photos/default-profile-image.png";
 
 const ProfileImageInput = forwardRef(({ userId }, ref) => {
-  const [photoData, setPhotoData] = useState(noProfileImage);
+  const [photoData, setPhotoData] = useState(null);
   const [showAlert, setShowAlert] = useState(false);
   const [alertInfos, setAlertInfos] = useState(["", "", ""]);
-  const [description, setDescription] = useState("No Image Selected*");
-  const [photoPreview, setPhotoPreview] = useState(noProfileImage);
+  const [description, setDescription] = useState("No Image Selected");
+  const [photoPreview, setPhotoPreview] = useState(null);
 
   useEffect(() => {
     if (userId) {
@@ -31,6 +31,7 @@ const ProfileImageInput = forwardRef(({ userId }, ref) => {
             ""
           )
         )}`;
+
           setPhotoPreview(
             reponseUserProfilePhoto.data.byteLength === 0
               ? noProfileImage
@@ -38,8 +39,8 @@ const ProfileImageInput = forwardRef(({ userId }, ref) => {
           );
           setDescription(
             reponseUserProfilePhoto.data.byteLength === 0
-              ? "No Profile Image*"
-              : "Current Profile Image*"
+              ? "No Profile Image Selected"
+              : "Current Profile Image"
           );
         } catch (err) {
           console.log(err);
@@ -53,7 +54,7 @@ const ProfileImageInput = forwardRef(({ userId }, ref) => {
   const deleteImage = (e) => {
     e.preventDefault();
     setPhotoData(null);
-    setDescription("No Image Selected*");
+    setDescription("No Profile Image Selected");
     setPhotoPreview(noProfileImage);
   };
 
@@ -168,9 +169,9 @@ const ProfileImageInput = forwardRef(({ userId }, ref) => {
           <h5 className="me-3 d-inline" style={{ wordBreak: "break-all" }}>
             {description}
           </h5>
-          {photoData ? (
+          {photoPreview !== noProfileImage ? (
             <button
-              className="btn btn-danger rounded-circle ml-2"
+              className="btn btn-danger rounded-circle "
               onClick={deleteImage}
             >
               X

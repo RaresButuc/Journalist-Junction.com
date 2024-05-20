@@ -60,7 +60,7 @@ public class User implements UserDetails {
     @OneToOne(cascade = CascadeType.ALL)
     private UserBackgroundPhoto profileBackgroundPhoto;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private UserProfilePhoto profilePhoto;
 
     @JsonIgnore
