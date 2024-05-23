@@ -1,4 +1,4 @@
-const ViewPhoto = ({ photoData, onClose }) => {
+const ViewPhoto = ({ photoData, onClose, onLoad }) => {
   return (
     <div
       className="modal"
@@ -18,7 +18,7 @@ const ViewPhoto = ({ photoData, onClose }) => {
           </div>
           <div className="modal-body">
             <img
-              src={photoData.preview}
+              src={photoData}
               className="img-fluid"
               alt="Full Size"
             />

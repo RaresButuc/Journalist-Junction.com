@@ -54,7 +54,7 @@ function CountrySelect({ article }, ref) {
           article && article.language ? (
             <LanguageLocationOptionLabel
               cca2={article.language.cca2}
-              value={`${article.language.languageNameEnglish} (${article.language.languageNameNative})`}
+              value={`${FirstLetterUppercase(article.language.languageNameEnglish)} (${FirstLetterUppercase(article.language.languageNameNative)})`}
             />
           ) : (
             "Select The Language of The Article"

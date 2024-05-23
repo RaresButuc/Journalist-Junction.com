@@ -47,7 +47,7 @@ function CountrySelect({ user, article }, ref) {
           article.location ? (
             <LanguageLocationOptionLabel
               cca2={article.location.cca2}
-              value={article.location.country}
+              value={FirstLetterUppercase(article.location.country)}
             />
           ) : (
             "Select A Suitable Location For Article"

@@ -254,7 +254,7 @@ const ArticlePhotosInput = forwardRef(({ article, reload }, ref) => {
       </div>
       {viewPhotoVisible && (
         <ViewPhoto
-          photoData={viewPhotoData}
+          photoData={viewPhotoData.preview}
           onClose={() => setViewPhotoVisible(false)}
         />
       )}
