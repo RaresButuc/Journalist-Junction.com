@@ -12,6 +12,7 @@ import CountrySelect from "../components/accountFormComponents/CountrySelect";
 import PhoneNumberInput from "../components/accountFormComponents/PhoneNumberInput";
 import ProfileImageInput from "../components/accountFormComponents/ProfileImageInput";
 import ShortDescriptionInput from "../components/accountFormComponents/ShortDescriptionInput";
+import ProfileBackgroundImageInput from "../components/accountFormComponents/ProfileBackgroundImageInput";
 
 export default function EditProfilePage() {
   const token = useAuthHeader();
@@ -38,13 +39,12 @@ export default function EditProfilePage() {
   const onSubmit = async (values) => {
     try {
       const headers = { Authorization: token() };
-
       if (!Number.isNaN(values.location.id)) {
         await axios.put(`${DefaultURL}/user/edit-user`, values, {
           headers,
         });
-        console.log(photoRef.current);
-        if (photoRef.current && typeof photoRef.current.name === String) {
+
+        if (photoRef.current && typeof photoRef.current.name === "string") {
           const formData = new FormData();
           formData.append("file", photoRef.current);
           await axios.put(`${DefaultURL}/user/set-profile-photo`, formData, {
@@ -56,7 +56,7 @@ export default function EditProfilePage() {
             headers,
           });
         }
-        console.log("A iesit");
+        
         setShowAlert(true);
         setAlertInfos([
           "Congratulations!",
@@ -159,6 +159,14 @@ export default function EditProfilePage() {
                       <div className="form-outline mb-5 mt-5">
                         <h4>Profile Picture</h4>
                         <ProfileImageInput userId={id} ref={photoRef} />
+                      </div>
+
+                      <div className="form-outline mb-5 mt-5">
+                        <h4>Background Picture</h4>
+                        <ProfileBackgroundImageInput
+                          userId={id}
+                          ref={photoRef}
+                        />
                       </div>
                       <button
                         className="btn btn-success btn-lg btn-block"
