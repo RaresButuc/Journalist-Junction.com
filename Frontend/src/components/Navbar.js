@@ -85,7 +85,7 @@ export default function Navbar() {
                   aria-current="page"
                   href="/article/trending"
                 >
-                  Trending
+                  <b>Trending</b>
                 </a>
               </li>
 
@@ -171,7 +171,7 @@ export default function Navbar() {
                       aria-current="page"
                       href="/register"
                     >
-                      Become a Member
+                      <b>Become a Member</b>
                     </a>
                   </li>
 

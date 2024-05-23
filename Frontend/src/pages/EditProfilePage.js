@@ -120,7 +120,7 @@ export default function EditProfilePage() {
             <div className="container py-2 mt-4">
               <div className="row d-flex justify-content-center align-items-center">
                 <div className="col-12 col-md-8 col-lg-6 col-xl-5">
-                  <div className="border border-danger">
+                  <div className="border border-danger rounded">
                     <div
                       className="card-body p-4 text-center"
                       style={{ backgroundColor: "rgba(255, 255, 255,0.5)" }}

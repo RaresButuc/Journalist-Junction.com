@@ -2,7 +2,14 @@ import Cropper from "react-easy-crop";
 import { Cancel } from "@mui/icons-material";
 import CropIcon from "@mui/icons-material/Crop";
 import { useState, useEffect } from "react";
-import {Box,Button,DialogActions,DialogContent,Slider,Typography,} from "@mui/material";
+import {
+  Box,
+  Button,
+  DialogActions,
+  DialogContent,
+  Slider,
+  Typography,
+} from "@mui/material";
 
 import getCroppedImg from "../usefull/CropImage";
 import noProfileImage from "../photos/default-profile-image.png";
@@ -28,7 +35,7 @@ export default function CropEasy({
 
   useEffect(() => {
     const adjustDimensions = () => {
-      const maxWidth = window.innerWidth * 0.6; 
+      const maxWidth = window.innerWidth * 0.6;
       const maxHeight = window.innerHeight * 0.6;
 
       const ratio = Math.min(maxWidth / width, maxHeight / height, 1);
@@ -83,9 +90,9 @@ export default function CropEasy({
             height: adjustedHeight,
             width: adjustedWidth,
             minWidth: { sm: 400 },
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
           }}
         >
           <Cropper
@@ -114,6 +121,7 @@ export default function CropEasy({
                 max={3}
                 step={0.1}
                 value={zoom}
+                color="info"
                 onChange={(e, zoom) => setZoom(zoom)}
               />
             </Box>
@@ -121,6 +129,7 @@ export default function CropEasy({
               <Typography>Rotation: {rotation + "°"}</Typography>
               <Slider
                 valueLabelDisplay="auto"
+                color="info"
                 min={0}
                 max={360}
                 value={rotation}
@@ -137,6 +146,7 @@ export default function CropEasy({
           >
             <Button
               variant="outlined"
+              color="error"
               startIcon={<Cancel />}
               onClick={() => {
                 setFile(null);
@@ -145,14 +155,15 @@ export default function CropEasy({
                 setDescription("No Profile Image Selected");
               }}
             >
-              Cancel
+              <b>Cancel</b>
             </Button>
             <Button
+              color="success"
               variant="contained"
               startIcon={<CropIcon />}
               onClick={cropImage}
             >
-              Crop
+              <b>Crop</b>
             </Button>
           </Box>
         </DialogActions>
