@@ -1,7 +1,9 @@
 package com.journalistjunction.service;
 
+import com.journalistjunction.model.PhotosClasses.UserBackgroundPhoto;
 import com.journalistjunction.model.User;
 import com.journalistjunction.model.PhotosClasses.UserProfilePhoto;
+import com.journalistjunction.repository.UserBackgroundPhotoRepository;
 import com.journalistjunction.repository.UserProfilePhotoRepository;
 import com.journalistjunction.repository.UserRepository;
 import com.journalistjunction.s3.S3Buckets;
@@ -26,6 +28,7 @@ public class UserService {
     private final S3Buckets s3Buckets;
 
     private final UserProfilePhotoRepository userProfilePhotoRepository;
+    private final UserBackgroundPhotoRepository userBackgroundPhotoRepository;
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
@@ -60,6 +63,17 @@ public class UserService {
         }
 
         return s3Service.getObject(s3Buckets.getCustomer(), "%s/%s_Profile_Image".formatted(id, id));
+    }
+
+    public byte[] getUserBackgroundPhoto(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("No User Found!"));
+
+        if (user.getProfileBackgroundPhoto() == null) {
+            return null;
+        }
+
+        return s3Service.getObject(s3Buckets.getCustomer(), "%s/%s_Background_Image".formatted(id, id));
     }
 
     public void subscribeOrUnsubscribe(Long idCurrentUser, Long idSecondUser, String command) {
@@ -137,6 +151,26 @@ public class UserService {
         s3Service.putObject(s3Buckets.getCustomer(), "%s/%s_Profile_Image".formatted(user.getId(), user.getId()), file.getBytes());
     }
 
+    public void updateUserBackgroundPhoto(MultipartFile file) throws IOException {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) auth.getPrincipal();
+
+        UserBackgroundPhoto userBackgroundPhoto = new UserBackgroundPhoto();
+
+        if (user.getProfileBackgroundPhoto() == null) {
+            userBackgroundPhoto.setUser(user);
+            userBackgroundPhoto.setBucket(s3Buckets.getCustomer());
+            userBackgroundPhoto.setKey("%s/%s_Background_Image".formatted(user.getId(), user.getId()));
+
+            user.setProfileBackgroundPhoto(userBackgroundPhoto);
+
+            userBackgroundPhotoRepository.save(userBackgroundPhoto);
+            userRepository.save(user);
+        }
+
+        s3Service.putObject(s3Buckets.getCustomer(), "%s/%s_Background_Image".formatted(user.getId(), user.getId()), file.getBytes());
+    }
+
     public void deleteUserProfilePhoto() throws IOException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
@@ -146,6 +180,20 @@ public class UserService {
         } else {
             user.setProfilePhoto(null);
             s3Service.deleteAnObject(s3Buckets.getCustomer(), "%s/%s_Profile_Image".formatted(user.getId(), user.getId()));
+        }
+
+        userRepository.save(user);
+    }
+
+    public void deleteUserBackgroundPhoto() throws IOException {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) auth.getPrincipal();
+
+        if (user.getProfileBackgroundPhoto() == null) {
+            return;
+        } else {
+            user.setProfileBackgroundPhoto(null);
+            s3Service.deleteAnObject(s3Buckets.getCustomer(), "%s/%s_Background_Image".formatted(user.getId(), user.getId()));
         }
 
         userRepository.save(user);

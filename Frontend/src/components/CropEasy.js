@@ -2,41 +2,65 @@ import Cropper from "react-easy-crop";
 import { Cancel } from "@mui/icons-material";
 import CropIcon from "@mui/icons-material/Crop";
 import { useState, useEffect } from "react";
-import {Box,Button,DialogActions,DialogContent,Slider,Typography,} from "@mui/material";
+import {
+  Box,
+  Button,
+  DialogActions,
+  DialogContent,
+  Slider,
+  Typography,
+} from "@mui/material";
 
 import getCroppedImg from "../usefull/CropImage";
 import noProfileImage from "../photos/default-profile-image.png";
+import defaultbackgroundprofile from "../photos/defaultbackgroundprofile.png";
 
 export default function CropEasy({
   width,
   height,
   setFile,
+  profile,
   photoURL,
+  background,
   setOpenCrop,
   setPhotoURL,
   setDescription,
 }) {
   const [zoom, setZoom] = useState(1);
   const [rotation, setRotation] = useState(0);
-  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [crop, setCrop] = useState({ x: 1, y: 1 });
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
 
-  const [cropSize, setCropSize] = useState(width / 1500);
+  const [profileCropSize, setProfileCropSize] = useState(width / 1500);
+  const [backgroundCropWidth, setBackgroundCropWidth] = useState(width / 2100);
+  const [backgroundCropHeight, setBackgroundCropHeight] = useState(height / 423);
 
   const [adjustedWidth, setAdjustedWidth] = useState(width);
   const [adjustedHeight, setAdjustedHeight] = useState(height);
 
   useEffect(() => {
     const adjustDimensions = () => {
-      const maxWidth = window.innerWidth * 0.6; 
+      const maxWidth = window.innerWidth * 0.6;
       const maxHeight = window.innerHeight * 0.6;
 
-      const ratio = Math.min(maxWidth / width, maxHeight / height, 1);
+      let ratio;
 
-      const smallestSize = Math.min(width, height);
-      const cropSizer = smallestSize / 1400;
+      if (profile) {
+        ratio = Math.min(maxWidth / width, maxHeight / height, 1);
+        const profileSmallestSize = Math.min(width, height);
+        const cropSizer = profileSmallestSize / 1400;
 
-      setCropSize((smallestSize / cropSizer) * ratio);
+        setProfileCropSize((profileSmallestSize / cropSizer) * ratio);
+      } else if (background) {
+        ratio = Math.min(
+          maxWidth / (700 * (width / 700)),
+          maxHeight / (141 * (height / 141)),
+          1
+        );
+        setBackgroundCropWidth(2100 * ratio);
+        setBackgroundCropHeight(423 * ratio);
+      }
+
       setAdjustedWidth(width * ratio);
       setAdjustedHeight(height * ratio);
     };
@@ -47,7 +71,7 @@ export default function CropEasy({
     return () => {
       window.removeEventListener("resize", adjustDimensions);
     };
-  }, [width, height]);
+  }, [width, height, profile, background]);
 
   const cropComplete = (croppedArea, croppedAreaPixels) => {
     setCroppedAreaPixels(croppedAreaPixels);
@@ -64,9 +88,11 @@ export default function CropEasy({
         croppedAreaPixels,
         rotation
       );
-      setPhotoURL(url);
+
       setFile(file);
+      setPhotoURL(url);
       setOpenCrop(false);
+      setCrop({ x: 1, y: 1 })
     } catch (error) {
       console.log(error);
     }
@@ -74,7 +100,7 @@ export default function CropEasy({
 
   return (
     <div className="modal modal-show">
-      <div className="modal-content">
+      <div className="modal-content" style={{ maxWidth: adjustedWidth + 25,padding:15 }}>
         <DialogContent
           dividers
           sx={{
@@ -82,25 +108,28 @@ export default function CropEasy({
             position: "relative",
             height: adjustedHeight,
             width: adjustedWidth,
-            minWidth: { sm: 400 },
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
+            minWidth: { sm: 300 },
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
           }}
         >
           <Cropper
-            cropSize={{ width: cropSize, height: cropSize }}
-            showGrid={false}
-            cropShape="round"
-            image={photoURL}
-            crop={crop}
-            zoom={zoom}
-            rotation={rotation}
             aspect={1}
+            zoom={zoom}
+            crop={crop}
+            showGrid={false}
+            image={photoURL}
+            rotation={rotation}
             onZoomChange={setZoom}
-            onRotationChange={setRotation}
             onCropChange={setCrop}
             onCropComplete={cropComplete}
+            onRotationChange={setRotation}
+            cropShape={profile ? "round" : "rect"}
+            cropSize={{
+              width: profile ? profileCropSize : backgroundCropWidth,
+              height: profile ? profileCropSize : backgroundCropHeight,
+            }}
           />
         </DialogContent>
         <DialogActions sx={{ flexDirection: "column", mx: 3, my: 2 }}>
@@ -114,6 +143,7 @@ export default function CropEasy({
                 max={3}
                 step={0.1}
                 value={zoom}
+                color="info"
                 onChange={(e, zoom) => setZoom(zoom)}
               />
             </Box>
@@ -121,6 +151,7 @@ export default function CropEasy({
               <Typography>Rotation: {rotation + "°"}</Typography>
               <Slider
                 valueLabelDisplay="auto"
+                color="info"
                 min={0}
                 max={360}
                 value={rotation}
@@ -137,22 +168,27 @@ export default function CropEasy({
           >
             <Button
               variant="outlined"
+              color="error"
               startIcon={<Cancel />}
               onClick={() => {
                 setFile(null);
                 setOpenCrop(false);
-                setPhotoURL(noProfileImage);
+                setPhotoURL(
+                  profile ? noProfileImage : defaultbackgroundprofile
+                );
+                setCrop({ x: 1, y: 1 })
                 setDescription("No Profile Image Selected");
               }}
             >
-              Cancel
+              <b>Cancel</b>
             </Button>
             <Button
+              color="success"
               variant="contained"
               startIcon={<CropIcon />}
               onClick={cropImage}
             >
-              Crop
+              <b>Crop</b>
             </Button>
           </Box>
         </DialogActions>

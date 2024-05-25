@@ -529,7 +529,7 @@ export default function EditArticlePage() {
           >
             <div className="row d-flex justify-content-center align-items-center">
               <div className="col-md-8 col-lg-6 col-xl-10">
-                <div className="border border-danger">
+                <div className="border border-danger rounded">
                   <div className="card-body p-4 text-center text-break bg-white bg-opacity-50">
                     <h1 className="mb-4">
                       Edit Article <br />"{titleCurrent}"

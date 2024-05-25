@@ -64,6 +64,22 @@ export default function ProfilePage() {
           }
 
           if (responseUser.data.profileBackgroundPhoto !== null) {
+            const reponseUserBackgroundPhoto = await axios.get(
+              `${DefaultURL}/user/get-background-photo/${responseUser.data.id}`,
+              {
+                responseType: "arraybuffer",
+              }
+            );
+
+            const imageUrl = `data:image/jpeg;base64,
+          ${btoa(
+            new Uint8Array(reponseUserBackgroundPhoto.data).reduce(
+              (data, byte) => data + String.fromCharCode(byte),
+              ""
+            )
+          )}`;
+
+            setBackgroundImage(imageUrl);
           } else {
             setBackgroundImage(defaultbackgroundprofile);
           }
