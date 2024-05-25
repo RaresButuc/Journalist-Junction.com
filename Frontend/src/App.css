@@ -578,9 +578,7 @@ body {
 
 .modal-content {
   background-color: #fff;
-  padding: 15px;
   border-radius: 10px;
-  max-width: 600px;
   width: 90%;
   position: relative;
   display: flex;
@@ -595,4 +593,3 @@ body {
   font-size: 1.5em;
   cursor: pointer;
 }
-

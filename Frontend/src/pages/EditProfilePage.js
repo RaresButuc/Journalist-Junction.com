@@ -22,6 +22,7 @@ export default function EditProfilePage() {
   const { id } = useParams();
 
   const photoRef = useRef(null);
+  const photoBackgroundRef = useRef(null);
 
   const currentUser = CurrentUserInfos();
 
@@ -51,12 +52,34 @@ export default function EditProfilePage() {
             headers,
             "Content-Type": "multipart/form-data",
           });
-        } else if (photoRef.current === null) {
+        } else if (
+          photoRef.current === null &&
+          currentUser.profilePhoto !== null
+        ) {
           await axios.put(`${DefaultURL}/user/delete-profile-photo`, null, {
             headers,
           });
         }
-        
+
+        if (
+          photoBackgroundRef.current &&
+          typeof photoBackgroundRef.current.name === "string"
+        ) {
+          const formData = new FormData();
+          formData.append("file", photoBackgroundRef.current);
+          await axios.put(`${DefaultURL}/user/set-background-photo`, formData, {
+            headers,
+            "Content-Type": "multipart/form-data",
+          });
+        } else if (
+          photoBackgroundRef.current === null &&
+          currentUser.profileBackgroundPhoto !== null
+        ) {
+          await axios.put(`${DefaultURL}/user/delete-background-photo`, null, {
+            headers,
+          });
+        }
+
         setShowAlert(true);
         setAlertInfos([
           "Congratulations!",
@@ -125,7 +148,7 @@ export default function EditProfilePage() {
                       className="card-body p-4 text-center"
                       style={{ backgroundColor: "rgba(255, 255, 255,0.5)" }}
                     >
-                      <h1 className="mb-4">Edit Profile #{id}</h1>
+                      <h1 className="mb-4">Edit Profile</h1>
                       <hr style={{ color: "#dc3545" }} />
 
                       <div className="form-outline mb-4 mt-5">
@@ -165,7 +188,7 @@ export default function EditProfilePage() {
                         <h4>Background Picture</h4>
                         <ProfileBackgroundImageInput
                           userId={id}
-                          ref={photoRef}
+                          ref={photoBackgroundRef}
                         />
                       </div>
                       <button

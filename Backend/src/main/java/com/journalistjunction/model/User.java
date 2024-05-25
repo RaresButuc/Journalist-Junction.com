@@ -57,7 +57,7 @@ public class User implements UserDetails {
     @Column(length = 500)
     private String shortAutoDescription;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private UserBackgroundPhoto profileBackgroundPhoto;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)

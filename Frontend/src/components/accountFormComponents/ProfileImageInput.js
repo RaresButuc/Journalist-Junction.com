@@ -36,6 +36,9 @@ const ProfileImageInput = forwardRef(({ userId }, ref) => {
           )
         )}`;
 
+          setPhotoData(
+            reponseUserProfilePhoto.data.byteLength === 0 ? null : imageUrl
+          );
           setPhotoPreview(
             reponseUserProfilePhoto.data.byteLength === 0
               ? noProfileImage
@@ -101,7 +104,7 @@ const ProfileImageInput = forwardRef(({ userId }, ref) => {
         setDescription(file.name);
         setPhotoPreview(URL.createObjectURL(file));
 
-        if (this.width > 1400 && this.height > 1400) {
+        if (this.width > 1400 || this.height > 1400) {
           setWidth(this.width);
           setHeight(this.height);
           setCropingView(true);
@@ -164,8 +167,10 @@ const ProfileImageInput = forwardRef(({ userId }, ref) => {
         />
         <br />
         <div className="mt-2">
-          <h5 className="me-3 d-inline" style={{ wordBreak: "break-all" }}>
-            {description}
+          <h5 className="me-2 d-inline" style={{ wordBreak: "break-all" }}>
+            <b>
+              <u>{description}</u>
+            </b>
           </h5>
           {photoPreview !== noProfileImage ? (
             <button
@@ -191,6 +196,7 @@ const ProfileImageInput = forwardRef(({ userId }, ref) => {
             <CropEasy
               width={width}
               height={height}
+              profile={true}
               setFile={setPhotoData}
               photoURL={photoPreview}
               setOpenCrop={setCropingView}

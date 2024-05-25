@@ -55,6 +55,11 @@ public class UserController {
         return userService.getUserProfilePhoto(id);
     }
 
+    @GetMapping(value = "/get-background-photo/{id}", produces = MediaType.IMAGE_JPEG_VALUE)
+    public byte[] getUserBackgroundPhoto(@PathVariable("id") Long id) {
+        return userService.getUserBackgroundPhoto(id);
+    }
+
     @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest request) {
@@ -74,9 +79,21 @@ public class UserController {
         return ResponseEntity.ok("Image Successfully Posted!");
     }
 
+    @PutMapping(value = "/set-background-photo", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> uploadUserBackgroundePhoto(@RequestParam("file") MultipartFile file) throws IOException {
+        userService.updateUserBackgroundPhoto(file);
+
+        return ResponseEntity.ok("Image Successfully Posted!");
+    }
+
     @PutMapping(value = "/delete-profile-photo")
     public void deleteUserProfilePhoto() throws IOException {
         userService.deleteUserProfilePhoto();
+    }
+
+    @PutMapping(value = "/delete-background-photo")
+    public void deleteUserBackgroundPhoto() throws IOException {
+        userService.deleteUserBackgroundPhoto();
     }
 
     @PutMapping("/edit-user")
