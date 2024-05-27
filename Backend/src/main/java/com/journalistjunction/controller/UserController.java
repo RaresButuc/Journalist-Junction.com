@@ -1,5 +1,6 @@
 package com.journalistjunction.controller;
 
+import com.journalistjunction.DTO.ChangePasswordRequest;
 import com.journalistjunction.auth.AuthenticationRequest;
 import com.journalistjunction.auth.AuthenticationResponse;
 import com.journalistjunction.auth.AuthenticationService;
@@ -110,6 +111,12 @@ public class UserController {
         return ResponseEntity.ok("");
     }
 
+    @PutMapping("/{id}/change-password")
+    public ResponseEntity<String> setPassword(@PathVariable("id") Long id, @RequestBody ChangePasswordRequest changePasswordRequest) {
+        userService.changePasswordAndVerifyOldPassword(id, changePasswordRequest.getNewPassword(), changePasswordRequest.getActualPassword());
+
+        return ResponseEntity.ok("Your Password Was Successfully Updated!");
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable("id") Long id) {

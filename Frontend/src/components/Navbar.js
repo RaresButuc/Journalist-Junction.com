@@ -151,7 +151,7 @@ export default function Navbar() {
                         <hr className="border border-danger" />
                       </li>
                       <li>
-                        <a className="dropdown-item" href="/changepassoword">
+                        <a className="dropdown-item" href="/profile/change-password">
                           Change Password
                         </a>
                       </li>

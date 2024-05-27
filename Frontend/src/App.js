@@ -14,6 +14,7 @@ import PostArticlePage from "./pages/PostArticlePage";
 import ReadArticlePage from "./pages/ReadArticlePage";
 import EditProfilePage from "./pages/EditProfilePage";
 import SearchArticlePage from "./pages/SearchArticlePage";
+import ChangePasswordAuth from "./pages/ChangePasswordAuth";
 
 import "./App.css";
 
@@ -46,6 +47,14 @@ function App() {
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/profile/:id" element={<ProfilePage />} />
             <Route path="/profile/edit/:id" element={<EditProfilePage />} />
+            <Route
+              path="/profile/change-password"
+              element={
+                <RequireAuth loginPath="/login">
+                  <ChangePasswordAuth />
+                </RequireAuth>
+              }
+            ></Route>
 
             {/* <Route path="/ad/:id" element={<AdDetail />} />
             <Route
