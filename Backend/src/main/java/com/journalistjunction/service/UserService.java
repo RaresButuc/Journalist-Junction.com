@@ -11,6 +11,7 @@ import com.journalistjunction.s3.S3Service;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,6 +28,7 @@ public class UserService {
     private final S3Service s3Service;
     private final S3Buckets s3Buckets;
 
+    private final PasswordEncoder passwordEncoder;
     private final UserProfilePhotoRepository userProfilePhotoRepository;
     private final UserBackgroundPhotoRepository userBackgroundPhotoRepository;
 
@@ -199,9 +201,23 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public void changePasswordAndVerifyOldPassword(Long id, String newPassword, String actualPassword) {
+        User user = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("No User Found!"));
+
+        if (passwordEncoder.matches(actualPassword, user.getPassword()) && !passwordEncoder.matches(newPassword, user.getPassword())) {
+            user.setPassword(passwordEncoder.encode(newPassword));
+            userRepository.save(user);
+        } else if (!passwordEncoder.matches(actualPassword, user.getPassword())) {
+            throw new IllegalStateException("Fill The `Current Password` Input Correctly By Typing Your Actual Password!");
+        } else if (passwordEncoder.matches(newPassword, user.getPassword())) {
+            throw new IllegalStateException("The New Password Shouldn't Be The Same As The Actual One!");
+        } else {
+            throw new IllegalStateException("An Error Has Occurred! Refresh The Page And Try Again");
+        }
+    }
+
     public void deleteUserById(Long id) {
         userRepository.deleteById(id);
     }
-
 
 }
