@@ -133,7 +133,7 @@ export default function ChangePasswordAuth() {
                         className="form-text"
                         style={{ color: "#fa6900" }}
                       >
-                        *The Confirmation Password should be the same as the New
+                        *The Confirmation Password Should Be The Same As The New
                         Password!
                       </div>
 
