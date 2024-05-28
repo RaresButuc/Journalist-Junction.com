@@ -433,12 +433,12 @@ export default function EditArticlePage() {
         );
         putRequests.push(editArticleInfo);
 
-        const response = await axios.put(
+        const responsePublish = await axios.put(
           `${DefaultURL}/article/${id}/true`,
           editArticleInfo.data,
           { headers }
         );
-        putRequests.push(response);
+        putRequests.push(responsePublish);
 
         Promise.all(putRequests).then(() => {
           setPublishState({
@@ -452,7 +452,7 @@ export default function EditArticlePage() {
           });
 
           setShowAlert(true);
-          setAlertInfos(["Success!", response.data, "success"]);
+          setAlertInfos(["Success!", responsePublish.data, "success"]);
 
           window.scrollTo(0, 0);
 
