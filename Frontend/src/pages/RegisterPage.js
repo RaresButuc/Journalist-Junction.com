@@ -32,14 +32,10 @@ export default function RegisterPage() {
           const formData = new FormData();
           formData.append("file", photoRef.current);
 
-          await axios.put(
-            `${DefaultURL}/user/set-profile-photo`,
-            formData,
-            {
-              headers,
-              "Content-Type": "multipart/form-data",
-            }
-          );
+          await axios.put(`${DefaultURL}/user/set-profile-photo`, formData, {
+            headers,
+            "Content-Type": "multipart/form-data",
+          });
         }
 
         setTimeout(() => {
@@ -51,6 +47,10 @@ export default function RegisterPage() {
           "You have been Succesfully Registered!",
           "success",
         ]);
+
+        await axios.post(
+          `${DefaultURL}/mail/welcome/${values.email}/${values.name}`
+        );
       } else {
         setShowAlert(true);
         setAlertInfos([
