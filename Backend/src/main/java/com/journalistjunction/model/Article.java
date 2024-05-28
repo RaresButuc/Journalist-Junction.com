@@ -24,6 +24,8 @@ public class Article {
 
     private boolean published;
 
+    private boolean rePublished;
+
     private String title;
 
     @Column(length = 350)

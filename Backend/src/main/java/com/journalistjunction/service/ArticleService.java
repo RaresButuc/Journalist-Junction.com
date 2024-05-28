@@ -34,6 +34,7 @@ public class ArticleService {
 
     private final S3Service s3Service;
     private final S3Buckets s3Buckets;
+    private final MailService mailService;
     private final UserRepository userRepository;
     private final CategoryService categoryService;
     private final ArticleRepository articleRepository;
@@ -174,6 +175,7 @@ public class ArticleService {
 
     public Article createArticle(Article article) {
         article.setPublished(false);
+        article.setRePublished(false);
         article.setPostTime(null);
         article.setViews(0L);
         return articleRepository.save(article);
@@ -311,10 +313,17 @@ public class ArticleService {
             if (articleFromDb.getPostTime() == null) {
                 articleFromDb.setPostTime(LocalDateTime.now());
             }
+
             copyArticleFields(articleUpdater, articleFromDb);
             articleFromDb.setPublished(true);
-        } else {
+            if (!articleFromDb.isRePublished()) {
+                mailService.articlePostedMail(articleFromDb.getOwner().getEmail(), articleFromDb.getOwner().getName(), articleFromDb.getTitle());
+            }
+        } else if (decision.equals("false")) {
             articleFromDb.setPublished(false);
+            if (!articleFromDb.isRePublished()) {
+                articleFromDb.setRePublished(true);
+            }
         }
 
         articleRepository.save(articleFromDb);

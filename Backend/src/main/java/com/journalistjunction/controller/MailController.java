@@ -19,7 +19,7 @@ public class MailController {
     }
 
     @PostMapping("/welcome/{mail}/{username}")
-    public void sendMail(@PathVariable String mail, @PathVariable String username) {
+    public void welcomeMail(@PathVariable String mail, @PathVariable String username) {
         mailService.welcomeMail(mail, username);
     }
 }
