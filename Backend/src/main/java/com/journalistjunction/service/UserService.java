@@ -1,13 +1,16 @@
 package com.journalistjunction.service;
 
+import com.journalistjunction.model.ChangePasswordLink;
 import com.journalistjunction.model.PhotosClasses.UserBackgroundPhoto;
 import com.journalistjunction.model.User;
 import com.journalistjunction.model.PhotosClasses.UserProfilePhoto;
+import com.journalistjunction.repository.ChangePasswordLinkRepository;
 import com.journalistjunction.repository.UserBackgroundPhotoRepository;
 import com.journalistjunction.repository.UserProfilePhotoRepository;
 import com.journalistjunction.repository.UserRepository;
 import com.journalistjunction.s3.S3Buckets;
 import com.journalistjunction.s3.S3Service;
+import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,8 +31,11 @@ public class UserService {
     private final S3Service s3Service;
     private final S3Buckets s3Buckets;
 
+    private final MailService mailService;
     private final PasswordEncoder passwordEncoder;
+    private final ChangePasswordLinkService changePasswordLinkService;
     private final UserProfilePhotoRepository userProfilePhotoRepository;
+    private final ChangePasswordLinkRepository changePasswordLinkRepository;
     private final UserBackgroundPhotoRepository userBackgroundPhotoRepository;
 
     public List<User> getAllUsers() {
@@ -76,6 +82,31 @@ public class UserService {
         }
 
         return s3Service.getObject(s3Buckets.getCustomer(), "%s/%s_Background_Image".formatted(id, id));
+    }
+
+    public void forgottenPassword(String email) {
+        try {
+            mailService.sendSetPasswordEmail(email);
+        } catch (MessagingException e) {
+            throw new IllegalStateException("An Unexpected Error Has Occurred!");
+        }
+    }
+
+    public void setPassword(String email, String newPassword, String uuid) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("No User Was Found With This Email: " + email));
+        ChangePasswordLink changePasswordLink = changePasswordLinkRepository.findByUuid(uuid);
+
+        if (changePasswordLink.getEmail().equals(email) && !changePasswordLinkService.isExpiredByTime(uuid) && !changePasswordLink.isExpired()) {
+            changePasswordLink.setExpired(true);
+            user.setPassword(passwordEncoder.encode(newPassword));
+
+            userRepository.save(user);
+            changePasswordLinkRepository.save(changePasswordLink);
+
+        } else {
+            throw new IllegalStateException("Error! Request a 'New Password Change Request' by Email and Try again!");
+        }
     }
 
     public void subscribeOrUnsubscribe(Long idCurrentUser, Long idSecondUser, String command) {

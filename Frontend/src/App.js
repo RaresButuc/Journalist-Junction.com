@@ -15,6 +15,8 @@ import ReadArticlePage from "./pages/ReadArticlePage";
 import EditProfilePage from "./pages/EditProfilePage";
 import SearchArticlePage from "./pages/SearchArticlePage";
 import ChangePasswordAuth from "./pages/ChangePasswordAuth";
+import ChangePasswordPageNoAuth from "./pages/ChangePasswordNoAuth";
+import ForgetPasswordFormRequestPage from "./pages/ForgetPasswordFormRequestPage";
 
 import "./App.css";
 
@@ -37,13 +39,6 @@ function App() {
               }
             />
             <Route path="/login" element={<LoginPage />} />
-            {/* <Route path="/forget-password" element={<ForgetPassword />} />
-            <Route
-              path="/change-forget-password/:email"
-              element={<ChangePasswordPageNoAuth />}
-            />
-            <Route path="/all-ads" element={<AdsPage />} />
-            <Route path="/contact" element={<Contact />} />*/}
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/profile/:id" element={<ProfilePage />} />
             <Route path="/profile/edit/:id" element={<EditProfilePage />} />
@@ -55,16 +50,20 @@ function App() {
                 </RequireAuth>
               }
             ></Route>
-
-            {/* <Route path="/ad/:id" element={<AdDetail />} />
+            <Route
+              path="/change-password-mail-request"
+              element={<ForgetPasswordFormRequestPage />}
+            ></Route>
+            <Route
+              path="/change-forgotten-password/:uuid"
+              element={<ChangePasswordPageNoAuth />}
+            />
+            {/*
             <Route
               path="/terms-and-conditions"
               element={<TermsAndConditions />}
             />
             <Route path="/privacy-and-policy" element={<PrivacyPolicy />} />
-            <Route path="/:id/active" element={<ActiveAds />} />
-            <Route path="/:id/pending" element={<PendingAds />} />
-            <Route path="/:id/finalised" element={<FinalisedAds />} />
             <Route
               path="/ad/:id/rejectedworkers"
               element={<RejectedWorkersPage />}
@@ -73,14 +72,7 @@ function App() {
               path="/changepassoword"
               element={<ChangePasswordPageAuth />}
             />
-            <Route
-              path="/rating/:from/:to"
-              element={
-                <RequireAuth loginPath="/login">
-                  <RatingPage />
-                </RequireAuth>
-              }
-            ></Route>*/}
+            */}
             <Route
               path="/article/read/:id"
               element={<ReadArticlePage />}

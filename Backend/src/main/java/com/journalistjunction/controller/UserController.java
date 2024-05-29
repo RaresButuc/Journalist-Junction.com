@@ -118,6 +118,20 @@ public class UserController {
         return ResponseEntity.ok("Your Password Was Successfully Updated!");
     }
 
+    @PutMapping("/forgotten-password")
+    public ResponseEntity<String> forgottenPassword(@RequestParam String email) {
+        userService.forgottenPassword(email);
+
+        return ResponseEntity.ok("Check Your Email For The `Password Update` Form!");
+    }
+
+    @PutMapping("/set-password")
+    public ResponseEntity<String> setPassword(@RequestParam String email, @RequestParam String uuid, @RequestHeader String newPassword) {
+        userService.setPassword(email, newPassword, uuid);
+
+        return ResponseEntity.ok("Your Password Was Successfully Updated!");
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable("id") Long id) {
         userService.deleteUserById(id);
