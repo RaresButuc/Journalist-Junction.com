@@ -7,6 +7,7 @@ import CountrySelect from "../components/accountFormComponents/CountrySelect";
 import PhoneNumberInput from "../components/accountFormComponents/PhoneNumberInput";
 import ProfileImageInput from "../components/accountFormComponents/ProfileImageInput";
 import ShortDescriptionInput from "../components/accountFormComponents/ShortDescriptionInput";
+import ProfileBackgroundImageInput from "../components/accountFormComponents/ProfileBackgroundImageInput";
 
 import axios from "axios";
 import { useState, useRef } from "react";
@@ -17,6 +18,7 @@ export default function RegisterPage() {
   const navigate = useNavigate();
 
   const photoRef = useRef(null);
+  const photoBackgroundRef = useRef(null);
 
   const [showAlert, setShowAlert] = useState(false);
   const [alertInfos, setAlertInfos] = useState(["", "", ""]);
@@ -25,14 +27,21 @@ export default function RegisterPage() {
     try {
       if (!Number.isNaN(values.location.id)) {
         const token = await axios.post(`${DefaultURL}/user/register`, values);
+        const headers = { Authorization: `Bearer ${token.data.token}` };
 
         if (photoRef.current !== null) {
-          const headers = { Authorization: `Bearer ${token.data.token}` };
-
           const formData = new FormData();
           formData.append("file", photoRef.current);
 
           await axios.put(`${DefaultURL}/user/set-profile-photo`, formData, {
+            headers,
+            "Content-Type": "multipart/form-data",
+          });
+        }
+        if (photoBackgroundRef.current !== null) {
+          const formData = new FormData();
+          formData.append("file", photoBackgroundRef.current);
+          await axios.put(`${DefaultURL}/user/set-background-photo`, formData, {
             headers,
             "Content-Type": "multipart/form-data",
           });
@@ -160,6 +169,11 @@ export default function RegisterPage() {
                   <div className="form-outline mb-5 mt-5">
                     <h4>Profile Picture</h4>
                     <ProfileImageInput ref={photoRef} />
+                  </div>
+
+                  <div className="form-outline mb-5 mt-5">
+                    <h4>Background Picture</h4>
+                    <ProfileBackgroundImageInput ref={photoBackgroundRef} />
                   </div>
 
                   <button
