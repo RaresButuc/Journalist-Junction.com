@@ -20,7 +20,9 @@ const ProfileBackgroundImageInput = forwardRef(({ userId }, ref) => {
   const [cropingView, setCropingView] = useState(false);
   const [photoPreview, setPhotoPreview] = useState(null);
   const [alertInfos, setAlertInfos] = useState(["", "", ""]);
-  const [description, setDescription] = useState("No Background Image Selected");
+  const [description, setDescription] = useState(
+    "No Background Image Selected"
+  );
 
   useEffect(() => {
     if (userId && currentUser) {
@@ -174,12 +176,15 @@ const ProfileBackgroundImageInput = forwardRef(({ userId }, ref) => {
           <input {...getInputProps()} />
           <p className="mb-0">Select a Background Profile Image</p>
         </div>
-        <img
-          src={photoPreview}
-          className="mt-4 img-fluid border border-4"
-          style={{ borderColor: "white"}}
-          alt="ProfileImage"
-        />
+        {userId || photoPreview ? (
+          <img
+            src={photoPreview}
+            className="mt-4 img-fluid border border-4"
+            style={{ borderColor: "white" }}
+            alt="ProfileImage"
+          />
+        ) : null}
+
         <br />
         <div className="mt-2">
           <h5 className="me-2 d-inline" style={{ wordBreak: "break-all" }}>
