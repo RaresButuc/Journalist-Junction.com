@@ -165,7 +165,7 @@ public class ArticleService {
     }
 
     public List<Article> getArticlesByUserId(Long id) {
-        return articleRepository.findAllByOwnerId(id);
+        return articleRepository.findAllByOwnerIdOrderByPostTimeDesc(id);
     }
 
     public boolean getArticleIsPublished(Long id) {
@@ -426,7 +426,7 @@ public class ArticleService {
 
         String hourAndSeconds = articlePostTime.getHour() + ":" + articlePostTime.getSecond();
         String dayAndMonth = articlePostTime.getDayOfWeek().name() + ", " + articlePostTime.getDayOfMonth() + " " + articlePostTime.getMonth() + " " + articlePostTime.getYear();
-        return hourAndSeconds + "/ " + dayAndMonth;
+        return hourAndSeconds + " / " + dayAndMonth;
     }
 
 }

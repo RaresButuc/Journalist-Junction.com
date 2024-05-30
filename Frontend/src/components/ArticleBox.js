@@ -3,28 +3,32 @@ import { useState, useEffect } from "react";
 
 import DefaultURL from "../usefull/DefaultURL";
 import FirstLetterUppercase from "../usefull/FirstLetterUppercase";
-import LocalDateTimeToString from "../usefull/LocalDateTimeToString";
 
 export default function ArticleBox({ category, articles, isLongerThan5 }) {
-  const [thumbnails, setThumbnails] = useState([]);
+  const [thumbnailsAndDates, setThumbnailsAndDates] = useState([]);
 
   useEffect(() => {
     if (articles) {
-      const getThumbnails = async () => {
-        const newThumbnails = await Promise.all(
+      const getThumbnailsAndDates = async () => {
+        const thumbsAndDates = await Promise.all(
           articles.map(async (article) => {
             const responseThumbnailArticlePhoto = await axios.get(
               `${DefaultURL}/article/get-article-thumbnail/${article.id}`
             );
             const thumbnailImageUrl = `data:image/jpeg;base64,${responseThumbnailArticlePhoto.data.bytes}`;
-            return thumbnailImageUrl;
+
+            const responseDate = await axios.get(
+              `${DefaultURL}/article/date/${article.id}`
+            );
+
+            return { thumbnail: thumbnailImageUrl, date: responseDate.data };
           })
         );
 
-        setThumbnails(newThumbnails);
+        setThumbnailsAndDates(thumbsAndDates);
       };
 
-      getThumbnails();
+      getThumbnailsAndDates();
     }
   }, [articles]);
 
@@ -44,7 +48,7 @@ export default function ArticleBox({ category, articles, isLongerThan5 }) {
                 <img
                   className="img-fluid col-xl-6 col-sm-12 mb-3"
                   alt={article.title}
-                  src={thumbnails[index]}
+                  src={thumbnailsAndDates[index]?.thumbnail}
                   style={{ borderRadius: 16 }}
                 />
                 <div className="col-xl-6 col-sm-12">
@@ -75,7 +79,7 @@ export default function ArticleBox({ category, articles, isLongerThan5 }) {
                       </a>
                     </h6>
                     <h6 className="d-flex justify-content-end me-3">
-                      Posted at: {LocalDateTimeToString(article.id)}
+                      Posted at: {thumbnailsAndDates[index]?.date}
                     </h6>
                   </div>
                 </div>
