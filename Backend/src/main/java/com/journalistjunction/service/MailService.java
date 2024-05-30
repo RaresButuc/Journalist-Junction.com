@@ -2,7 +2,10 @@ package com.journalistjunction.service;
 
 import com.journalistjunction.model.User;
 import com.journalistjunction.repository.UserRepository;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import lombok.AllArgsConstructor;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import com.journalistjunction.model.MailStructure;
@@ -10,6 +13,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
 import java.util.NoSuchElementException;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -17,6 +21,7 @@ public class MailService {
 
     private final JavaMailSender mailSender;
     private final UserRepository userRepository;
+    private final ChangePasswordLinkService changePasswordLinkService;
 
     public void sendMail(String mail, MailStructure mailStructure) {
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
@@ -83,5 +88,25 @@ public class MailService {
         String formattedMessage = String.format(message, username, title);
 
         sendMail(mail, new MailStructure("New Article Posted!", formattedMessage));
+    }
+
+    public void sendSetPasswordEmail(String email) throws MessagingException {
+        String uuid = UUID.randomUUID().toString();
+        changePasswordLinkService.addNewLink(uuid, email);
+
+        MimeMessage mimeMessage = mailSender.createMimeMessage();
+        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
+        mimeMessageHelper.setTo(email);
+        mimeMessageHelper.setSubject("Set Password");
+        mimeMessageHelper.setText("""
+                Journalist-Junction Support Here!
+                
+                Changing Password Is A Simple And Fast Process, So Don't Worry!
+                
+                <h4 style={{color:'red'}}>*THE REQUEST LINK IS AVAILABLE ONLY 60 MINUTES*</h4>                
+                <a href="http://localhost:3000/change-forgotten-password/%s" target="_blank"> Click Here To Set The New Password </a>
+                </div>
+                """.formatted(uuid), true);
+        mailSender.send(mimeMessage);
     }
 }

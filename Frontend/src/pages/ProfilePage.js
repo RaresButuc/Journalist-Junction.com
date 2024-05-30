@@ -2,9 +2,11 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { useIsAuthenticated } from "react-auth-kit";
 import { useParams, useNavigate } from "react-router-dom";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 import ErrorPage from "./ErrorPage";
 import DefaultURL from "../usefull/DefaultURL";
+import ArticleBox from "../components/ArticleBox";
 import CurrentUserInfos from "../usefull/CurrentUserInfos";
 import FirstLetterUppercase from "../usefull/FirstLetterUppercase";
 
@@ -12,13 +14,18 @@ import noProfileImage from "../photos/default-profile-image.png";
 import defaultbackgroundprofile from "../photos/defaultbackgroundprofile.png";
 
 export default function ProfilePage() {
-  const isAuthenticated = useIsAuthenticated();
+  const { id } = useParams();
   const navigate = useNavigate();
+  const currentUser = CurrentUserInfos();
+  const isAuthenticated = useIsAuthenticated();
 
+  const [hasMore, setHasMore] = useState(true);
+  const [articles, setArticles] = useState(null);
   const [readMore, setReadMore] = useState(false);
   const [profileUser, setProfileUser] = useState(null);
   const [profileImage, setProfileImage] = useState(null);
   const [backgroundImage, setBackgroundImage] = useState(null);
+  const [scrollDownArticles, setScrollDownArticles] = useState(null);
 
   const [subsCount, setSubsCount] = useState(0);
   const [subButtonContent, setSubButtonContent] = useState(["", ""]);
@@ -27,12 +34,8 @@ export default function ProfilePage() {
   // Used to change the Subs Count automatically
   const [subAction, setSubAction] = useState(0);
 
-  const currentUser = CurrentUserInfos();
-
-  const { id } = useParams();
-
   useEffect(() => {
-    if (id) {
+    if (id && !scrollDownArticles) {
       const fetchCurrentUser = async () => {
         try {
           // Fetch user
@@ -40,7 +43,9 @@ export default function ProfilePage() {
 
           setProfileUser(responseUser.data);
 
-          setShowEditButton(isAuthenticated() && currentUser.id === Number(id));
+          setShowEditButton(
+            isAuthenticated() ? currentUser?.id === Number(id) : false
+          );
 
           if (responseUser.data.profilePhoto !== null) {
             const reponseUserProfilePhoto = await axios.get(
@@ -121,9 +126,30 @@ export default function ProfilePage() {
         }
       };
 
+      // Fetch user's articles
+      const fetchUserArticles = async () => {
+        try {
+          const responseArticles = await axios.get(
+            `${DefaultURL}/article/user/${id}`
+          );
+          setArticles(responseArticles.data);
+
+          setScrollDownArticles(
+            responseArticles.data.length > 3
+              ? responseArticles.data.slice(0, 3)
+              : responseArticles.data.slice(0)
+          );
+
+          setHasMore(responseArticles.data.length > 3);
+        } catch (err) {
+          console.log(err);
+        }
+      };
+
       fetchSubsCount();
       fetchIsSubscribed();
       fetchCurrentUser();
+      fetchUserArticles();
     }
   }, [subAction, currentUser, id, isAuthenticated()]);
 
@@ -166,6 +192,23 @@ export default function ProfilePage() {
     }
   };
 
+  const fetchMoreData = () => {
+    const lengthDifference = articles.length - scrollDownArticles.length;
+
+    if (lengthDifference > 3) {
+      setTimeout(() => {
+        setScrollDownArticles(articles.slice(0, scrollDownArticles.length + 3));
+      }, 500);
+    } else {
+      setTimeout(() => {
+        setScrollDownArticles(
+          articles.slice(0, scrollDownArticles.length + lengthDifference)
+        );
+      }, 500);
+      setHasMore(false);
+    }
+  };
+
   return (
     <>
       {profileUser ? (
@@ -174,7 +217,7 @@ export default function ProfilePage() {
             <img
               src={backgroundImage}
               className="img-fluid"
-              style={{ width: "100%" }} // Aici pana cand voi avea optiunea de crop,cu 423px height
+              style={{ width: "100%" }}
               alt="BackgroundImage"
             />
             <div className="position-absolute top-100 start-50 translate-middle">
@@ -281,7 +324,26 @@ export default function ProfilePage() {
                 <br />
               </div>
             </div>
-            <hr />
+            <hr className="border border-danger" />
+
+            {scrollDownArticles?.length ? (
+              <InfiniteScroll
+                dataLength={scrollDownArticles?.length}
+                next={() =>fetchMoreData()}
+                hasMore={hasMore}
+                loader={<h4 className="mt-4">Loading...</h4>}
+              >
+                <ArticleBox articles={scrollDownArticles} />
+              </InfiniteScroll>
+            ) : (
+              <h1
+                style={{ marginTop: "7%" }}
+                className="d-flex justify-content-center"
+              >
+                {" "}
+                No Article Uploaded Yet
+              </h1>
+            )}
           </div>
         </div>
       ) : (
