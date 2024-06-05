@@ -63,6 +63,9 @@ public class User implements UserDetails {
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private UserProfilePhoto profilePhoto;
 
+    @Embedded
+    private SocialMedia socialMedia;
+
     @JsonIgnore
     @ManyToMany(mappedBy = "contributors")
     private List<Article> articlesContributed;

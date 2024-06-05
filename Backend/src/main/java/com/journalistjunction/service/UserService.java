@@ -158,8 +158,9 @@ public class UserService {
             throw new IllegalArgumentException("All Fields Should Be Completed!");
         }
         userFromDb.setName(updatedUser.getName());
-        userFromDb.setPhoneNumber(updatedUser.getPhoneNumber());
         userFromDb.setLocation(updatedUser.getLocation());
+        userFromDb.setPhoneNumber(updatedUser.getPhoneNumber());
+        userFromDb.setSocialMedia(updatedUser.getSocialMedia());
         userFromDb.setShortAutoDescription(updatedUser.getShortAutoDescription());
         userRepository.save(userFromDb);
     }

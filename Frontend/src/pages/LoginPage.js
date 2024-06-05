@@ -28,10 +28,15 @@ export default function LoginPage() {
         tokenType: "Bearer",
         authState: { email: values.email, role: response.data.role },
       });
-      navigate("/");
+
+      navigate(document.referrer.slice(21));
     } catch (err) {
       setShowAlert(true);
-      setAlertInfos(["Be Careful!", "Wrong Email or Password! Try Again!", "danger"]);
+      setAlertInfos([
+        "Be Careful!",
+        "Wrong Email or Password! Try Again!",
+        "danger",
+      ]);
       setTimeout(() => {
         setShowAlert(false);
       }, 3000);
