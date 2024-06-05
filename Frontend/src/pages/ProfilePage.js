@@ -35,8 +35,6 @@ export default function ProfilePage() {
   const [subButtonContent, setSubButtonContent] = useState(["", ""]);
 
   const [showEditButton, setShowEditButton] = useState(null);
-  // Used to change the Subs Count automatically
-  const [subAction, setSubAction] = useState(0);
 
   const [socialMedia, setSocialMedia] = useState([]);
   const [hasSocialMedia, setHasSocialMedia] = useState(false);
@@ -110,7 +108,6 @@ export default function ProfilePage() {
           }
 
           if (responseUser.data.profilePhoto !== null) {
-            console.log("A intrat aici");
             const reponseUserProfilePhoto = await axios.get(
               `${DefaultURL}/user/get-profile-photo/${userData.id}`,
               {
@@ -214,7 +211,7 @@ export default function ProfilePage() {
       fetchCurrentUser();
       fetchUserArticles();
     }
-  }, [subAction, currentUser, id, isAuthenticated()]);
+  }, [currentUser, id, isAuthenticated()]);
 
   function formatNumber(number) {
     if (number < 1000) {
@@ -239,16 +236,18 @@ export default function ProfilePage() {
     if (isAuthenticated()) {
       if (subButtonContent[1] === "Subscribe") {
         setSubButtonContent(["dark", "UnSubscribe"]);
+        setSubsCount(subsCount + 1);
+
         await axios.put(
           `${DefaultURL}/user/subscribe/${currentUser?.id}/${id}`
         );
-        setSubAction(subAction + 1);
       } else if (subButtonContent[1] === "UnSubscribe") {
         setSubButtonContent(["danger", "Subscribe"]);
+        setSubsCount(subsCount - 1);
+
         await axios.put(
           `${DefaultURL}/user/unsubscribe/${currentUser?.id}/${id}`
         );
-        setSubAction(subAction + 1);
       }
     } else {
       navigate("/login");
