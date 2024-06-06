@@ -239,14 +239,14 @@ export default function ProfilePage() {
         setSubsCount(subsCount + 1);
 
         await axios.put(
-          `${DefaultURL}/user/subscribe/${currentUser?.id}/${id}`
+          `${DefaultURL}/user/1/${currentUser?.id}/${id}`
         );
       } else if (subButtonContent[1] === "UnSubscribe") {
         setSubButtonContent(["danger", "Subscribe"]);
         setSubsCount(subsCount - 1);
 
         await axios.put(
-          `${DefaultURL}/user/unsubscribe/${currentUser?.id}/${id}`
+          `${DefaultURL}/user/0/${currentUser?.id}/${id}`
         );
       }
     } else {

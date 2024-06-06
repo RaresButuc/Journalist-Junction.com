@@ -109,31 +109,30 @@ public class UserService {
         }
     }
 
-    public void subscribeOrUnsubscribe(Long idCurrentUser, Long idSecondUser, String command) {
+    public void subscribeOrUnsubscribe(Long idCurrentUser, Long idSecondUser, Long command) {
         User currentUser = userRepository.findById(idCurrentUser)
                 .orElseThrow(() -> new NoSuchElementException("No User Found!"));
         User secondUser = userRepository.findById(idSecondUser)
                 .orElseThrow(() -> new NoSuchElementException("No User Found!"));
 
-        switch (command) {
-            case "subscribe" -> {
-                if (!isUserSubscriber(idCurrentUser, idSecondUser) && !idCurrentUser.equals(idSecondUser)) {
-                    currentUser.getSubscribedTo().add(secondUser);
-                    secondUser.getSubscribers().add(currentUser);
-                } else {
-                    throw new IllegalStateException("User is already subscribed or trying to subscribe to themselves!");
-                }
+        if (command == 1L) {
+            if (!isUserSubscriber(idCurrentUser, idSecondUser) && !idCurrentUser.equals(idSecondUser)) {
+                currentUser.getSubscribedTo().add(secondUser);
+                secondUser.getSubscribers().add(currentUser);
+            } else {
+                throw new IllegalStateException("User is already subscribed or trying to subscribe to themselves!");
             }
-            case "unsubscribe" -> {
-                if (isUserSubscriber(idCurrentUser, idSecondUser) && !idCurrentUser.equals(idSecondUser)) {
-                    currentUser.getSubscribedTo().remove(secondUser);
-                    secondUser.getSubscribers().remove(currentUser);
-                } else {
-                    throw new IllegalStateException("User is not subscribed or trying to unsubscribe from themselves!");
-                }
+        } else if (command == 0L) {
+            if (isUserSubscriber(idCurrentUser, idSecondUser) && !idCurrentUser.equals(idSecondUser)) {
+                currentUser.getSubscribedTo().remove(secondUser);
+                secondUser.getSubscribers().remove(currentUser);
+            } else {
+                throw new IllegalStateException("User is not subscribed or trying to unsubscribe from themselves!");
             }
-            default -> throw new IllegalStateException("Invalid command: " + command);
+        } else {
+            throw new IllegalArgumentException("Invalid command!");
         }
+
         userRepository.save(currentUser);
         userRepository.save(secondUser);
     }

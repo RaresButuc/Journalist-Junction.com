@@ -105,7 +105,7 @@ public class UserController {
     }
 
     @PutMapping("/{action}/{idCurrentUser}/{idSecondUser}")
-    public ResponseEntity<String> subscribeOrUnsubscribe(@PathVariable("action") String action, @PathVariable("idCurrentUser") Long idCurrentUser, @PathVariable("idSecondUser") Long idSecondUser) {
+    public ResponseEntity<String> subscribeOrUnsubscribe(@PathVariable("action") Long action, @PathVariable("idCurrentUser") Long idCurrentUser, @PathVariable("idSecondUser") Long idSecondUser) {
         userService.subscribeOrUnsubscribe(idCurrentUser, idSecondUser, action);
 
         return ResponseEntity.ok("");
