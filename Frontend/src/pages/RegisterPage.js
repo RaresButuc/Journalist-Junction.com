@@ -5,6 +5,7 @@ import EmailInput from "../components/accountFormComponents/EmailInput";
 import PasswordInput from "../components/accountFormComponents/PasswordInput";
 import CountrySelect from "../components/accountFormComponents/CountrySelect";
 import PhoneNumberInput from "../components/accountFormComponents/PhoneNumberInput";
+import SocialMediaInput from "../components/accountFormComponents/SocialMediaInput";
 import ProfileImageInput from "../components/accountFormComponents/ProfileImageInput";
 import ShortDescriptionInput from "../components/accountFormComponents/ShortDescriptionInput";
 import ProfileBackgroundImageInput from "../components/accountFormComponents/ProfileBackgroundImageInput";
@@ -19,6 +20,10 @@ export default function RegisterPage() {
 
   const photoRef = useRef(null);
   const photoBackgroundRef = useRef(null);
+
+  const x = useRef(null);
+  const facebook = useRef(null);
+  const instagram = useRef(null);
 
   const [showAlert, setShowAlert] = useState(false);
   const [alertInfos, setAlertInfos] = useState(["", "", ""]);
@@ -87,10 +92,15 @@ export default function RegisterPage() {
     const registerData = {
       name: formData.get("nameInput"),
       email: formData.get("emailInput"),
-      location: { id: parseInt(formData.get("countryInput"), 10) },
       password: formData.get("passwordInput"),
       phoneNumber: formData.get("phoneNumberInput"),
+      location: { id: parseInt(formData.get("countryInput"), 10) },
       shortAutoDescription: formData.get("shortAutoDescriptionInput"),
+      socialMedia: {
+        facebook: formData.get("facebook"),
+        instagram: formData.get("instagram"),
+        x: formData.get("x"),
+      },
     };
 
     onSubmit(registerData);
@@ -174,6 +184,13 @@ export default function RegisterPage() {
                   <div className="form-outline mb-5 mt-5">
                     <h4>Background Picture</h4>
                     <ProfileBackgroundImageInput ref={photoBackgroundRef} />
+                  </div>
+
+                  <div className="form-outline mb-5 mt-5">
+                    <h4>Social Media</h4>
+                    <SocialMediaInput ref={instagram} platform={"instagram"} />
+                    <SocialMediaInput ref={facebook} platform={"facebook"} />
+                    <SocialMediaInput ref={x} platform={"x"} />
                   </div>
 
                   <button

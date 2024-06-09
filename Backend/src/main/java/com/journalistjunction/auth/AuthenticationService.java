@@ -35,6 +35,7 @@ public class AuthenticationService {
                     .phoneNumber(request.getPhoneNumber())
                     .location(request.getLocation())
                     .shortAutoDescription(request.getShortAutoDescription())
+                    .socialMedia(request.getSocialMedia())
                     .build();
             repository.save(user);
 

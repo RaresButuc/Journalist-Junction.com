@@ -13,6 +13,10 @@ import FirstLetterUppercase from "../usefull/FirstLetterUppercase";
 import noProfileImage from "../photos/default-profile-image.png";
 import defaultbackgroundprofile from "../photos/defaultbackgroundprofile.png";
 
+import x from "../photos/socialMediaIcons/TwitterIcon.png";
+import facebook from "../photos/socialMediaIcons/FacebookIcon.png";
+import instagram from "../photos/socialMediaIcons/InstagramIcon.png";
+
 export default function ProfilePage() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -31,25 +35,81 @@ export default function ProfilePage() {
   const [subButtonContent, setSubButtonContent] = useState(["", ""]);
 
   const [showEditButton, setShowEditButton] = useState(null);
-  // Used to change the Subs Count automatically
-  const [subAction, setSubAction] = useState(0);
+
+  const [socialMedia, setSocialMedia] = useState([]);
+  const [hasSocialMedia, setHasSocialMedia] = useState(false);
+
+  const choosePhoto = (platform) => {
+    if (platform === "facebook") {
+      return facebook;
+    } else if (platform === "instagram") {
+      return instagram;
+    } else if (platform === "x") {
+      return x;
+    } else {
+      return null;
+    }
+  };
 
   useEffect(() => {
+    if (isAuthenticated() && !currentUser?.id) {
+      return;
+    }
+
     if (id && !scrollDownArticles) {
       const fetchCurrentUser = async () => {
         try {
           // Fetch user
           const responseUser = await axios.get(`${DefaultURL}/user/${id}`);
-
-          setProfileUser(responseUser.data);
+          const userData = responseUser.data;
 
           setShowEditButton(
             isAuthenticated() ? currentUser?.id === Number(id) : false
           );
+          setProfileUser(userData);
+
+          setHasSocialMedia(
+            socialMedia.socialMedia
+              ? userData.socialMedia?.instagram ||
+                  userData.socialMedia?.facebook ||
+                  userData.socialMedia?.x
+              : false
+          );
+
+          if (socialMedia.socialMedia) {
+            const socialMediaArray = [];
+
+            for (const [key, value] of Object.entries(userData.socialMedia)) {
+              if (value) {
+                let link;
+                switch (key) {
+                  case "facebook":
+                    link = `https://www.facebook.com/${value}`;
+                    break;
+                  case "instagram":
+                    link = `https://www.instagram.com/${value}/`;
+                    break;
+                  case "x":
+                    link = `https://x.com/${value}/`;
+                    break;
+                  default:
+                    link = "";
+                }
+
+                socialMediaArray.push({
+                  photo: choosePhoto(key),
+                  platform: key,
+                  link: link,
+                });
+              }
+            }
+
+            setSocialMedia(socialMediaArray);
+          }
 
           if (responseUser.data.profilePhoto !== null) {
             const reponseUserProfilePhoto = await axios.get(
-              `${DefaultURL}/user/get-profile-photo/${responseUser.data.id}`,
+              `${DefaultURL}/user/get-profile-photo/${userData.id}`,
               {
                 responseType: "arraybuffer",
               }
@@ -68,9 +128,9 @@ export default function ProfilePage() {
             setProfileImage(noProfileImage);
           }
 
-          if (responseUser.data.profileBackgroundPhoto !== null) {
+          if (userData.profileBackgroundPhoto !== null) {
             const reponseUserBackgroundPhoto = await axios.get(
-              `${DefaultURL}/user/get-background-photo/${responseUser.data.id}`,
+              `${DefaultURL}/user/get-background-photo/${userData.id}`,
               {
                 responseType: "arraybuffer",
               }
@@ -151,7 +211,7 @@ export default function ProfilePage() {
       fetchCurrentUser();
       fetchUserArticles();
     }
-  }, [subAction, currentUser, id, isAuthenticated()]);
+  }, [currentUser, id, isAuthenticated()]);
 
   function formatNumber(number) {
     if (number < 1000) {
@@ -176,16 +236,18 @@ export default function ProfilePage() {
     if (isAuthenticated()) {
       if (subButtonContent[1] === "Subscribe") {
         setSubButtonContent(["dark", "UnSubscribe"]);
+        setSubsCount(subsCount + 1);
+
         await axios.put(
-          `${DefaultURL}/user/subscribe/${currentUser?.id}/${id}`
+          `${DefaultURL}/user/1/${currentUser?.id}/${id}`
         );
-        setSubAction(subAction + 1);
       } else if (subButtonContent[1] === "UnSubscribe") {
         setSubButtonContent(["danger", "Subscribe"]);
+        setSubsCount(subsCount - 1);
+
         await axios.put(
-          `${DefaultURL}/user/unsubscribe/${currentUser?.id}/${id}`
+          `${DefaultURL}/user/0/${currentUser?.id}/${id}`
         );
-        setSubAction(subAction + 1);
       }
     } else {
       navigate("/login");
@@ -265,7 +327,11 @@ export default function ProfilePage() {
                   className={`btn btn-${subButtonContent[0]} mr-md-3`}
                   onClick={subscribeOrUnsubscribe}
                   disabled={
-                    currentUser ? (currentUser.id == id ? true : false) : false
+                    currentUser
+                      ? currentUser.id === Number(id)
+                        ? true
+                        : false
+                      : false
                   }
                 >
                   {subButtonContent[1]} - {formatNumber(subsCount)}
@@ -314,14 +380,27 @@ export default function ProfilePage() {
 
               <div className="col-xl-6 col-md-12">
                 <h3>
-                  <strong>Links</strong>
+                  <strong>
+                    {hasSocialMedia ? "Contact & Social Media" : "Contact"}
+                  </strong>
                 </h3>
                 <h5 className="d-inline">Email:</h5>
                 <h5 className="d-inline ms-3">
                   <em>{profileUser?.email}</em>
                 </h5>
+
                 <br />
-                <br />
+                <div className="mt-3">
+                  {socialMedia?.map((e) => (
+                    <a href={e.link}>
+                      <img
+                        src={e.photo}
+                        alt={`${e.platform} logo`}
+                        style={{ width: 35, marginRight: "10px" }}
+                      />
+                    </a>
+                  ))}
+                </div>
               </div>
             </div>
             <hr className="border border-danger" />
@@ -329,7 +408,7 @@ export default function ProfilePage() {
             {scrollDownArticles?.length ? (
               <InfiniteScroll
                 dataLength={scrollDownArticles?.length}
-                next={() =>fetchMoreData()}
+                next={() => fetchMoreData()}
                 hasMore={hasMore}
                 loader={<h4 className="mt-4">Loading...</h4>}
               >

@@ -10,6 +10,7 @@ import CurrentUserInfos from "../usefull/CurrentUserInfos";
 import NameInput from "../components/accountFormComponents/NameInput";
 import CountrySelect from "../components/accountFormComponents/CountrySelect";
 import PhoneNumberInput from "../components/accountFormComponents/PhoneNumberInput";
+import SocialMediaInput from "../components/accountFormComponents/SocialMediaInput";
 import ProfileImageInput from "../components/accountFormComponents/ProfileImageInput";
 import ShortDescriptionInput from "../components/accountFormComponents/ShortDescriptionInput";
 import ProfileBackgroundImageInput from "../components/accountFormComponents/ProfileBackgroundImageInput";
@@ -23,6 +24,10 @@ export default function EditProfilePage() {
 
   const photoRef = useRef(null);
   const photoBackgroundRef = useRef(null);
+
+  const x = useRef(null);
+  const facebook = useRef(null);
+  const instagram = useRef(null);
 
   const currentUser = CurrentUserInfos();
 
@@ -122,6 +127,11 @@ export default function EditProfilePage() {
       location: { id: parseInt(formData.get("countryInput"), 10) },
       phoneNumber: formData.get("phoneNumberInput"),
       shortAutoDescription: formData.get("shortAutoDescriptionInput"),
+      socialMedia: {
+        facebook: formData.get("facebook"),
+        instagram: formData.get("instagram"),
+        x: formData.get("x"),
+      },
     };
 
     onSubmit(registerData);
@@ -190,6 +200,28 @@ export default function EditProfilePage() {
                           userId={id}
                           ref={photoBackgroundRef}
                         />
+
+                        <div className="form-outline mb-5 mt-5">
+                          <h4>Social Media</h4>
+                          <SocialMediaInput
+                            ref={instagram}
+                            user={currentUser}
+                            platform={"instagram"}
+                            id={"floatingShortDescriptionValue"}
+                          />
+                          <SocialMediaInput
+                            ref={facebook}
+                            user={currentUser}
+                            platform={"facebook"}
+                            id={"floatingShortDescriptionValue"}
+                          />
+                          <SocialMediaInput
+                            ref={x}
+                            platform={"x"}
+                            user={currentUser}
+                            id={"floatingShortDescriptionValue"}
+                          />
+                        </div>
                       </div>
                       <button
                         className="btn btn-success btn-lg btn-block"

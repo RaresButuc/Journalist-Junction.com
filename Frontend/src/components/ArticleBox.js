@@ -63,6 +63,7 @@ export default function ArticleBox({ category, articles, isLongerThan5 }) {
                         borderRadius: 10,
                         fontSize: 15,
                       }}
+                      key={categ.nameOfCategory}
                     >
                       {FirstLetterUppercase(categ.nameOfCategory)}
                     </a>
