@@ -16,6 +16,7 @@ import EditProfilePage from "./pages/EditProfilePage";
 import SearchArticlePage from "./pages/SearchArticlePage";
 import ChangePasswordAuth from "./pages/ChangePasswordAuth";
 import ChangePasswordPageNoAuth from "./pages/ChangePasswordNoAuth";
+import AcceptContribInvitePage from "./pages/AcceptContribInvitePage";
 import ForgetPasswordFormRequestPage from "./pages/ForgetPasswordFormRequestPage";
 
 import "./App.css";
@@ -58,20 +59,16 @@ function App() {
               path="/change-forgotten-password/:uuid"
               element={<ChangePasswordPageNoAuth />}
             />
+            <Route
+              path="/contribution-invite/:uuid"
+              element={<AcceptContribInvitePage />}
+            />
             {/*
             <Route
               path="/terms-and-conditions"
               element={<TermsAndConditions />}
             />
             <Route path="/privacy-and-policy" element={<PrivacyPolicy />} />
-            <Route
-              path="/ad/:id/rejectedworkers"
-              element={<RejectedWorkersPage />}
-            />
-            <Route
-              path="/changepassoword"
-              element={<ChangePasswordPageAuth />}
-            />
             */}
             <Route
               path="/article/read/:id"

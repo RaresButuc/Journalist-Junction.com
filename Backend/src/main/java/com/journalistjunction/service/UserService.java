@@ -43,8 +43,8 @@ public class UserService {
     }
 
 
-    public User getUserById(Long id) {
-        return userRepository.findById(id)
+    public User getUserById(Long userId) {
+        return userRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException("No User Found!"));
     }
 
@@ -54,34 +54,30 @@ public class UserService {
     }
 
     public boolean isUserSubscriber(Long idCurrentUser, Long idSecondUser) {
-        User currentUser = userRepository.findById(idCurrentUser)
-                .orElseThrow(() -> new NoSuchElementException("No User Found!"));
-        User secondUser = userRepository.findById(idSecondUser)
-                .orElseThrow(() -> new NoSuchElementException("No User Found!"));
+        User currentUser = getUserById(idCurrentUser);
+        User secondUser = getUserById(idSecondUser);
 
         return secondUser.getSubscribers().stream().anyMatch(e -> Objects.equals(e.getId(), currentUser.getId()));
     }
 
-    public byte[] getUserProfilePhoto(Long id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("No User Found!"));
+    public byte[] getUserProfilePhoto(Long userId) {
+        User user = getUserById(userId);
 
         if (user.getProfilePhoto() == null) {
             return null;
         }
 
-        return s3Service.getObject(s3Buckets.getCustomer(), "%s/%s_Profile_Image".formatted(id, id));
+        return s3Service.getObject(s3Buckets.getCustomer(), "%s/%s_Profile_Image".formatted(userId, userId));
     }
 
-    public byte[] getUserBackgroundPhoto(Long id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("No User Found!"));
+    public byte[] getUserBackgroundPhoto(Long userId) {
+        User user = getUserById(userId);
 
         if (user.getProfileBackgroundPhoto() == null) {
             return null;
         }
 
-        return s3Service.getObject(s3Buckets.getCustomer(), "%s/%s_Background_Image".formatted(id, id));
+        return s3Service.getObject(s3Buckets.getCustomer(), "%s/%s_Background_Image".formatted(userId, userId));
     }
 
     public void forgottenPassword(String email) {
@@ -93,8 +89,7 @@ public class UserService {
     }
 
     public void setPassword(String email, String newPassword, String uuid) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("No User Was Found With This Email: " + email));
+        User user = getUserByEmail(email);
         ChangePasswordLink changePasswordLink = changePasswordLinkRepository.findByUuid(uuid);
 
         if (changePasswordLink.getEmail().equals(email) && !changePasswordLinkService.isExpiredByTime(uuid) && !changePasswordLink.isExpired()) {
@@ -110,10 +105,8 @@ public class UserService {
     }
 
     public void subscribeOrUnsubscribe(Long idCurrentUser, Long idSecondUser, Long command) {
-        User currentUser = userRepository.findById(idCurrentUser)
-                .orElseThrow(() -> new NoSuchElementException("No User Found!"));
-        User secondUser = userRepository.findById(idSecondUser)
-                .orElseThrow(() -> new NoSuchElementException("No User Found!"));
+        User currentUser = getUserById(idCurrentUser);
+        User secondUser = getUserById(idSecondUser);
 
         if (command == 1L) {
             if (!isUserSubscriber(idCurrentUser, idSecondUser) && !idCurrentUser.equals(idSecondUser)) {
@@ -137,31 +130,30 @@ public class UserService {
         userRepository.save(secondUser);
     }
 
-    public int subscribersCount(Long idUser) {
-        return userRepository.findById(idUser)
-                .orElseThrow(() -> new NoSuchElementException("No User Found!"))
+    public int subscribersCount(Long userId) {
+        return getUserById(userId)
                 .getSubscribers()
                 .size();
     }
 
     public void updateUserById(User updatedUser) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
         if (updatedUser == null) {
             throw new IllegalArgumentException("Updated user data cannot be null");
         }
 
-        User userFromDb = (User) auth.getPrincipal();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        if (userFromDb.getName().isBlank() || userFromDb.getPhoneNumber().isBlank() || userFromDb.getLocation().getCountry().isBlank() || userFromDb.getShortAutoDescription().isBlank()) {
+        User user = (User) auth.getPrincipal();
+
+        if (updatedUser.getName().isBlank() || updatedUser.getPhoneNumber().isBlank() || updatedUser.getLocation().getId() == null || updatedUser.getShortAutoDescription().isBlank()) {
             throw new IllegalArgumentException("All Fields Should Be Completed!");
         }
-        userFromDb.setName(updatedUser.getName());
-        userFromDb.setLocation(updatedUser.getLocation());
-        userFromDb.setPhoneNumber(updatedUser.getPhoneNumber());
-        userFromDb.setSocialMedia(updatedUser.getSocialMedia());
-        userFromDb.setShortAutoDescription(updatedUser.getShortAutoDescription());
-        userRepository.save(userFromDb);
+        user.setName(updatedUser.getName());
+        user.setLocation(updatedUser.getLocation());
+        user.setPhoneNumber(updatedUser.getPhoneNumber());
+        user.setSocialMedia(updatedUser.getSocialMedia());
+        user.setShortAutoDescription(updatedUser.getShortAutoDescription());
+        userRepository.save(user);
     }
 
     public void updateUserProfilePhoto(MultipartFile file) throws IOException {
@@ -232,8 +224,8 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public void changePasswordAndVerifyOldPassword(Long id, String newPassword, String actualPassword) {
-        User user = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("No User Found!"));
+    public void changePasswordAndVerifyOldPassword(Long userId, String newPassword, String actualPassword) {
+        User user = getUserById(userId);
 
         if (passwordEncoder.matches(actualPassword, user.getPassword()) && !passwordEncoder.matches(newPassword, user.getPassword())) {
             user.setPassword(passwordEncoder.encode(newPassword));
@@ -247,8 +239,7 @@ public class UserService {
         }
     }
 
-    public void deleteUserById(Long id) {
-        userRepository.deleteById(id);
+    public void deleteUserById(Long userId) {
+        userRepository.deleteById(userId);
     }
-
 }

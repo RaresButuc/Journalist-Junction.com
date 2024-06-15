@@ -22,6 +22,7 @@ public class MailService {
     private final JavaMailSender mailSender;
     private final UserRepository userRepository;
     private final ChangePasswordLinkService changePasswordLinkService;
+    private final ContributionInviteService contributionInviteService;
 
     public void sendMail(String mail, MailStructure mailStructure) {
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
@@ -100,13 +101,33 @@ public class MailService {
         mimeMessageHelper.setSubject("Set Password");
         mimeMessageHelper.setText("""
                 Journalist-Junction Support Here!
-                
+                                
                 Changing Password Is A Simple And Fast Process, So Don't Worry!
-                
+                                
                 <h4 style={{color:'red'}}>*THE REQUEST LINK IS AVAILABLE ONLY 60 MINUTES*</h4>                
                 <a href="http://localhost:3000/change-forgotten-password/%s" target="_blank"> Click Here To Set The New Password </a>
                 </div>
                 """.formatted(uuid), true);
+        mailSender.send(mimeMessage);
+    }
+
+    public void sendContributorInvite(String fromUsername, Long fromId, Long articleId, String toEmail) throws MessagingException {
+        String uuid = UUID.randomUUID().toString();
+        contributionInviteService.addNewInvite(uuid, articleId, toEmail);
+
+        MimeMessage mimeMessage = mailSender.createMimeMessage();
+        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
+        mimeMessageHelper.setTo(toEmail);
+        mimeMessageHelper.setSubject("You Were Invited To Contribute To A Project");
+        mimeMessageHelper.setText("""
+                Congratulations!
+                                
+                You Were Invited By  <a href="http://localhost:3000/profile/%s" target="_blank">%s</a> To Contribute To An Article!
+                                
+                <h4 style={{color:'red'}}>*THE INVITE IS AVAILABLE FOR 48 HOURS. ONCE ACCEPTED OR REJECTED IT BECOMES UNAVAILABLE*</h4>                
+                <a href="http://localhost:3000/contribution-invite/%s" target="_blank"> Click Here To ACCEPT THE INVITE </a>
+                </div>
+                """.formatted(fromId,fromUsername, uuid),true);
         mailSender.send(mimeMessage);
     }
 }

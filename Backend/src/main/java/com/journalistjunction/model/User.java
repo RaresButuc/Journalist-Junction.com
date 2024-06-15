@@ -75,10 +75,6 @@ public class User implements UserDetails {
     private List<Article> articlesOwned;
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "rejectedWorkers")
-    private List<Article> articlesRejected;
-
-    @JsonIgnore
     @OneToMany
     private List<User> subscribers;
 

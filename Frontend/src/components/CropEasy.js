@@ -99,8 +99,8 @@ export default function CropEasy({
   };
 
   return (
-    <div className="modal modal-show">
-      <div className="modal-content" style={{ maxWidth: adjustedWidth + 25,padding:15 }}>
+    <div className="modal-crop modal-show">
+      <div className="modal-content-crop" style={{ maxWidth: adjustedWidth + 25,padding:15 }}>
         <DialogContent
           dividers
           sx={{

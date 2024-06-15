@@ -39,11 +39,11 @@ public class ArticlePhotoService {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        User userFromDb = (User) auth.getPrincipal();
+        User user = (User) auth.getPrincipal();
         Article article = articleRepository.findById(id).orElseThrow(() -> new NoSuchElementException("No Article Found!"));
 
-        if (userFromDb.getArticlesOwned().stream().noneMatch(e -> Objects.equals(e.getId(), id))) {
-            throw new IllegalStateException("No Article Found With This ID for " + userFromDb.getName());
+        if (user.getArticlesOwned().stream().noneMatch(e -> Objects.equals(e.getId(), id))) {
+            throw new IllegalStateException("No Article Found With This ID for " + user.getName());
         }
 
         for (ChangeIsThumbnailStatusDTO decision : decisions) {

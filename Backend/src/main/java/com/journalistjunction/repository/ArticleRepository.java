@@ -11,6 +11,8 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
 
     List<Article> findAllByOwnerIdOrderByPostTimeDesc(Long id);
 
+    List<Article> findAllByContributorsIdOrderByPostTimeDesc(Long id);
+
     List<Article> findAllByPublishedIsTrueOrderByPostTimeDesc();
 
     List<Article> findAllByPublishedIsTrueAndLocation_CountryOrderByPostTimeDesc(String country);

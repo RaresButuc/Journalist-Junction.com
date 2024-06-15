@@ -17,7 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -66,8 +65,44 @@ public class ArticleController {
     }
 
     @GetMapping("/user/{id}")
-    public List<Article> getAllArticlesByUser(@PathVariable("id") Long id) {
-        return articleService.getArticlesByUserId(id);
+    public List<Article> getAllArticlesByOwner(@PathVariable("id") Long id) {
+        return articleService.getArticlesByOwnerId(id);
+    }
+
+    @GetMapping("/contributor/{id}")
+    public List<Article> getAllArticlesByContributor(@PathVariable("id") Long id) {
+        return articleService.getArticlesByContributorId(id);
+    }
+
+    @GetMapping(value = "/get-article-thumbnail/{id}")
+    public ArticlePhotoAndByteDTO getArticleThumbnail(@PathVariable("id") Long id) {
+        return articleService.getArticleThumbnail(id);
+    }
+
+    @GetMapping(value = "/get-nonThumbnail-article-photos/{id}")
+    public List<ArticlePhotoAndByteDTO> getNonThumbnailArticlePhotos(@PathVariable("id") Long id) {
+        return articleService.getNonThumbnailArticlePhotos(id);
+    }
+
+    @GetMapping(value = "/get-article-photos/{id}")
+    public List<ArticlePhotoAndByteDTO> getArticlePhotos(@PathVariable("id") Long id) {
+        return articleService.getArticlePhotos(id);
+    }
+
+    @GetMapping("/user/invite-contributor/{email}/{articleId}")
+    public ResponseEntity<String> inviteContributorByEmail(@PathVariable("email") String email, @PathVariable("articleId") Long articleId) {
+        articleService.sendContributionEmailInvite(email, articleId);
+        return ResponseEntity.ok("The Contribution Invitation Was Sent To %s!".formatted(email));
+    }
+
+    @GetMapping("/user/verify-contributor/{articleId}")
+    public boolean isUserContributor(@PathVariable("articleId") Long articleId) {
+        return articleService.isUserContributor(articleId);
+    }
+
+    @GetMapping("/user/verify-owner/{articleId}")
+    public boolean isUserOwner(@PathVariable("articleId") Long articleId) {
+        return articleService.isUserOwner(articleId);
     }
 
     @PostMapping
@@ -91,32 +126,12 @@ public class ArticleController {
     }
 
     @PutMapping("/{id}/{username}/{decision}")
-    public ResponseEntity<String> addOrDeleteContributor(@PathVariable("id") Long id, @PathVariable("username") String username, @PathVariable("decision") String decision) {
+    public ResponseEntity<String> addOrDeleteContributor(@PathVariable("id") Long id, @PathVariable("username") String username, @PathVariable("decision") Long decision) {
         articleService.addOrDeleteContributor(id, username, decision);
 
         return ResponseEntity.ok("");
     }
 
-    @PutMapping("/removerejection/{id}/{userId}")
-    public ResponseEntity<String> removeRejection(@PathVariable("id") Long id, @PathVariable("userId") Long userId) {
-        articleService.removeRejection(id, userId);
-        return ResponseEntity.ok("This User Was Removed from the `Rejected Contributors` List!");
-    }
-
-    @GetMapping(value = "/get-article-thumbnail/{id}")
-    public ArticlePhotoAndByteDTO getArticleThumbnail(@PathVariable("id") Long id) {
-        return articleService.getArticleThumbnail(id);
-    }
-
-    @GetMapping(value = "/get-nonThumbnail-article-photos/{id}")
-    public List<ArticlePhotoAndByteDTO> getNonThumbnailArticlePhotos(@PathVariable("id") Long id) {
-        return articleService.getNonThumbnailArticlePhotos(id);
-    }
-
-    @GetMapping(value = "/get-article-photos/{id}")
-    public List<ArticlePhotoAndByteDTO> getArticlePhotos(@PathVariable("id") Long id) {
-        return articleService.getArticlePhotos(id);
-    }
 
     @PutMapping(value = "/upload-article-photos/{id}")
     public ResponseEntity<String> uploadArticlePhotos(@RequestParam("files") List<MultipartFile> photos, @PathVariable("id") Long id, @RequestParam("fileDTOList") List<String> fileDTOList) throws IOException {
@@ -152,6 +167,11 @@ public class ArticleController {
     @PutMapping(value = "/add-view/{id}")
     public void increaseViewCount(@PathVariable("id") Long id) {
         articleService.increaseArticleViewCount(id);
+    }
+
+    @PutMapping("/user/add-contributor/{uuid}")
+    public String addUserAsContributor(@PathVariable("uuid") String uuid) {
+        return articleService.verifyContribInviteAndAdd(uuid);
     }
 
     @DeleteMapping("/{id}")

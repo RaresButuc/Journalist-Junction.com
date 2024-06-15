@@ -9,6 +9,7 @@ import DefaultURL from "../usefull/DefaultURL";
 import addArticleIcon from "../photos/addArticleIcon.png";
 import CurrentUserInfos from "../usefull/CurrentUserInfos";
 import LoaderCreateArticle from "../components/LoaderCreateArticle";
+import CardPostArticlePage from "../components/CardPostArticlePage";
 
 export default function PostArticlePage() {
   const { id } = useParams();
@@ -18,16 +19,23 @@ export default function PostArticlePage() {
   const currentUser = CurrentUserInfos();
 
   const [showLoader, setShowLoader] = useState(false);
-  const [allUserArticles, setAllUserArticles] = useState(null);
+  const [allOwnedArticles, setAllOwnedArticles] = useState(null);
+  const [allContributedArticles, setAllContributedArticles] = useState(null);
 
   useEffect(() => {
     const getAllArticles = async () => {
-      const res = await axios.get(`${DefaultURL}/article/user/${id}`);
-      setAllUserArticles(res.data);
+      const responseOwned = await axios.get(`${DefaultURL}/article/user/${id}`);
+      setAllOwnedArticles(responseOwned.data);
+
+      const responseContributed = await axios.get(
+        `${DefaultURL}/article/contributor/${id}`
+      );
+      console.log(responseContributed.data);
+      setAllContributedArticles(responseContributed.data);
     };
 
     getAllArticles();
-  }, []);
+  }, [id]);
 
   const createNewArticle = async () => {
     try {
@@ -59,39 +67,11 @@ export default function PostArticlePage() {
         <>
           {currentUser?.id == id ? (
             <div className="row">
-              {allUserArticles?.map((e) => (
-                <div
-                  className="card border-danger col-xl-3 col-lg-4 col-md-6 mx-auto mt-4"
-                  style={{ width: "18rem" }}
-                >
-                  <a
-                    href={`/article/edit/${e.id}`}
-                    style={{ textDecoration: "none", color: "black" }}
-                  >
-                    <img
-                      src={noImgIcon}
-                      className="card-img-top"
-                      style={{ padding: "25px", width: "256px" }}
-                    />
-                    <div className="card-body">
-                      <h5 className="card-title">
-                        {e.title
-                          ? e.title?.length > 95
-                            ? e.title.substring(0, 45) + "..."
-                            : e.title
-                          : "No Title was provided for this Article"}
-                      </h5>
-                      <hr />
-                      <p className="card-text">
-                        {e.thumbnailDescription
-                          ? e.thumbnailDescription?.length > 95
-                            ? e.thumbnailDescription.substring(0, 96) + "..."
-                            : e.thumbnailDescription
-                          : "No Short Description was provided for this Article"}
-                      </p>
-                    </div>
-                  </a>
-                </div>
+              <h1 className="article-title d-flex justify-content-center">
+                Owned Articles
+              </h1>
+              {allOwnedArticles?.map((e) => (
+                <CardPostArticlePage article={e} image={noImgIcon} />
               ))}
 
               <div
@@ -119,9 +99,28 @@ export default function PostArticlePage() {
                   </div>
                 </button>
               </div>
+
+              {allContributedArticles ? (
+                <>
+                  <h1
+                    className="article-title d-flex justify-content-center"
+                    style={{ marginTop: "75px" }}
+                  >
+                    Contributed Articles
+                  </h1>
+                  {allContributedArticles.map((i) => (
+                    <CardPostArticlePage article={i} image={noImgIcon} />
+                  ))}
+                </>
+              ) : null}
             </div>
           ) : (
-            <ErrorPage message={"404 Not Found!"} />
+            <ErrorPage
+              message={"Page is Loading!"}
+              message2={
+                "If it takes too long,press here to escape to the Home Page!"
+              }
+            />
           )}
         </>
       )}
