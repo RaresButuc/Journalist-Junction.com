@@ -558,7 +558,7 @@ body {
 }
 
 /* Modal Container */
-.modal {
+.modal-crop {
   display: none;
   position: fixed;
   z-index: 1050;
@@ -576,7 +576,7 @@ body {
   display: flex;
 }
 
-.modal-content {
+.modal-content-crop {
   background-color: #fff;
   border-radius: 10px;
   width: 90%;

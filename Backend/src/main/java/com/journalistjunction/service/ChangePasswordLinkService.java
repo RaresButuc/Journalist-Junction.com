@@ -24,7 +24,7 @@ public class ChangePasswordLinkService {
 
     public boolean isExpiredByTime(String uuid) {
         ChangePasswordLink changePasswordLink = changePasswordLinkRepository.findByUuid(uuid);
-        boolean expirationState = changePasswordLink.getCreatedDate().until(LocalDateTime.now(), ChronoUnit.MINUTES) > 0;
+        boolean expirationState = changePasswordLink.getCreatedDate().until(LocalDateTime.now(), ChronoUnit.MINUTES) > 60;
 
         if (expirationState) {
             changePasswordLink.setExpired(true);

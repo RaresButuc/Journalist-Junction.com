@@ -57,10 +57,6 @@ public class Article {
     @JoinTable
     private List<User> contributors;
 
-    @ManyToMany
-    @JoinTable
-    private List<User> rejectedWorkers;
-
     @OneToMany
     @Size(max = 10)
     private List<ArticlePhoto> photos;

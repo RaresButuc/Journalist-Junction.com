@@ -66,17 +66,18 @@ export default function ProfilePage() {
           setShowEditButton(
             isAuthenticated() ? currentUser?.id === Number(id) : false
           );
+
           setProfileUser(userData);
 
           setHasSocialMedia(
-            socialMedia.socialMedia
+            userData.socialMedia
               ? userData.socialMedia?.instagram ||
                   userData.socialMedia?.facebook ||
                   userData.socialMedia?.x
               : false
           );
 
-          if (socialMedia.socialMedia) {
+          if (userData.socialMedia) {
             const socialMediaArray = [];
 
             for (const [key, value] of Object.entries(userData.socialMedia)) {
@@ -192,15 +193,14 @@ export default function ProfilePage() {
           const responseArticles = await axios.get(
             `${DefaultURL}/article/user/${id}`
           );
-          setArticles(responseArticles.data);
+          const articles = responseArticles.data.filter((e) => e.published);
+          setArticles(articles);
 
           setScrollDownArticles(
-            responseArticles.data.length > 3
-              ? responseArticles.data.slice(0, 3)
-              : responseArticles.data.slice(0)
+            articles.length > 3 ? articles.slice(0, 3) : articles.slice(0)
           );
 
-          setHasMore(responseArticles.data.length > 3);
+          setHasMore(articles.length > 3);
         } catch (err) {
           console.log(err);
         }
@@ -238,16 +238,12 @@ export default function ProfilePage() {
         setSubButtonContent(["dark", "UnSubscribe"]);
         setSubsCount(subsCount + 1);
 
-        await axios.put(
-          `${DefaultURL}/user/1/${currentUser?.id}/${id}`
-        );
+        await axios.put(`${DefaultURL}/user/1/${currentUser?.id}/${id}`);
       } else if (subButtonContent[1] === "UnSubscribe") {
         setSubButtonContent(["danger", "Subscribe"]);
         setSubsCount(subsCount - 1);
 
-        await axios.put(
-          `${DefaultURL}/user/0/${currentUser?.id}/${id}`
-        );
+        await axios.put(`${DefaultURL}/user/0/${currentUser?.id}/${id}`);
       }
     } else {
       navigate("/login");

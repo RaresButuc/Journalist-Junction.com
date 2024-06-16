@@ -47,6 +47,11 @@ export default function EditArticlePage() {
     color: null,
   });
 
+  const [newContributor, setNewContributor] = useState(null);
+
+  const [isOwner, setIsOwner] = useState(false);
+  const [isContributor, setIsContributor] = useState(false);
+
   useEffect(() => {
     const getArticleById = async () => {
       try {
@@ -89,8 +94,33 @@ export default function EditArticlePage() {
       }
     };
 
+    const getUserStatus = async () => {
+      const headers = { Authorization: token() };
+
+      const responseOwner = await axios.get(
+        `${DefaultURL}/article/user/verify-owner/${id}`,
+        { headers }
+      );
+      const dataOwner = responseOwner.data;
+
+      if (!dataOwner) {
+        const responseContributor = await axios.get(
+          `${DefaultURL}/article/user/verify-contributor/${id}`,
+          { headers }
+        );
+        const dataContributor = responseContributor.data;
+
+        if (dataContributor) {
+          setIsContributor(dataContributor);
+        }
+      } else {
+        setIsOwner(true);
+      }
+    };
+
+    getUserStatus();
     getArticleById();
-  }, [contributors.length, rejectedContributors.length, reloadPhotos]);
+  }, [contributors?.length, rejectedContributors?.length, reloadPhotos]);
 
   useEffect(() => {
     setSelectDisabled(categoriesCurrent.length === 3);
@@ -116,7 +146,7 @@ export default function EditArticlePage() {
 
     try {
       await axios.put(
-        `${DefaultURL}/article/${currentArticle.id}/${e.name}/delete`,
+        `${DefaultURL}/article/${currentArticle.id}/${e.email}/0`,
         {},
         { headers }
       );
@@ -128,31 +158,6 @@ export default function EditArticlePage() {
         `${e.name} Is No Longer A Contributor For This Article!`,
         "success",
       ]);
-      setTimeout(() => {
-        setShowAlert(false);
-      }, 3000);
-    } catch (err) {
-      setShowAlert(true);
-      setAlertInfos(["Error Occured!", err.response.data.message, "danger"]);
-      setTimeout(() => {
-        setShowAlert(false);
-      }, 3000);
-    }
-  };
-
-  const deleteRejectedContributor = async (e) => {
-    const headers = { Authorization: token() };
-
-    try {
-      const response = await axios.put(
-        `${DefaultURL}/article/removerejection/${currentArticle.id}/${e.id}`,
-        {},
-        { headers }
-      );
-      setRejectedContributors(contributors.filter((i) => i.id != e.id));
-
-      setShowAlert(true);
-      setAlertInfos(["Success!", response.data, "success"]);
       setTimeout(() => {
         setShowAlert(false);
       }, 3000);
@@ -511,6 +516,32 @@ export default function EditArticlePage() {
     }
   };
 
+  const sendContributorRequest = async () => {
+    const headers = { Authorization: token() };
+
+    try {
+      const response = await axios.get(
+        `${DefaultURL}/article/user/invite-contributor/${newContributor}/${id}`,
+        { headers }
+      );
+
+      setShowAlert(true);
+      setAlertInfos(["Success!", response.data, "success"]);
+      setTimeout(() => {
+        setShowAlert(false);
+      }, 3000);
+    } catch (err) {
+      console.log(err);
+      console.log("aici 2");
+
+      setShowAlert(true);
+      setAlertInfos(["Error Occured!", err.response.data.message, "danger"]);
+      setTimeout(() => {
+        setShowAlert(false);
+      }, 3000);
+    }
+  };
+
   return (
     <div className="container-xl mt-3">
       {showAlert && (
@@ -521,7 +552,7 @@ export default function EditArticlePage() {
         />
       )}
 
-      {currentArticle ? (
+      {currentArticle && (isContributor || isOwner) ? (
         <div className="row">
           <form
             className="container-xl col-xl-6 col-md-12"
@@ -640,93 +671,82 @@ export default function EditArticlePage() {
                               >
                                 {e.name}
                               </a>
-                              <input
-                                className="d-inline mt-1 me-2"
-                                type="image"
-                                src={closeIcon}
-                                style={{ width: "22px" }}
-                                data-bs-toggle="modal"
-                                data-bs-target={`#modalDeleteContributor${e.id}`}
-                              />
-                              <>
-                                <Modal
-                                  id={`modalDeleteContributor${e.id}`}
-                                  title="Important!"
-                                  message={`Are you sure you want to delete ${e.name} from your list of contributors?`}
-                                  onAccept={() => deleteContributor(e)}
-                                />
-                              </>
+                              {isOwner && (
+                                <>
+                                  <input
+                                    className="d-inline mt-1 me-2"
+                                    type="image"
+                                    src={closeIcon}
+                                    style={{ width: "22px" }}
+                                    data-bs-toggle="modal"
+                                    data-bs-target={`#modalDeleteContributor${e.id}`}
+                                  />
+                                  <Modal
+                                    id={`modalDeleteContributor${e.id}`}
+                                    title="Important!"
+                                    message={`Are you sure you want to delete ${e.name} from your list of contributors?`}
+                                    onAccept={() => deleteContributor(e)}
+                                  />
+                                </>
+                              )}
                             </div>
                           ))
                         )}
                       </div>
-                      <div className="form-floating">
-                        <input
-                          className="form-control"
-                          type="contributors"
-                          name="contributorsInput"
-                          id={id}
-                          placeholder="Search for Contributors.."
-                          // onChange={updateTitleLive}
-                        />
-                        <label htmlFor={id}>Search for Contributors..</label>
-                      </div>
+
+                      {isOwner && (
+                        <>
+                          <div className="input-group input-group-lg">
+                            <input
+                              type="email"
+                              className="form-control"
+                              placeholder="Invite New Contributor.."
+                              id="add-contributor"
+                              onChange={(e) =>
+                                setNewContributor(e.target.value)
+                              }
+                            />
+                            <a
+                              className="btn btn-outline-danger"
+                              data-bs-toggle="modal"
+                              data-bs-target="#inviteContributor"
+                            >
+                              <b>Send Invite</b>
+                            </a>
+                          </div>
+                          <Modal
+                            id={"inviteContributor"}
+                            title="Important!"
+                            message={`Are You Sure You Want To Add ${newContributor} To Your List Of Contributors?`}
+                            onAccept={sendContributorRequest}
+                          />
+                          <div
+                            id="Title-Help"
+                            className="form-text text-warning"
+                          >
+                            *You Must Write The Email Of The User To Send The
+                            Invitation
+                          </div>
+                        </>
+                      )}
                     </div>
 
-                    <div className="form-outline mb-5 container-xl">
-                      <h2 className="mb-3">Rejected Contributors</h2>
-                      <div className="mb-3">
-                        {rejectedContributors.length === 0 ? (
-                          <h5 className="text-danger">
-                            No Rejected Contributors
-                          </h5>
-                        ) : (
-                          rejectedContributors.map((e) => (
-                            <div
-                              className="border border-danger border-3 rounded-pill ms-3 mb-2 d-inline-block"
-                              key={e.id}
-                            >
-                              <a
-                                className="d-inline me-2 ms-2 h5 text-decoration-none"
-                                href={`/profile/${e.id}`}
-                              >
-                                {e.name}
-                              </a>
-                              <input
-                                className="d-inline mt-1 me-2"
-                                type="image"
-                                src={closeIcon}
-                                style={{ width: "22px" }}
-                                data-bs-toggle="modal"
-                                data-bs-target={`#modalDeleteRejection${e.id}`}
-                              />
-                              <>
-                                <Modal
-                                  id={`modalDeleteRejection${e.id}`}
-                                  title="Important!"
-                                  message={`Are you sure you want to remove the rejection status of the user ${e.name} and give it the possibility to contribute to this article in the future?`}
-                                  onAccept={() => deleteRejectedContributor(e)}
-                                />
-                              </>
-                            </div>
-                          ))
-                        )}
-                      </div>
-                    </div>
                     <hr />
                     <div>
                       <button
                         className="btn btn-primary btn-lg col-4 m-3"
                         type="submit"
                       >
-                        Save
+                        <b>Save</b>
                       </button>
-                      <button
-                        className={`btn btn-${publishButton.color} btn-lg col-xl-4 m-3`}
-                        type="submit"
-                      >
-                        {publishButton.value}
-                      </button>
+                      {isOwner ? (
+                        <button
+                          className={`btn btn-${publishButton.color} btn-lg col-xl-4 m-3`}
+                          type="submit"
+                        >
+                          <b>{publishButton.value}</b>
+                        </button>
+                      ) : null}
                     </div>
                   </div>
                 </div>

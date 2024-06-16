@@ -5,6 +5,7 @@ import com.journalistjunction.DTO.FileDTO;
 import com.journalistjunction.DTO.HomePageArticles;
 import com.journalistjunction.model.Article;
 import com.journalistjunction.model.Category;
+import com.journalistjunction.model.ContributorInvite;
 import com.journalistjunction.model.PhotosClasses.ArticlePhoto;
 import com.journalistjunction.model.PhotosClasses.Photo;
 import com.journalistjunction.model.User;
@@ -12,10 +13,12 @@ import com.journalistjunction.repository.ArticleRepository;
 import com.journalistjunction.repository.UserRepository;
 import com.journalistjunction.s3.S3Buckets;
 import com.journalistjunction.s3.S3Service;
+import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -39,6 +42,7 @@ public class ArticleService {
     private final CategoryService categoryService;
     private final ArticleRepository articleRepository;
     private final ArticlePhotoService articlePhotoService;
+    private final ContributionInviteService contributionInviteService;
 
 
     public List<Article> getAllArticles() {
@@ -63,6 +67,7 @@ public class ArticleService {
     }
 
     public Page<Article> getAllPostedArticlesByInputAndCategory(String input, String category, String country, String language, int currentPage, int itemsPerPage) {
+
         PageRequest pageRequest = PageRequest.of(currentPage, itemsPerPage);
         List<Article> articles;
 
@@ -159,17 +164,21 @@ public class ArticleService {
                 .sorted(Comparator.comparing(Article::getPostTime).reversed());
     }
 
-    public Article getArticleById(Long id) {
-        return articleRepository.findById(id)
+    public Article getArticleById(Long articleId) {
+        return articleRepository.findById(articleId)
                 .orElseThrow(() -> new NoSuchElementException("No Article Found!"));
     }
 
-    public List<Article> getArticlesByUserId(Long id) {
-        return articleRepository.findAllByOwnerIdOrderByPostTimeDesc(id);
+    public List<Article> getArticlesByOwnerId(Long userId) {
+        return articleRepository.findAllByOwnerIdOrderByPostTimeDesc(userId);
     }
 
-    public boolean getArticleIsPublished(Long id) {
-        return getArticleById(id).isPublished();
+    public List<Article> getArticlesByContributorId(Long userId) {
+        return articleRepository.findAllByContributorsIdOrderByPostTimeDesc(userId);
+    }
+
+    public boolean getArticleIsPublished(Long articleId) {
+        return getArticleById(articleId).isPublished();
     }
 
 
@@ -181,20 +190,25 @@ public class ArticleService {
         return articleRepository.save(article);
     }
 
-    public Article updateArticleById(Long id, Article articleUpdater) {
-        Article articleFromDb = articleRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("No Article Found!"));
+    public Article updateArticleById(Long articleId, Article articleUpdater) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        if (articleUpdater.isPublished()) {
-            validateArticleFields(articleUpdater);
+        User user = (User) auth.getPrincipal();
+        Article article = getArticleById(articleId);
+
+        if (Objects.equals(article.getOwner().getId(), user.getId()) || article.getContributors().stream().anyMatch(e -> Objects.equals(e.getId(), user.getId()))) {
+            if (articleUpdater.isPublished()) {
+                validateArticleFields(articleUpdater);
+            }
+            copyArticleFields(articleUpdater, article);
+
+            return articleRepository.save(article);
         }
-        copyArticleFields(articleUpdater, articleFromDb);
-
-        return articleRepository.save(articleFromDb);
+        throw new IllegalStateException("You Can't Update An Article If You Are Not The Owner or A Contributor Of It!");
     }
 
-    public ArticlePhotoAndByteDTO getArticleThumbnail(Long id) {
-        Article article = articleRepository.findById(id).orElseThrow(() -> new NoSuchElementException("No Article Found!"));
+    public ArticlePhotoAndByteDTO getArticleThumbnail(Long articleId) {
+        Article article = getArticleById(articleId);
         List<ArticlePhoto> articlePhoto = article.getPhotos().stream().filter(ArticlePhoto::isThumbnail).toList();
 
         if (articlePhoto.size() != 1) {
@@ -206,8 +220,8 @@ public class ArticleService {
         return new ArticlePhotoAndByteDTO(articlePhoto.getFirst(), photo);
     }
 
-    public List<ArticlePhotoAndByteDTO> getNonThumbnailArticlePhotos(Long id) {
-        Article article = articleRepository.findById(id).orElseThrow(() -> new NoSuchElementException("No Article Found!"));
+    public List<ArticlePhotoAndByteDTO> getNonThumbnailArticlePhotos(Long articleId) {
+        Article article = getArticleById(articleId);
 
         List<ArticlePhotoAndByteDTO> photos = new ArrayList<>();
         for (ArticlePhoto articlePhoto : article.getPhotos().stream().filter(e -> !e.isThumbnail()).toList()) {
@@ -218,8 +232,8 @@ public class ArticleService {
         return photos;
     }
 
-    public List<ArticlePhotoAndByteDTO> getArticlePhotos(Long id) {
-        Article article = articleRepository.findById(id).orElseThrow(() -> new NoSuchElementException("No Article Found!"));
+    public List<ArticlePhotoAndByteDTO> getArticlePhotos(Long articleId) {
+        Article article = getArticleById(articleId);
 
         List<ArticlePhotoAndByteDTO> photos = new ArrayList<>();
         for (ArticlePhoto articlePhoto : article.getPhotos()) {
@@ -231,7 +245,7 @@ public class ArticleService {
     }
 
     @Transactional
-    public void uploadArticlePhotos(List<MultipartFile> files, Long id, List<FileDTO> filesDTO) throws
+    public void uploadArticlePhotos(List<MultipartFile> files, Long articleId, List<FileDTO> filesDTO) throws
             IOException {
         if (files.isEmpty()) {
             return;
@@ -239,11 +253,11 @@ public class ArticleService {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        User userFromDb = (User) auth.getPrincipal();
-        Article article = articleRepository.findById(id).orElseThrow(() -> new NoSuchElementException("No Article Found!"));
+        User user = (User) auth.getPrincipal();
+        Article article = getArticleById(articleId);
 
-        if (userFromDb.getArticlesOwned().stream().noneMatch(e -> Objects.equals(e.getId(), id))) {
-            throw new IllegalStateException("No Article Found With This ID for " + userFromDb.getName());
+        if (!Objects.equals(article.getOwner().getId(), user.getId()) || article.getContributors().stream().anyMatch(e -> Objects.equals(e.getId(), user.getId()))) {
+            throw new IllegalStateException("You Can't Update An Article If You Are Not The Owner or A Contributor Of It!");
         } else if (article.getPhotos().stream().anyMatch(ArticlePhoto::isThumbnail) && filesDTO.stream().anyMatch(FileDTO::getIsThumbnailAsBoolean)) {
             throw new IllegalStateException("Articles Can't Have More Than 1 Photo Set As Thumbnail! Please Choose Only One!");
         }
@@ -252,7 +266,7 @@ public class ArticleService {
 
             for (MultipartFile file : files) {
                 String uuid = UUID.randomUUID().toString();
-                String key = userFromDb.getId() + "/Article_" + id + "/" + uuid;
+                String key = user.getId() + "/Article_" + articleId + "/" + uuid;
                 FileDTO fileDTO = filesDTO.stream().filter(e -> e.getFileName().equals(file.getOriginalFilename())).findFirst().orElseThrow(() -> new NoSuchElementException("No Photo Found!"));
 
                 ArticlePhoto newArticlePhoto = articlePhotoService.createArticlePhoto(new ArticlePhoto(s3Buckets.getCustomer(), key, fileDTO.getIsThumbnailAsBoolean(), article));
@@ -268,18 +282,18 @@ public class ArticleService {
         }
     }
 
-    public void deleteArticlePhotos(List<ArticlePhoto> photos, Long id) {
+    public void deleteArticlePhotos(List<ArticlePhoto> photos, Long articleId) {
         if (photos.isEmpty()) {
             return;
         }
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        User userFromDb = (User) auth.getPrincipal();
-        Article article = articleRepository.findById(id).orElseThrow(() -> new NoSuchElementException("No Article Found!"));
+        User user = (User) auth.getPrincipal();
+        Article article = getArticleById(articleId);
 
-        if (userFromDb.getArticlesOwned().stream().noneMatch(e -> Objects.equals(e.getId(), id))) {
-            throw new IllegalStateException("No Article Found With This ID for " + userFromDb.getName());
+        if (!Objects.equals(article.getOwner().getId(), user.getId()) || article.getContributors().stream().anyMatch(e -> Objects.equals(e.getId(), user.getId()))) {
+            throw new IllegalStateException("You Can't Update An Article If You Are Not The Owner or A Contributor Of It!");
         }
 
         List<String> keys = photos.stream().map(Photo::getKey).toList();
@@ -303,30 +317,36 @@ public class ArticleService {
         destination.setLanguage(source.getLanguage());
     }
 
-    public void publishOrUnPublishArticle(Long id, String decision, Article articleUpdater) {
-        Article articleFromDb = articleRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("No Article Found!"));
+    public void publishOrUnPublishArticle(Long articleId, String decision, Article articleUpdater) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        validateArticle(articleFromDb, articleUpdater, decision);
+        User user = (User) auth.getPrincipal();
+        Article article = getArticleById(articleId);
 
-        if (decision.equals("true")) {
-            if (articleFromDb.getPostTime() == null) {
-                articleFromDb.setPostTime(LocalDateTime.now());
+        if (Objects.equals(article.getOwner().getId(), user.getId())) {
+            validateArticle(article, articleUpdater, decision);
+
+            if (decision.equals("true")) {
+                if (article.getPostTime() == null) {
+                    article.setPostTime(LocalDateTime.now());
+                }
+
+                copyArticleFields(articleUpdater, article);
+                article.setPublished(true);
+                if (!article.isRePublished()) {
+                    mailService.articlePostedMail(article.getOwner().getEmail(), article.getOwner().getName(), article.getTitle());
+                }
+            } else if (decision.equals("false")) {
+                article.setPublished(false);
+                if (!article.isRePublished()) {
+                    article.setRePublished(true);
+                }
             }
 
-            copyArticleFields(articleUpdater, articleFromDb);
-            articleFromDb.setPublished(true);
-            if (!articleFromDb.isRePublished()) {
-                mailService.articlePostedMail(articleFromDb.getOwner().getEmail(), articleFromDb.getOwner().getName(), articleFromDb.getTitle());
-            }
-        } else if (decision.equals("false")) {
-            articleFromDb.setPublished(false);
-            if (!articleFromDb.isRePublished()) {
-                articleFromDb.setRePublished(true);
-            }
+            articleRepository.save(article);
+        } else {
+            throw new IllegalStateException("Only The Owner Of The Article Can Choose Whether To Publish Or UnPublish An Article!");
         }
-
-        articleRepository.save(articleFromDb);
     }
 
     private void validateArticleFields(Article article) {
@@ -361,68 +381,134 @@ public class ArticleService {
         }
     }
 
+    public void sendContributionEmailInvite(String email, Long articleId) {
+        try {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-    public void addOrDeleteContributor(Long idAd, String nameContributor, String decision) {
-        Article articleFromDb = articleRepository.findById(idAd)
-                .orElseThrow(() -> new NoSuchElementException("No Article Found!"));
-        User contributor = userRepository.findByName(nameContributor)
+            User user = (User) auth.getPrincipal();
+            Article article = getArticleById(articleId);
+            User newContributor = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new NoSuchElementException("No User Was Found With This Email! Please Try Again!"));
+
+            if (!article.getOwner().getId().equals(user.getId())) {
+                throw new IllegalStateException("Only The Owner Of The Article Can Send Contributing Invites!");
+            }
+
+            if (user.getId().equals(newContributor.getId())) {
+                throw new IllegalStateException("You Can't Send Contributor Invite To Yourself!");
+            } else if (article.getContributors().stream().anyMatch(e -> e.getId().equals(newContributor.getId()))) {
+                throw new IllegalStateException("You Can't Send Contributor Invite To A Current Contributor Of This Article!");
+            }
+
+            mailService.sendContributorInvite(user.getName(), user.getId(), articleId, email);
+        } catch (MessagingException e) {
+            throw new IllegalStateException("An Unexpected Error Has Occurred!");
+        }
+    }
+
+    public boolean isUserContributor(Long articleId) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        User user = (User) auth.getPrincipal();
+        Article article = getArticleById(articleId);
+
+        return article.getContributors().stream().anyMatch(e -> Objects.equals(e.getId(), user.getId()));
+    }
+
+    public boolean isUserOwner(Long articleId) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        User user = (User) auth.getPrincipal();
+        Article article = getArticleById(articleId);
+
+        return Objects.equals(article.getOwner().getId(), user.getId());
+    }
+
+    public String verifyContribInviteAndAdd(String uuid) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        User user = auth.getPrincipal().equals("anonymousUser") ? null : (User) auth.getPrincipal();
+
+        ContributorInvite contributionInvite = contributionInviteService.getInviteByUUID(uuid);
+
+        Article article = getArticleById(contributionInvite.getArticleId());
+        String articleOwner = article.getOwner().getName();
+        String articleEmail = article.getOwner().getEmail();
+
+        String successMessage = """
+                Congratulations!
+                                
+                You Are Now A Contributor For %s's Article!
+                                    
+                Check Your 'Post New Article Page', on 'Contributed' Section For The Newest Added Article And Start Working On It!""".formatted(articleOwner);
+
+        if (!contributionInvite.isExpired() || !contributionInviteService.isExpiredByTime(uuid)) {
+            if (user == null || contributionInvite.getEmailTo().equals(user.getEmail())) {
+                addOrDeleteContributor(contributionInvite.getArticleId(), contributionInvite.getEmailTo(), 1L);
+                return successMessage;
+            } else {
+                throw new IllegalStateException(successMessage);
+            }
+        }
+
+        throw new IllegalStateException("""
+                This Invite Link Has Expired!
+                                    
+                For A New One Please Contact %s.
+                """.formatted(articleEmail));
+    }
+
+    public void addOrDeleteContributor(Long articleId, String emailContributor, Long decision) {
+        Article article = getArticleById(articleId);
+
+        User contributor = userRepository.findByEmail(emailContributor)
                 .orElseThrow(() -> new NoSuchElementException("No User Found With This UserName!!"));
 
-        switch (decision) {
-            case "add" -> {
-                if (articleFromDb.getOwner() != contributor &&
-                        !articleFromDb.getContributors().contains(contributor) &&
-                        !articleFromDb.getRejectedWorkers().contains(contributor)) {
-                    articleFromDb.getContributors().add(contributor);
-                } else {
-                    throw new IllegalStateException("User " + nameContributor + " cannot be added as a contributor!");
-                }
+        if (decision == 1) {
+            if (article.getOwner() != contributor &&
+                    !article.getContributors().contains(contributor)) {
+                article.getContributors().add(contributor);
+            } else {
+                throw new IllegalStateException("User " + contributor.getName() + " cannot be added as a contributor!");
             }
-            case "delete" -> {
-                if (articleFromDb.getOwner() != contributor &&
-                        articleFromDb.getContributors().contains(contributor) &&
-                        !articleFromDb.getRejectedWorkers().contains(contributor)) {
-                    articleFromDb.getContributors().remove(contributor);
-                    articleFromDb.getRejectedWorkers().add(contributor);
-                } else {
-                    throw new IllegalStateException("User " + nameContributor + " cannot be deleted as a contributor!");
-                }
+        } else if (decision == 0) {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+            User user = auth.getPrincipal().equals("anonymousUser") ? null : (User) auth.getPrincipal();
+
+            if (article.getOwner() != contributor &&
+                    article.getContributors().contains(contributor) &&
+                    Objects.equals(article.getOwner().getId(), Objects.requireNonNull(user).getId())) {
+                article.getContributors().remove(contributor);
+            } else {
+                throw new IllegalStateException("User " + contributor.getName() + " cannot be deleted as a contributor!");
             }
-            default -> throw new IllegalStateException("Invalid decision: " + decision);
+        } else {
+            throw new IllegalStateException("Invalid decision: " + decision);
         }
-        articleRepository.save(articleFromDb);
+        articleRepository.save(article);
     }
 
+    public void increaseArticleViewCount(Long articleId) {
+        Article article = getArticleById(articleId);
 
-    public void removeRejection(Long idAd, Long idUser) {
-        Article articleFromDb = articleRepository.findById(idAd)
-                .orElseThrow(() -> new NoSuchElementException("No Article Found!"));
+        article.setViews(article.getViews() + 1);
 
-        User user = userRepository.findById(idUser)
-                .orElseThrow(() -> new NoSuchElementException("No Article Found!"));
-
-        articleFromDb.getRejectedWorkers().remove(user);
-        articleRepository.save(articleFromDb);
+        articleRepository.save(article);
     }
 
-    public void increaseArticleViewCount(Long id) {
-        Article articleFromDb = articleRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("No Article Found!"));
+    public void deleteArticleById(Long articleId) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        articleFromDb.setViews(articleFromDb.getViews() + 1);
+        User user = (User) auth.getPrincipal();
 
-        articleRepository.save(articleFromDb);
+        if (Objects.equals(getArticleById(articleId).getOwner().getId(), user.getId())) {
+            articleRepository.deleteById(articleId);
+        }
     }
 
-
-    public void deleteArticleById(Long id) {
-        articleRepository.deleteById(id);
-    }
-
-    public String localDateTimeToString(Long id) {
-        LocalDateTime articlePostTime = articleRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("No Article Found!"))
-                .getPostTime();
+    public String localDateTimeToString(Long articleId) {
+        LocalDateTime articlePostTime = getArticleById(articleId).getPostTime();
 
         String hourAndSeconds = articlePostTime.getHour() + ":" + articlePostTime.getSecond();
         String dayAndMonth = articlePostTime.getDayOfWeek().name() + ", " + articlePostTime.getDayOfMonth() + " " + articlePostTime.getMonth() + " " + articlePostTime.getYear();
