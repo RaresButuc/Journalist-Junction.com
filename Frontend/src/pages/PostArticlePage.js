@@ -100,19 +100,23 @@ export default function PostArticlePage() {
                 </button>
               </div>
 
-              {allContributedArticles ? (
-                <>
-                  <h1
-                    className="article-title d-flex justify-content-center"
-                    style={{ marginTop: "75px" }}
-                  >
-                    Contributed Articles
-                  </h1>
-                  {allContributedArticles.map((i) => (
+              <>
+                <h1
+                  className="article-title d-flex justify-content-center"
+                  style={{ marginTop: "75px" }}
+                >
+                  Contributed Articles
+                </h1>
+                {allContributedArticles?.length ? (
+                  allContributedArticles.map((i) => (
                     <CardPostArticlePage article={i} image={noImgIcon} />
-                  ))}
-                </>
-              ) : null}
+                  ))
+                ) : (
+                  <h2 className="text-danger my-5">
+                    You Are Not A Contributor To Any Article Yet!
+                  </h2>
+                )}
+              </>
             </div>
           ) : (
             <ErrorPage

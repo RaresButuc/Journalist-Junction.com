@@ -652,35 +652,35 @@ export default function EditArticlePage() {
                       />
                     </div>
 
-                    {isOwner ? (
-                      <div className="form-outline mb-5 container-xl">
-                        <h2 className="mb-3">Contributors</h2>
-                        <div className="mb-3">
-                          {contributors.length === 0 ? (
-                            <h5 className="text-warning">
-                              No Contributors Added!
-                            </h5>
-                          ) : (
-                            contributors.map((e) => (
-                              <div
-                                className="border border-warning border-3 rounded-pill ms-3 mb-2 d-inline-block"
-                                key={e.id}
+                    <div className="form-outline mb-5 container-xl">
+                      <h2 className="mb-3">Contributors</h2>
+                      <div className="mb-3">
+                        {contributors.length === 0 ? (
+                          <h5 className="text-warning">
+                            No Contributors Added!
+                          </h5>
+                        ) : (
+                          contributors.map((e) => (
+                            <div
+                              className="border border-warning border-3 rounded-pill ms-3 mb-2 d-inline-block"
+                              key={e.id}
+                            >
+                              <a
+                                className="d-inline me-2 ms-2 h5 text-decoration-none"
+                                href={`/profile/${e.id}`}
                               >
-                                <a
-                                  className="d-inline me-2 ms-2 h5 text-decoration-none"
-                                  href={`/profile/${e.id}`}
-                                >
-                                  {e.name}
-                                </a>
-                                <input
-                                  className="d-inline mt-1 me-2"
-                                  type="image"
-                                  src={closeIcon}
-                                  style={{ width: "22px" }}
-                                  data-bs-toggle="modal"
-                                  data-bs-target={`#modalDeleteContributor${e.id}`}
-                                />
+                                {e.name}
+                              </a>
+                              {isOwner && (
                                 <>
+                                  <input
+                                    className="d-inline mt-1 me-2"
+                                    type="image"
+                                    src={closeIcon}
+                                    style={{ width: "22px" }}
+                                    data-bs-toggle="modal"
+                                    data-bs-target={`#modalDeleteContributor${e.id}`}
+                                  />
                                   <Modal
                                     id={`modalDeleteContributor${e.id}`}
                                     title="Important!"
@@ -688,40 +688,48 @@ export default function EditArticlePage() {
                                     onAccept={() => deleteContributor(e)}
                                   />
                                 </>
-                              </div>
-                            ))
-                          )}
-                        </div>
-
-                        <div className="input-group input-group-lg">
-                          <input
-                            type="email"
-                            className="form-control"
-                            placeholder="Invite New Contributor.."
-                            id="add-contributor"
-                            onChange={(e) => setNewContributor(e.target.value)}
-                          />
-                          <a
-                            className="btn btn-outline-danger"
-                            data-bs-toggle="modal"
-                            data-bs-target="#inviteContributor"
-                          >
-                            <b>Send Invite</b>
-                          </a>
-                        </div>
-                        <Modal
-                          id={"inviteContributor"}
-                          title="Important!"
-                          message={`Are You Sure You Want To Add ${newContributor} To Your List Of Contributors?`}
-                          onAccept={sendContributorRequest}
-                        />
-
-                        <div id="Title-Help" className="form-text text-warning">
-                          *You Must Write The Email Of The User To Send The
-                          Invitation
-                        </div>
+                              )}
+                            </div>
+                          ))
+                        )}
                       </div>
-                    ) : null}
+
+                      {isOwner && (
+                        <>
+                          <div className="input-group input-group-lg">
+                            <input
+                              type="email"
+                              className="form-control"
+                              placeholder="Invite New Contributor.."
+                              id="add-contributor"
+                              onChange={(e) =>
+                                setNewContributor(e.target.value)
+                              }
+                            />
+                            <a
+                              className="btn btn-outline-danger"
+                              data-bs-toggle="modal"
+                              data-bs-target="#inviteContributor"
+                            >
+                              <b>Send Invite</b>
+                            </a>
+                          </div>
+                          <Modal
+                            id={"inviteContributor"}
+                            title="Important!"
+                            message={`Are You Sure You Want To Add ${newContributor} To Your List Of Contributors?`}
+                            onAccept={sendContributorRequest}
+                          />
+                          <div
+                            id="Title-Help"
+                            className="form-text text-warning"
+                          >
+                            *You Must Write The Email Of The User To Send The
+                            Invitation
+                          </div>
+                        </>
+                      )}
+                    </div>
 
                     <hr />
                     <div>
