@@ -2,20 +2,17 @@ package com.journalistjunction.DTO;
 
 import com.journalistjunction.model.Article;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import java.util.List;
+import lombok.*;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class HomePageArticles {
-    String category;
+public class ArticleAndThumbnailDTO {
 
-    List<ArticleAndThumbnailDTO> articles;
+    private Article article;
 
-    boolean isListLongerThan5;
+    private byte[] thumbnail;
+
 }

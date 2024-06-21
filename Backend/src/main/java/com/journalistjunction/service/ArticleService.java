@@ -1,5 +1,6 @@
 package com.journalistjunction.service;
 
+import com.journalistjunction.DTO.ArticleAndThumbnailDTO;
 import com.journalistjunction.DTO.ArticlePhotoAndByteDTO;
 import com.journalistjunction.DTO.FileDTO;
 import com.journalistjunction.DTO.HomePageArticles;
@@ -18,7 +19,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -55,9 +55,10 @@ public class ArticleService {
         for (Category category : categoryService.getAllCategories()) {
             Stream<Article> filteredByCategory = getArticlesByIsPublishedAndCategory(articleRepository.findAll(), category.getNameOfCategory());
             boolean isLongerThan5 = filteredByCategory.toList().size() > 5;
-            List<Article> articles = getArticlesByIsPublishedAndCategory(articleRepository.findAll(), category.getNameOfCategory())
+            List<ArticleAndThumbnailDTO> articles = getArticlesByIsPublishedAndCategory(articleRepository.findAll(), category.getNameOfCategory())
                     .sorted(Comparator.comparing(Article::getPostTime).reversed())
                     .limit(5)
+                    .map(e -> new ArticleAndThumbnailDTO(e, getArticleThumbnail(e.getId()).getBytes()))
                     .collect(Collectors.toList());
 
             articlesHomePage.add(new HomePageArticles(category.getNameOfCategory(), articles, isLongerThan5));
@@ -66,7 +67,7 @@ public class ArticleService {
         return articlesHomePage;
     }
 
-    public Page<Article> getAllPostedArticlesByInputAndCategory(String input, String category, String country, String language, int currentPage, int itemsPerPage) {
+    public Page<ArticleAndThumbnailDTO> getAllPostedArticlesByInputAndCategory(String input, String category, String country, String language, int currentPage, int itemsPerPage) {
 
         PageRequest pageRequest = PageRequest.of(currentPage, itemsPerPage);
         List<Article> articles;
@@ -148,10 +149,12 @@ public class ArticleService {
             }
         }
 
-        List<Article> sublist = articles.subList(
-                (int) pageRequest.getOffset(),
-                Math.min((int) pageRequest.getOffset() + pageRequest.getPageSize(), articles.size())
-        );
+        List<ArticleAndThumbnailDTO> sublist = articles.subList(
+                        (int) pageRequest.getOffset(),
+                        Math.min((int) pageRequest.getOffset() + pageRequest.getPageSize(), articles.size())
+                )
+                .stream()
+                .map(e -> new ArticleAndThumbnailDTO(e, getArticleThumbnail(e.getId()).getBytes())).toList();
 
         return new PageImpl<>(sublist, pageRequest, articles.size());
     }
@@ -169,12 +172,28 @@ public class ArticleService {
                 .orElseThrow(() -> new NoSuchElementException("No Article Found!"));
     }
 
-    public List<Article> getArticlesByOwnerId(Long userId) {
-        return articleRepository.findAllByOwnerIdOrderByPostTimeDesc(userId);
+    public List<ArticleAndThumbnailDTO> getOwnedAndContributedArticlesByUserId(Long userId) {
+        return Stream.concat(
+                        getArticlesByOwnerId(userId).stream(),
+                        getArticlesByContributorId(userId).stream()
+                )
+                .sorted(Comparator.comparing((ArticleAndThumbnailDTO p) -> p.getArticle().getPostTime()).reversed())
+                .toList();
     }
 
-    public List<Article> getArticlesByContributorId(Long userId) {
-        return articleRepository.findAllByContributorsIdOrderByPostTimeDesc(userId);
+
+    public List<ArticleAndThumbnailDTO> getArticlesByOwnerId(Long userId) {
+        return articleRepository.findAllByOwnerIdOrderByPostTimeDesc(userId)
+                .stream()
+                .map(e -> new ArticleAndThumbnailDTO(e, getArticleThumbnail(e.getId()).getBytes()))
+                .toList();
+    }
+
+    public List<ArticleAndThumbnailDTO> getArticlesByContributorId(Long userId) {
+        return articleRepository.findAllByContributorsIdOrderByPostTimeDesc(userId)
+                .stream()
+                .map(e -> new ArticleAndThumbnailDTO(e, getArticleThumbnail(e.getId()).getBytes()))
+                .toList();
     }
 
     public boolean getArticleIsPublished(Long articleId) {
@@ -212,7 +231,7 @@ public class ArticleService {
         List<ArticlePhoto> articlePhoto = article.getPhotos().stream().filter(ArticlePhoto::isThumbnail).toList();
 
         if (articlePhoto.size() != 1) {
-            throw new IllegalStateException("An Error Has Occurred While TryingTo Process The Thumbnail Photo For This Article!");
+            return null;
         }
 
         byte[] photo = s3Service.getObject(s3Buckets.getCustomer(), articlePhoto.getFirst().getKey());
