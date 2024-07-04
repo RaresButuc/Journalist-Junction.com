@@ -62,8 +62,10 @@ public class Article {
     private List<ArticlePhoto> photos;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "to")
+    @OneToMany(mappedBy = "article")
     private List<Comment> comments;
+
+    private Long commentsCount;
 
     private Long views;
 }

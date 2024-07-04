@@ -4,6 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 
 import DefaultURL from "../usefull/DefaultURL";
 import PhotosPreview from "../components/PhotosPreview";
+import CommentSection from "../components/CommentSection";
 import CurrentUserInfos from "../usefull/CurrentUserInfos";
 import FirstLetterUppercase from "../usefull/FirstLetterUppercase";
 
@@ -162,6 +163,10 @@ export default function ReadArticlePage() {
         dangerouslySetInnerHTML={{ __html: article?.body }}
       />
       <PhotosPreview articleId={article?.id} articlePhotos={nonThumbnail} />
+
+      <br />
+
+      <CommentSection articleId={id} />
     </div>
   );
 }

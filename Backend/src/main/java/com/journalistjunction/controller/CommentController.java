@@ -14,14 +14,24 @@ public class CommentController {
 
     private final CommentService commentService;
 
-    @GetMapping
-    public List<Comment> getAllComments() {
-        return commentService.getAllComments();
+    @GetMapping("/article/{id}")
+    public List<Comment> getAllCommentsByArticle(@PathVariable Long id) {
+        return commentService.getAllCommentsByArticle(id);
     }
 
-    @PostMapping
+    @PostMapping("/new-comm")
     public void postNewComment(@RequestBody Comment comment) {
-        commentService.addComment(comment);
+        commentService.addNewComment(comment);
+    }
+
+    @PostMapping("/child-comm/{parentCommId}")
+    public void postChildComment(@RequestBody Comment comment, @PathVariable Long parentCommId) {
+        commentService.addChildComment(comment, parentCommId);
+    }
+
+    @PutMapping("/edit/{id}")
+    public void editComment(@RequestBody Comment comment, @PathVariable Long id) {
+        commentService.editComment(comment, id);
     }
 
     @DeleteMapping("/{id}")

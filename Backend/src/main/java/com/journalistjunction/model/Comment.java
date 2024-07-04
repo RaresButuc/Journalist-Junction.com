@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -19,15 +20,25 @@ public class Comment {
 
     @ManyToOne
     @JoinColumn
-    private User from;
+    private User user;
+
+    @ManyToOne
+    private Comment parent;
 
     @ManyToOne
     @JoinColumn
-    private Article to;
+    private Article article;
+
+    @Column(length = 560)
+    private String content;
+
+    @ManyToMany
+    private List<User> likers;
+
+    private Long likes;
+
+    private boolean edited;
 
     private LocalDateTime postTime;
-
-    @Column(length = 1000)
-    private String comment;
 
 }

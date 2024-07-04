@@ -87,8 +87,12 @@ public class User implements UserDetails {
     private List<Notification> notifications;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "from")
+    @OneToMany(mappedBy = "user")
     private List<Comment> comments;
+
+    @JsonIgnore
+    @ManyToMany
+    private List<Comment> likedComments;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

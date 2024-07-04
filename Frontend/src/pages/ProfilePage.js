@@ -194,9 +194,8 @@ export default function ProfilePage() {
           const responseArticles = await axios.get(
             `${DefaultURL}/article/user/all/${id}`
           );
-          const articles = responseArticles.data;
-          console.log(articles);
-          setArticles(articles.filter((e) => e.published));
+          const articles = responseArticles.data.filter((e) => e.article.published);
+          setArticles(articles);
 
           setScrollDownArticles(
             articles.length > 3 ? articles.slice(0, 3) : articles.slice(0)
@@ -423,7 +422,7 @@ export default function ProfilePage() {
                 </h1>
               )
             ) : (
-              <LongArticleSkeletonLoader counterArticles={3}/>
+              <LongArticleSkeletonLoader counterArticles={3} />
             )}
           </div>
         </div>
