@@ -9,6 +9,7 @@ import DefaultURL from "../usefull/DefaultURL";
 import ArticleBox from "../components/ArticleBox";
 import CurrentUserInfos from "../usefull/CurrentUserInfos";
 import FirstLetterUppercase from "../usefull/FirstLetterUppercase";
+import LongArticleSkeletonLoader from "../components/LongArticleSkeletonLoader";
 
 import noProfileImage from "../photos/default-profile-image.png";
 import defaultbackgroundprofile from "../photos/defaultbackgroundprofile.png";
@@ -191,9 +192,9 @@ export default function ProfilePage() {
       const fetchUserArticles = async () => {
         try {
           const responseArticles = await axios.get(
-            `${DefaultURL}/article/user/${id}`
+            `${DefaultURL}/article/user/all/${id}`
           );
-          const articles = responseArticles.data.filter((e) => e.published);
+          const articles = responseArticles.data.filter((e) => e.article.published);
           setArticles(articles);
 
           setScrollDownArticles(
@@ -401,23 +402,27 @@ export default function ProfilePage() {
             </div>
             <hr className="border border-danger" />
 
-            {scrollDownArticles?.length ? (
-              <InfiniteScroll
-                dataLength={scrollDownArticles?.length}
-                next={() => fetchMoreData()}
-                hasMore={hasMore}
-                loader={<h4 className="mt-4">Loading...</h4>}
-              >
-                <ArticleBox articles={scrollDownArticles} />
-              </InfiniteScroll>
+            {scrollDownArticles != null ? (
+              scrollDownArticles.length ? (
+                <InfiniteScroll
+                  dataLength={scrollDownArticles?.length}
+                  next={() => fetchMoreData()}
+                  hasMore={hasMore}
+                  loader={<h4 className="mt-4">Loading...</h4>}
+                >
+                  <ArticleBox articles={scrollDownArticles} />
+                </InfiniteScroll>
+              ) : (
+                <h1
+                  style={{ marginTop: "7%" }}
+                  className="d-flex justify-content-center"
+                >
+                  {" "}
+                  No Article Uploaded Yet
+                </h1>
+              )
             ) : (
-              <h1
-                style={{ marginTop: "7%" }}
-                className="d-flex justify-content-center"
-              >
-                {" "}
-                No Article Uploaded Yet
-              </h1>
+              <LongArticleSkeletonLoader counterArticles={3} />
             )}
           </div>
         </div>

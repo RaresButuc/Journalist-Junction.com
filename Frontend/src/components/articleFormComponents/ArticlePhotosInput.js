@@ -5,9 +5,10 @@ import { useMemo, useCallback, useState, useEffect, forwardRef } from "react";
 import Alert from "../Alert";
 import ViewPhoto from "../ViewPhoto";
 import DefaultURL from "../../usefull/DefaultURL";
+import EditArticleSkeletonLoader from "../EditArticleSkeletonLoader";
 
 const ArticlePhotosInput = forwardRef(({ article, reload }, ref) => {
-  const [photos, setPhotos] = useState([]);
+  const [photos, setPhotos] = useState(null);
   const [showAlert, setShowAlert] = useState(false);
   const [viewPhotoData, setViewPhotoData] = useState(null);
   const [alertInfos, setAlertInfos] = useState(["", "", ""]);
@@ -203,52 +204,56 @@ const ArticlePhotosInput = forwardRef(({ article, reload }, ref) => {
           <p className="mb-0">Select Images For This Article</p>
         </div>
         <div className="row">
-          {photos?.length === 0 ? (
-            <h3 className="text-danger mt-3">No Photos Selected</h3>
-          ) : (
-            photos.map((photo, index) => (
-              <div className="col-xl-6 col-md-12 mx-auto mt-4 " key={index}>
-                <div className="d-flex justify-content-center">
-                  <div className="form-check form-switch">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      role="switch"
-                      id="flexSwitchCheckDefault"
-                      checked={photo.isThumbnail}
-                      onClick={(e) => setIsThumbnail(e, index)}
-                    />
+          {photos != null ? (
+            photos?.length === 0 ? (
+              <h3 className="text-danger mt-3">No Photos Selected</h3>
+            ) : (
+              photos.map((photo, index) => (
+                <div className="col-xl-6 col-md-12 mx-auto mt-4 " key={index}>
+                  <div className="d-flex justify-content-center">
+                    <div className="form-check form-switch">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        role="switch"
+                        id="flexSwitchCheckDefault"
+                        checked={photo.isThumbnail}
+                        onClick={(e) => setIsThumbnail(e, index)}
+                      />
+                    </div>
+                    <h5>Thumbnail</h5>
                   </div>
-                  <h5>Thumbnail</h5>
-                </div>
 
-                <img
-                  src={photo.preview}
-                  className="img-fluid border border-2 border-danger"
-                  style={{
-                    maxWidth: "200px",
-                    maxHeight: "200px",
-                  }}
-                  alt={`Preview Image_${index}`}
-                />
-                <br />
-                <div className="mt-2">
-                  <button
-                    className="btn btn-outline-success ml-2 mx-1"
-                    onClick={() => viewImage(index)}
-                  >
-                    View
-                  </button>
+                  <img
+                    src={photo.preview}
+                    className="img-fluid border border-2 border-danger"
+                    style={{
+                      maxWidth: "200px",
+                      maxHeight: "200px",
+                    }}
+                    alt={`Preview Image_${index}`}
+                  />
+                  <br />
+                  <div className="mt-2">
+                    <button
+                      className="btn btn-outline-success ml-2 mx-1"
+                      onClick={() => viewImage(index)}
+                    >
+                      View
+                    </button>
 
-                  <button
-                    className="btn btn-outline-danger ml-2 mx-1"
-                    onClick={(e) => deleteImage(e, index)}
-                  >
-                    Delete
-                  </button>
+                    <button
+                      className="btn btn-outline-danger ml-2 mx-1"
+                      onClick={(e) => deleteImage(e, index)}
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))
+              ))
+            )
+          ) : (
+            <EditArticleSkeletonLoader />
           )}
         </div>
       </div>

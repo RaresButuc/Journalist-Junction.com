@@ -9,6 +9,7 @@ import Pagination from "../components/Pagination";
 import FirstLetterUppercase from "../usefull/FirstLetterUppercase";
 import CountrySelect from "../components/accountFormComponents/CountrySelect";
 import LanguageSelect from "../components/accountFormComponents/LanguageSelect";
+import LongArticleSkeletonLoader from "../components/LongArticleSkeletonLoader";
 
 import closeIcon from "../photos/close.png";
 import art from "../photos/CategoriesIcons/art.png";
@@ -70,6 +71,11 @@ export default function SearchArticlePage() {
           "pagenumber"
         );
 
+        const responseCategories = await axios.get(`${DefaultURL}/category`);
+        setCategories(
+          responseCategories.data.map((e) => e.nameOfCategory).sort()
+        );
+
         const responseArticles = await axios.get(
           `${DefaultURL}/article/posted?category=${categoryParam}&input=${inputParam}&country=${countryParam}&language=${languageParam}&currentpage=${
             pageNumberParam - 1
@@ -90,11 +96,6 @@ export default function SearchArticlePage() {
         if (languageParam !== null && languageParam !== "null") {
           setLanguageFilter(languageParam);
         }
-
-        const responseCategories = await axios.get(`${DefaultURL}/category`);
-        setCategories(
-          responseCategories.data.map((e) => e.nameOfCategory).sort()
-        );
       } catch (err) {
         navigate("/an-error-has-occurred");
       }
@@ -216,15 +217,19 @@ export default function SearchArticlePage() {
         </div>
       </div>
 
-      {allArticles ? (
-        <div>
-          <ArticleBox articles={allArticles} />
-          <Pagination elements={paginationDetails} />
-        </div>
+      {allArticles != null ? (
+        allArticles.length ? (
+          <div>
+            <ArticleBox articles={allArticles} />
+            <Pagination elements={paginationDetails} />
+          </div>
+        ) : (
+          <h1 style={{ marginTop: 180 }}>
+            <strong>No Article Found</strong>
+          </h1>
+        )
       ) : (
-        <h1 style={{ marginTop: 180 }}>
-          <strong>No Article Found</strong>
-        </h1>
+        <LongArticleSkeletonLoader counterArticles={10} />
       )}
     </div>
   );

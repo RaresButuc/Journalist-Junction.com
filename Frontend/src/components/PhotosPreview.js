@@ -17,7 +17,7 @@ export default function PhotosPreview({ articleId, articlePhotos }) {
       <img src={photos[0]} className="img-fluid mt-5" alt="Full Size" />
     ) : photos.length >= 2 ? (
       <>
-        <h1 className="article-title mt-5">Photos Gallery</h1>{" "}
+        <h1 className="article-title mt-5">Photos Gallery</h1>
         <div className="container-xl mt-3 p-3 d-flex justify-content-center">
           <a href={`/view-photos/${articleId}`}>
             <div className="row justify-content-center p-5 border-end border-top border-danger">

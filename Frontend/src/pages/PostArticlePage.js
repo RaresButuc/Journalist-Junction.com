@@ -10,6 +10,7 @@ import addArticleIcon from "../photos/addArticleIcon.png";
 import CurrentUserInfos from "../usefull/CurrentUserInfos";
 import LoaderCreateArticle from "../components/LoaderCreateArticle";
 import CardPostArticlePage from "../components/CardPostArticlePage";
+import PostArticleSkeletonLoader from "../components/PostArticleSkeletonLoader";
 
 export default function PostArticlePage() {
   const { id } = useParams();
@@ -24,14 +25,37 @@ export default function PostArticlePage() {
 
   useEffect(() => {
     const getAllArticles = async () => {
-      const responseOwned = await axios.get(`${DefaultURL}/article/user/${id}`);
-      setAllOwnedArticles(responseOwned.data);
+      const responseOwned = await axios.get(
+        `${DefaultURL}/article/user/owned/${id}`
+      );
+
+      const ownedArticlesAndPhotos = await Promise.all(
+        responseOwned.data.map(async (article) => {
+          const responseThumbnailArticlePhoto = await axios.get(
+            `${DefaultURL}/article/get-article-thumbnail/${article.article.id}`
+          );
+          const thumbnailImageUrl = `data:image/jpeg;base64,${responseThumbnailArticlePhoto.data.bytes}`;
+
+          return { thumbnail: thumbnailImageUrl, data: article.article };
+        })
+      );
+      setAllOwnedArticles(ownedArticlesAndPhotos);
 
       const responseContributed = await axios.get(
-        `${DefaultURL}/article/contributor/${id}`
+        `${DefaultURL}/article/user/contributor/${id}`
       );
-      console.log(responseContributed.data);
-      setAllContributedArticles(responseContributed.data);
+
+      const contributedArticlesAndPhotos = await Promise.all(
+        responseContributed.data.map(async (article) => {
+          const responseThumbnailArticlePhoto = await axios.get(
+            `${DefaultURL}/article/get-article-thumbnail/${article.article.id}`
+          );
+          const thumbnailImageUrl = `data:image/jpeg;base64,${responseThumbnailArticlePhoto.data.bytes}`;
+
+          return { thumbnail: thumbnailImageUrl, data: article.article };
+        })
+      );
+      setAllContributedArticles(contributedArticlesAndPhotos);
     };
 
     getAllArticles();
@@ -70,9 +94,16 @@ export default function PostArticlePage() {
               <h1 className="article-title d-flex justify-content-center">
                 Owned Articles
               </h1>
-              {allOwnedArticles?.map((e) => (
-                <CardPostArticlePage article={e} image={noImgIcon} />
-              ))}
+              {allOwnedArticles != null ? (
+                allOwnedArticles.map((e) => (
+                  <CardPostArticlePage
+                    article={e.data}
+                    image={e.thumbnail ? e.thumbnail : noImgIcon}
+                  />
+                ))
+              ) : (
+                <PostArticleSkeletonLoader />
+              )}
 
               <div
                 className="card border-danger col-xl-3 col-lg-4 col-sm-1 mx-auto mt-4"
@@ -107,14 +138,21 @@ export default function PostArticlePage() {
                 >
                   Contributed Articles
                 </h1>
-                {allContributedArticles?.length ? (
-                  allContributedArticles.map((i) => (
-                    <CardPostArticlePage article={i} image={noImgIcon} />
-                  ))
+                {allContributedArticles != null ? (
+                  allContributedArticles.length ? (
+                    allContributedArticles.map((i) => (
+                      <CardPostArticlePage
+                        article={i.data}
+                        image={i.thumbnail ? i.thumbnail : noImgIcon}
+                      />
+                    ))
+                  ) : (
+                    <h2 className="text-danger my-5">
+                      You Are Not A Contributor To Any Article Yet!
+                    </h2>
+                  )
                 ) : (
-                  <h2 className="text-danger my-5">
-                    You Are Not A Contributor To Any Article Yet!
-                  </h2>
+                  <PostArticleSkeletonLoader />
                 )}
               </>
             </div>

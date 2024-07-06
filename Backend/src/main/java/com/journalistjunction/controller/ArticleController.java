@@ -2,6 +2,7 @@ package com.journalistjunction.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.journalistjunction.DTO.ArticleAndThumbnailDTO;
 import com.journalistjunction.DTO.ArticlePhotoAndByteDTO;
 import com.journalistjunction.DTO.FileDTO;
 import com.journalistjunction.DTO.HomePageArticles;
@@ -32,7 +33,7 @@ public class ArticleController {
     }
 
     @GetMapping("/posted")
-    public Page<Article> getNewestPostedArticleByCategory(
+    public Page<ArticleAndThumbnailDTO> getNewestPostedArticleByCategory(
             @RequestParam(name = "currentpage") int currentPage,
             @RequestParam(name = "itemsperpage") int itemsPerPage,
             @RequestParam(name = "input", required = false) String input,
@@ -64,13 +65,18 @@ public class ArticleController {
 
     }
 
-    @GetMapping("/user/{id}")
-    public List<Article> getAllArticlesByOwner(@PathVariable("id") Long id) {
+    @GetMapping("/user/all/{id}")
+    public List<ArticleAndThumbnailDTO> getAllArticlesByUser(@PathVariable("id") Long id) {
+        return articleService.getOwnedAndContributedArticlesByUserId(id);
+    }
+
+    @GetMapping("/user/owned/{id}")
+    public List<ArticleAndThumbnailDTO> getOwnedArticlesByUser(@PathVariable("id") Long id) {
         return articleService.getArticlesByOwnerId(id);
     }
 
-    @GetMapping("/contributor/{id}")
-    public List<Article> getAllArticlesByContributor(@PathVariable("id") Long id) {
+    @GetMapping("/user/contributor/{id}")
+    public List<ArticleAndThumbnailDTO> getContributedArticlesByUser(@PathVariable("id") Long id) {
         return articleService.getArticlesByContributorId(id);
     }
 
