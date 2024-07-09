@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 @Getter
@@ -25,6 +26,9 @@ public class Comment {
     @ManyToOne
     private Comment parent;
 
+    @OneToMany(mappedBy = "parent")
+    private List<Comment> children;
+
     @ManyToOne
     @JoinColumn
     private Article article;
@@ -35,10 +39,16 @@ public class Comment {
     @ManyToMany
     private List<User> likers;
 
+    @Column(name = "likes_count")
     private Long likes;
+
+    @Column(name = "replies_count")
+    private Long repliesCount;
 
     private boolean edited;
 
     private LocalDateTime postTime;
+
+    private String stringPostTime;
 
 }
