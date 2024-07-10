@@ -15,6 +15,7 @@ export default function CommentSection({ articleId }) {
 
   const comment = useRef(null);
 
+  const [reload, setReload] = useState(false);
   const [comments, setComments] = useState(null);
   const [showAlert, setShowAlert] = useState(false);
   const [alertInfos, setAlertInfos] = useState(["", "", ""]);
@@ -31,11 +32,9 @@ export default function CommentSection({ articleId }) {
 
       getArticleComments();
     }
-  }, [articleId]);
+  }, [articleId, reload]);
 
   const postComment = async () => {
-    console.log(comment.current.value);
-
     try {
       if (!isAuthenticated()) {
         navigate("/login");
@@ -64,7 +63,7 @@ export default function CommentSection({ articleId }) {
 
       let newCommArray = comments;
       newCommArray.unshift(response.data);
-      console.log(newCommArray);
+
       setComments(newCommArray);
     } catch (error) {
       setShowAlert(true);
@@ -109,7 +108,9 @@ export default function CommentSection({ articleId }) {
 
       <div className="mt-5 mb-5">
         {comments?.length ? (
-          comments.map((e, index) => <CommentBox comment={e} key={index} />)
+          comments.map((e, index) => (
+            <CommentBox comment={e} key={index} reloadComments={setReload} />
+          ))
         ) : (
           <h2 className="text-danger">
             No Comments Were Posted On This Article Yet!

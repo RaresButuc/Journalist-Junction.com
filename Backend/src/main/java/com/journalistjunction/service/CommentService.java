@@ -55,9 +55,15 @@ public class CommentService {
 
         Comment comm = commentRepository.findById(commentId).orElseThrow(() -> new NoSuchElementException("The Comment You Are Trying To Edit To Doesn't Exist!"));
 
+        if (newComment.getContent().isEmpty() || newComment.getContent().isBlank()) {
+            throw new IllegalStateException("You Can't Post Empty Comments! Try Again!");
+        }
+
         if (comm.getUser().getId().equals(user.getId())) {
             comm.setEdited(true);
             comm.setContent(newComment.getContent());
+
+            commentRepository.save(comm);
         } else {
             throw new IllegalStateException("You Can't Edit This Comment!");
         }
@@ -121,7 +127,9 @@ public class CommentService {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
 
-        if (Objects.equals(commentRepository.findById(id).orElseThrow(() -> new NoSuchElementException("The Comment You Are Trying To Delete Doesn't Exists!")).getUser().getId(), user.getId())) {
+        Comment comm = commentRepository.findById(id).orElseThrow(() -> new NoSuchElementException("The Comment You Are Trying To Delete Doesn't Exists!"));
+        if (Objects.equals(comm.getUser().getId(), user.getId()) ||
+                Objects.equals(comm.getArticle().getOwner().getId(), user.getId())) {
             commentRepository.deleteById(id);
         } else {
             throw new IllegalStateException("You Can't Delete This Comment!");
