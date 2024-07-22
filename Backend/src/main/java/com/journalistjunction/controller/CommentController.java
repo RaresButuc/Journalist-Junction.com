@@ -30,8 +30,8 @@ public class CommentController {
     }
 
     @PostMapping("/child-comm/{parentCommId}")
-    public void postChildComment(@RequestBody Comment comment, @PathVariable Long parentCommId) {
-        commentService.addChildComment(comment, parentCommId);
+    public Comment postChildComment(@RequestBody Comment comment, @PathVariable Long parentCommId) {
+        return commentService.addChildComment(comment, parentCommId);
     }
 
     @PutMapping("/edit/{id}")

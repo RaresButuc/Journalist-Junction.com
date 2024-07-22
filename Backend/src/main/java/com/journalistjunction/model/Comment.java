@@ -1,10 +1,11 @@
 package com.journalistjunction.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 
 @Getter
@@ -24,14 +25,27 @@ public class Comment {
     private User user;
 
     @ManyToOne
+    @JsonBackReference("parent-reference")
     private Comment parent;
 
-    @OneToMany(mappedBy = "parent")
-    private List<Comment> children;
+    @ManyToOne
+    @JsonBackReference("main-reference")
+    private Comment mainComment;
+
+    @OneToMany(mappedBy = "parent", orphanRemoval = true)
+    @JsonManagedReference("parent-reference")
+    private List<Comment> parentChildren;
+
+    @OneToMany(mappedBy = "mainComment", orphanRemoval = true)
+    @JsonManagedReference("main-reference")
+    private List<Comment> mainChildren;
 
     @ManyToOne
     @JoinColumn
     private Article article;
+
+    @Embedded
+    private ParentCommData parentCommData;
 
     @Column(length = 560)
     private String content;
@@ -41,9 +55,6 @@ public class Comment {
 
     @Column(name = "likes_count")
     private Long likes;
-
-    @Column(name = "replies_count")
-    private Long repliesCount;
 
     private boolean edited;
 

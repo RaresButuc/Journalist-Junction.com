@@ -4,8 +4,8 @@ import { useIsAuthenticated, useAuthHeader } from "react-auth-kit";
 import { useNavigate } from "react-router-dom";
 
 import Alert from "./Alert";
-import CommentBox from "./CommentBox";
 import DefaultURL from "../usefull/DefaultURL";
+import FullCommentComponent from "./FullCommentComponent";
 
 export default function CommentSection({ articleId }) {
   const token = useAuthHeader();
@@ -91,8 +91,8 @@ export default function CommentSection({ articleId }) {
           <textarea
             id="text"
             placeholder="Add Your Comment Here.."
-            maxLength={360}
-            style={{ height: "260px" }}
+            maxLength={365}
+            style={{ height: "281px" }}
             ref={comment}
           />
           <br />
@@ -106,10 +106,14 @@ export default function CommentSection({ articleId }) {
         </div>
       </div>
 
-      <div className="mt-5 mb-5">
+      <div className="mt-5">
         {comments?.length ? (
           comments.map((e, index) => (
-            <CommentBox comment={e} key={index} reloadComments={setReload} />
+            <FullCommentComponent
+              comment={e}
+              key={index}
+              reloadComments={setReload}
+            />
           ))
         ) : (
           <h2 className="text-danger">
