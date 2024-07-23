@@ -44,6 +44,14 @@ public class ArticleController {
         return articleService.getAllPostedArticlesByInputAndCategory(input, category, country, language, currentPage, itemsPerPage);
     }
 
+    @GetMapping("/trending")
+    public List<ArticleAndThumbnailDTO> getTrendingArticlesyCategory(
+            @RequestParam(name = "category", required = false) String category,
+            @RequestParam(name = "time", required = false) Long time
+    ) {
+        return articleService.getTrendingArticlesByCategory(category, time);
+    }
+
     @GetMapping("/front-page-articles")
     public List<HomePageArticles> getNewestPostedArticleFrontPage() {
         return articleService.getPostedArticlesByCategoryFrontPage();
