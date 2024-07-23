@@ -19,19 +19,29 @@ public class CommentController {
         return commentService.getAllCommentsByArticle(id);
     }
 
+    @GetMapping("/is-liked/{id}")
+    public boolean isCommLikedByUser(@PathVariable Long id) {
+        return commentService.isCommLiked(id);
+    }
+
     @PostMapping("/new-comm")
-    public void postNewComment(@RequestBody Comment comment) {
-        commentService.addNewComment(comment);
+    public Comment postNewComment(@RequestBody Comment comment) {
+        return commentService.addNewComment(comment);
     }
 
     @PostMapping("/child-comm/{parentCommId}")
-    public void postChildComment(@RequestBody Comment comment, @PathVariable Long parentCommId) {
-        commentService.addChildComment(comment, parentCommId);
+    public Comment postChildComment(@RequestBody Comment comment, @PathVariable Long parentCommId) {
+        return commentService.addChildComment(comment, parentCommId);
     }
 
     @PutMapping("/edit/{id}")
     public void editComment(@RequestBody Comment comment, @PathVariable Long id) {
         commentService.editComment(comment, id);
+    }
+
+    @PutMapping("/action/{id}")
+    public void likeOrUnLikeComm(@PathVariable Long id) {
+        commentService.likeOrUnlikeComment(id);
     }
 
     @DeleteMapping("/{id}")

@@ -27,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -157,6 +158,29 @@ public class ArticleService {
                 .map(e -> new ArticleAndThumbnailDTO(e, getArticleThumbnail(e.getId()).getBytes())).toList();
 
         return new PageImpl<>(sublist, pageRequest, articles.size());
+    }
+
+    public List<ArticleAndThumbnailDTO> getTrendingArticlesByCategory(String category, Long time) {
+        List<ArticleAndThumbnailDTO> allArticles;
+
+        if (time == 1 || time == 7 || time == 30) {
+            if (category == null || category.equals("null")) {
+                allArticles = getAllArticles().stream()
+                        .filter(e -> e.getPostTime().until(LocalDateTime.now(), ChronoUnit.DAYS) < time + 1)
+                        .sorted((a, b) -> b.getViews().compareTo(a.getViews()))
+                        .map(e -> new ArticleAndThumbnailDTO(e, getArticleThumbnail(e.getId()).getBytes()))
+                        .toList();
+            } else {
+                allArticles = getArticlesByIsPublishedAndCategory(articleRepository.findAll(), category)
+                        .filter(e -> e.getPostTime().until(LocalDateTime.now(), ChronoUnit.DAYS) < time + 1)
+                        .sorted((a, b) -> b.getViews().compareTo(a.getViews()))
+                        .map(e -> new ArticleAndThumbnailDTO(e, getArticleThumbnail(e.getId()).getBytes()))
+                        .toList();
+            }
+        } else {
+            throw new IllegalStateException("An Error Has Occurred! Please Try Again!");
+        }
+        return allArticles;
     }
 
     public Stream<Article> getArticlesByIsPublishedAndCategory(List<Article> articles, String category) {

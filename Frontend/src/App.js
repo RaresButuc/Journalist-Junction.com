@@ -8,6 +8,7 @@ import ErrorPage from "./pages/ErrorPage";
 import LoginPage from "./pages/LoginPage";
 import ProfilePage from "./pages/ProfilePage";
 import RegisterPage from "./pages/RegisterPage";
+import TrendingPage from "./pages/TrendingPage";
 import PhotosGallery from "./pages/PhotosGallery";
 import EditArticlePage from "./pages/EditArticlePage";
 import PostArticlePage from "./pages/PostArticlePage";
@@ -94,6 +95,10 @@ function App() {
             <Route
               path="/article/search"
               element={<SearchArticlePage />}
+            ></Route>
+            <Route
+              path="/article/trending"
+              element={<TrendingPage />}
             ></Route>
           </Routes>
         </Router>

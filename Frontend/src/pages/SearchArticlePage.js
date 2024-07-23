@@ -121,7 +121,7 @@ export default function SearchArticlePage() {
               <button
                 key={index}
                 onClick={() =>
-                  ChangeLink("category", currentCategory === e ? null : e)
+                  ChangeLink(true, "category", currentCategory === e ? null : e)
                 }
                 className={`card border-${
                   currentCategory === e ? "success" : "danger"
@@ -188,7 +188,7 @@ export default function SearchArticlePage() {
                 src={closeIcon}
                 style={{ width: "22px" }}
                 onClick={() => {
-                  ChangeLink("country", null);
+                  ChangeLink(true, "country", null);
                   setCountryFilter(null);
                 }}
               />
@@ -208,7 +208,7 @@ export default function SearchArticlePage() {
                 src={closeIcon}
                 style={{ width: "22px" }}
                 onClick={() => {
-                  ChangeLink("language", null);
+                  ChangeLink(true, "language", null);
                   setLanguageFilter(null);
                 }}
               />

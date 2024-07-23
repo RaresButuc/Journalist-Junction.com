@@ -77,7 +77,7 @@ export default function ReadArticlePage() {
     <div className="container-xl">
       <div className="container-xl">
         <div className="row">
-          <div className="col d-flex justify-content-start me-3">
+          <div className="col container-xl d-flex justify-content-start me-3">
             {article?.categories.map((categ) => (
               <a
                 key={categ.id}
@@ -93,19 +93,20 @@ export default function ReadArticlePage() {
             ))}
           </div>
 
-          <h6 className="article-undertitle col d-flex justify-content-end me-3">
-            Posted at:
-            <b className="ms-2">{date}</b>
-          </h6>
-        </div>
-        <h6 className="article-undertitle col d-flex justify-content-end me-3">
-          Views:
-          <b className="ms-2">{article?.views}</b>
-        </h6>
+            <h6 className="article-undertitle col d-flex justify-content-end me-3">
+              Posted at:
+              <b className="ms-2">{date}</b>
+            </h6>
+          </div>
 
-        <h1 className="article-title mt-5">{article?.title}</h1>
-        <h4 className="article-undertitle col d-flex justify-content-center mt-5">
-          {article?.contributors.length ? "Contributors" : "Author"}:
+          <h6 className="article-undertitle col d-flex justify-content-end me-3">
+            Views:
+            <b className="ms-2">{article?.views}</b>
+          </h6>
+
+        <h1 className="article-title mt-4">{article?.title}</h1>
+        <h4 className="article-undertitle col d-flex justify-content-center mt-3">
+          {article?.contributors?.length ? "Contributors" : "Author"}:
           <a
             className="ms-2 text-danger"
             href={`/profile/${article?.owner.id}`}
@@ -117,13 +118,13 @@ export default function ReadArticlePage() {
           </a>
         </h4>
         <div className="row mb-4">
-          <h4 className="article-undertitle col d-flex justify-content-center ms-5 mt-5">
+          <h4 className="article-undertitle col d-flex justify-content-center ms-5 mt-3">
             Location:
             <b className="ms-2 text-danger">
               {FirstLetterUppercase(article?.location.country)}
             </b>
             <img
-              className="mx-2"
+              className="mx-2 img-fluid"
               data-toggle="tooltip"
               src={`https://flagsapi.com/${article?.location?.cca2}/flat/24.png`}
               alt={article?.location?.cca2}
@@ -131,14 +132,14 @@ export default function ReadArticlePage() {
             />
           </h4>
 
-          <h4 className="article-undertitle col d-flex justify-content-center me-5 mt-5">
+          <h4 className="article-undertitle col d-flex justify-content-center me-5 mt-3">
             Language:
             <b className="ms-2 text-danger">
               {FirstLetterUppercase(article?.language.languageNameEnglish)} /{" "}
               {article?.language.languageNameNative}
             </b>
             <img
-              className="mx-2"
+              className="mx-2 img-fluid"
               data-toggle="tooltip"
               src={`https://flagsapi.com/${article?.language?.cca2}/flat/24.png`}
               alt={article?.language?.cca2}
@@ -155,9 +156,11 @@ export default function ReadArticlePage() {
         src={thumbnail}
         className="img-fluid mb-5"
         style={{
+          width: "100%",
           maxWidth: "1150px",
         }}
       />
+
       <div
         className="h4 fw-light text-start"
         dangerouslySetInnerHTML={{ __html: article?.body }}

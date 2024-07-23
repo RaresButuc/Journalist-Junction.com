@@ -83,7 +83,7 @@ export default function Navbar() {
                 <a
                   className="nav-link fw-bold mx-2 mt-2 text-danger"
                   aria-current="page"
-                  href="/article/trending"
+                  href="/article/trending?time=1"
                 >
                   <b>Trending</b>
                 </a>
