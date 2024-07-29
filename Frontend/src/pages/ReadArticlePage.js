@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useAuthHeader, useIsAuthenticated } from "react-auth-kit";
 
 import DefaultURL from "../usefull/DefaultURL";
 import PhotosPreview from "../components/PhotosPreview";
@@ -11,6 +12,9 @@ import FirstLetterUppercase from "../usefull/FirstLetterUppercase";
 export default function ReadArticlePage() {
   const { id } = useParams();
   const navigate = useNavigate();
+
+  const token = useAuthHeader();
+  const isAuthenticated = useIsAuthenticated();
 
   const currentUser = CurrentUserInfos();
 
@@ -38,11 +42,20 @@ export default function ReadArticlePage() {
             );
             setDate(responseDate.data);
 
-            // Set Viewed
+            // Set Viewed and Preferences
             if (currentUser?.id !== responseArticle.data.owner.id) {
               await axios.put(
                 `${DefaultURL}/article/add-view/${responseArticle.data.id}`
               );
+              if (isAuthenticated()) {
+                const headers = { Authorization: token() };
+
+                await axios.put(
+                  `${DefaultURL}/user/update-preferences/${responseArticle.data.id}`,
+                  {},
+                  { headers }
+                );
+              }
             }
 
             // Get Article Thumbnail
@@ -71,7 +84,7 @@ export default function ReadArticlePage() {
     };
 
     fetchArticle();
-  }, [id, currentUser]);
+  }, [id]);
 
   return (
     <div className="container-xl">
@@ -93,16 +106,16 @@ export default function ReadArticlePage() {
             ))}
           </div>
 
-            <h6 className="article-undertitle col d-flex justify-content-end me-3">
-              Posted at:
-              <b className="ms-2">{date}</b>
-            </h6>
-          </div>
-
           <h6 className="article-undertitle col d-flex justify-content-end me-3">
-            Views:
-            <b className="ms-2">{article?.views}</b>
+            Posted at:
+            <b className="ms-2">{date}</b>
           </h6>
+        </div>
+
+        <h6 className="article-undertitle col d-flex justify-content-end me-3">
+          Views:
+          <b className="ms-2">{article?.views}</b>
+        </h6>
 
         <h1 className="article-title mt-4">{article?.title}</h1>
         <h4 className="article-undertitle col d-flex justify-content-center mt-3">

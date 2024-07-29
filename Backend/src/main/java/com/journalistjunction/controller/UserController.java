@@ -5,6 +5,7 @@ import com.journalistjunction.auth.AuthenticationRequest;
 import com.journalistjunction.auth.AuthenticationResponse;
 import com.journalistjunction.auth.AuthenticationService;
 import com.journalistjunction.auth.RegisterRequest;
+import com.journalistjunction.model.Preference;
 import com.journalistjunction.model.User;
 import com.journalistjunction.service.UserService;
 import lombok.AllArgsConstructor;
@@ -59,6 +60,11 @@ public class UserController {
     @GetMapping(value = "/get-background-photo/{id}", produces = MediaType.IMAGE_JPEG_VALUE)
     public byte[] getUserBackgroundPhoto(@PathVariable("id") Long id) {
         return userService.getUserBackgroundPhoto(id);
+    }
+
+    @GetMapping(value = "/preferences")
+    public List<Preference> getUserPreferences() {
+        return userService.getUserPreferences();
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
@@ -130,6 +136,11 @@ public class UserController {
         userService.setPassword(email, newPassword, uuid);
 
         return ResponseEntity.ok("Your Password Was Successfully Updated!");
+    }
+
+    @PutMapping(value = "/update-preferences/{id}")
+    public void updateUserPreferences(@PathVariable("id") Long id) {
+        userService.updateUserPreferences(id);
     }
 
     @DeleteMapping("/{id}")

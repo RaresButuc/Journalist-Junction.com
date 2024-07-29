@@ -94,6 +94,9 @@ public class User implements UserDetails {
     @ManyToMany
     private List<Comment> likedComments;
 
+    @OneToMany(mappedBy = "user", orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<Preference> preferences;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
