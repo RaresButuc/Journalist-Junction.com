@@ -5,6 +5,7 @@ import { useIsAuthenticated, useAuthHeader } from "react-auth-kit";
 
 import ErrorPage from "./ErrorPage";
 import Alert from "../components/Alert";
+import LoaderSaver from "../LoaderSaver";
 import DefaultURL from "../usefull/DefaultURL";
 import CurrentUserInfos from "../usefull/CurrentUserInfos";
 import NameInput from "../components/accountFormComponents/NameInput";
@@ -42,8 +43,16 @@ export default function EditProfilePage() {
   const [showAlert, setShowAlert] = useState(false);
   const [alertInfos, setAlertInfos] = useState(["", "", ""]);
 
+  const [showLoader, setShowLoader] = useState(false);
+  const [loaderMessage, setLoaderMessage] = useState(null);
+
   const onSubmit = async (values) => {
     try {
+      setShowLoader(true);
+      setLoaderMessage(
+        "Your New Account Informations Is Being Saved.."
+      );
+
       const headers = { Authorization: token() };
       if (!Number.isNaN(values.location.id)) {
         await axios.put(`${DefaultURL}/user/edit-user`, values, {
@@ -85,6 +94,8 @@ export default function EditProfilePage() {
           });
         }
 
+        setShowLoader(false);
+
         setShowAlert(true);
         setAlertInfos([
           "Congratulations!",
@@ -95,6 +106,8 @@ export default function EditProfilePage() {
           setShowAlert(false);
         }, 3000);
       } else {
+        setShowLoader(false);
+
         setShowAlert(true);
         setAlertInfos([
           "Be Careful!",
@@ -106,6 +119,8 @@ export default function EditProfilePage() {
         }, 3000);
       }
     } catch (err) {
+      setShowLoader(false);
+
       setShowAlert(true);
       setAlertInfos([
         "Be Careful!",
@@ -146,6 +161,8 @@ export default function EditProfilePage() {
           color={alertInfos[2]}
         />
       ) : null}
+
+      {showLoader && <LoaderSaver message={loaderMessage} />}
 
       <div className="container-xl">
         {currentUser ? (

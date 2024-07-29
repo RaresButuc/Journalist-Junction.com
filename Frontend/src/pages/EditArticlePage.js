@@ -5,6 +5,7 @@ import { useNavigate, useParams } from "react-router";
 
 import ErrorPage from "./ErrorPage";
 import Alert from "../components/Alert";
+import LoaderSaver from "../LoaderSaver";
 import closeIcon from "../photos/close.png";
 import DefaultURL from "../usefull/DefaultURL";
 import Modal from "../components/articleFormComponents/Modal";
@@ -27,6 +28,9 @@ export default function EditArticlePage() {
 
   const [showAlert, setShowAlert] = useState(false);
   const [alertInfos, setAlertInfos] = useState(["", "", ""]);
+
+  const [showLoader, setShowLoader] = useState(false);
+  const [loaderMessage, setLoaderMessage] = useState(null);
 
   const [currentArticle, setCurrentArticle] = useState(null);
 
@@ -231,8 +235,11 @@ export default function EditArticlePage() {
       formDataNewPhotos.append("fileDTOList", JSON.stringify(file));
     });
 
+    setShowLoader(true);
+
     try {
       if (buttonTarget === "Save") {
+        setLoaderMessage("Your Article Is Being Saved.");
         const putRequests = [];
 
         const isCurrentThumbnailDeleted =
@@ -371,6 +378,8 @@ export default function EditArticlePage() {
         Promise.all(putRequests).then(() => {
           setReloadPhotos(!reloadPhotos);
 
+          setShowLoader(false);
+
           setShowAlert(true);
           setAlertInfos([
             "Success!",
@@ -384,6 +393,9 @@ export default function EditArticlePage() {
 
         window.scrollTo(0, 0);
       } else if (buttonTarget === "Publish") {
+        setLoaderMessage(
+          "Your Article Is Being Published. Wait A Few Moments.."
+        );
         const putRequests = [];
 
         if (photosToBeDeleted.length) {
@@ -456,6 +468,8 @@ export default function EditArticlePage() {
             color: "danger",
           });
 
+          setShowLoader(false);
+
           setShowAlert(true);
           setAlertInfos(["Success!", responsePublish.data, "success"]);
 
@@ -466,6 +480,9 @@ export default function EditArticlePage() {
           }, 3000);
         });
       } else if (buttonTarget === "UnPublish") {
+        setLoaderMessage(
+          "Your Article Is Being Unpublished. Wait A Few Moments.."
+        );
         const putRequests = [];
 
         const editArticleInfo = await axios.put(
@@ -494,6 +511,8 @@ export default function EditArticlePage() {
             value: "Publish",
             color: "success",
           });
+
+          setShowLoader(false);
 
           setShowAlert(true);
           setAlertInfos(["Success!", response.data, "success"]);
@@ -551,6 +570,8 @@ export default function EditArticlePage() {
           color={alertInfos[2]}
         />
       )}
+
+      {showLoader && <LoaderSaver message={loaderMessage} />}
 
       {currentArticle && (isContributor || isOwner) ? (
         <div className="row">
