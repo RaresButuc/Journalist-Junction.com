@@ -1,8 +1,10 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
+import { useMediaQuery } from "react-responsive";
 
 import DefaultURL from "../usefull/DefaultURL";
 import ArticleBox from "../components/ArticleBox";
+import NewsMainPage from "../components/NewsMainPage";
 import LongArticleSkeletonLoader from "../components/LongArticleSkeletonLoader";
 
 export default function HomePage() {
@@ -66,18 +68,16 @@ export default function HomePage() {
         ))}
       </div>
       <div
-        className="col-xl-4 col-sm-12 border border-danger mt-5"
-        style={{ maxHeight: "550px" }}
+        className={`col-xl-4 col-sm-12 mt-5 ${
+          !useMediaQuery({ query: "(max-width: 1200px)" })
+            ? "border-danger border-start"
+            : null
+        }`}
       >
-        <div className="position-relative top-50 start-50 translate-middle">
-          <h3>Future Plan:</h3>
-          <strong>
-            - Mini Weather App Depending on Anonymous User Location or Logged
-            User
-            <br />- Country Info - Short News Depending on Location/ Global News
-            Written Inside Mini-Cards
-          </strong>
-        </div>
+        <h1 className="article-title mb-3" style={{ fontSize: "3.5vw" }}>
+          <u>Recommanded News</u>
+        </h1>
+        <NewsMainPage />
       </div>
     </div>
   );

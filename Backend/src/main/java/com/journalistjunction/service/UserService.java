@@ -1,13 +1,12 @@
 package com.journalistjunction.service;
 
+import com.journalistjunction.model.Article;
 import com.journalistjunction.model.ChangePasswordLink;
 import com.journalistjunction.model.PhotosClasses.UserBackgroundPhoto;
+import com.journalistjunction.model.Preference;
 import com.journalistjunction.model.User;
 import com.journalistjunction.model.PhotosClasses.UserProfilePhoto;
-import com.journalistjunction.repository.ChangePasswordLinkRepository;
-import com.journalistjunction.repository.UserBackgroundPhotoRepository;
-import com.journalistjunction.repository.UserProfilePhotoRepository;
-import com.journalistjunction.repository.UserRepository;
+import com.journalistjunction.repository.*;
 import com.journalistjunction.s3.S3Buckets;
 import com.journalistjunction.s3.S3Service;
 import jakarta.mail.MessagingException;
@@ -16,12 +15,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -32,7 +30,9 @@ public class UserService {
     private final S3Buckets s3Buckets;
 
     private final MailService mailService;
+    private final ArticleService articleService;
     private final PasswordEncoder passwordEncoder;
+    private final PreferencesRepository preferencesRepository;
     private final ChangePasswordLinkService changePasswordLinkService;
     private final UserProfilePhotoRepository userProfilePhotoRepository;
     private final ChangePasswordLinkRepository changePasswordLinkRepository;
@@ -78,6 +78,37 @@ public class UserService {
         }
 
         return s3Service.getObject(s3Buckets.getCustomer(), "%s/%s_Background_Image".formatted(userId, userId));
+    }
+
+    public List<Preference> getUserPreferences() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        User user = (User) auth.getPrincipal();
+
+        return user.getPreferences().stream().sorted((a, b) -> b.getCategoryReadCounter().compareTo(a.getCategoryReadCounter())).toList();
+    }
+
+    public void updateUserPreferences(Long articleId) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        User user = (User) auth.getPrincipal();
+        Article article = articleService.getArticleById(articleId);
+
+        article.getCategories().forEach(e -> {
+            boolean isPreferenceAlready = user.getPreferences().stream().anyMatch(i -> i.getCategory().equals(e.getNameOfCategory()));
+            if (isPreferenceAlready) {
+                Optional<Preference> preferenceOptional = user.getPreferences().stream().filter(f -> f.getCategory().equals(e.getNameOfCategory())).findFirst();
+
+                if (preferenceOptional.isPresent()) {
+                    Preference preference = preferenceOptional.get();
+                    preference.setCategoryReadCounter(preference.getCategoryReadCounter() + 1);
+                    preferencesRepository.save(preference);
+                }
+            } else {
+                preferencesRepository.save(new Preference(0L, e.getNameOfCategory(), 1L, user));
+            }
+        });
+        userRepository.save(user);
     }
 
     public void forgottenPassword(String email) {

@@ -133,7 +133,7 @@ export default function TrendingPage() {
             </a>
           </div>
 
-          <h2 className="mt-3 article-title" style={{ fontSize: "50px" }}>
+          <h2 className="mt-4 article-title" style={{ fontSize: "50px" }}>
             Filter By Posting Time:
           </h2>
 
@@ -146,6 +146,9 @@ export default function TrendingPage() {
                     currentTime == e.value ? "info" : "success"
                   } border-${currentTime == e.value ? "4" : "1"}`}
                   onClick={() => ChangeLink(false, "time", e.value)}
+                  style={{
+                    backgroundColor: currentTime == e.value ? "#ffffff" : null,
+                  }}
                 >
                   <b>{e.btn}</b>
                 </button>
