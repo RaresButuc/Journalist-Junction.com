@@ -21,6 +21,12 @@ import AcceptContribInvitePage from "./pages/AcceptContribInvitePage";
 import ForgetPasswordFormRequestPage from "./pages/ForgetPasswordFormRequestPage";
 
 import "./App.css";
+import "./CSS/ArticleTitle&Undertitle.css";
+import "./CSS/CommentSection.css";
+import "./CSS/ErrorPageLoader.css";
+import "./CSS/LoaderCoffee.css";
+import "./CSS/LoaderSaver.css";
+import "./CSS/ModalContainer.css";
 
 function App() {
   return (
@@ -96,10 +102,7 @@ function App() {
               path="/article/search"
               element={<SearchArticlePage />}
             ></Route>
-            <Route
-              path="/article/trending"
-              element={<TrendingPage />}
-            ></Route>
+            <Route path="/article/trending" element={<TrendingPage />}></Route>
           </Routes>
         </Router>
       </div>
