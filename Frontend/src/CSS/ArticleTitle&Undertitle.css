@@ -1,0 +1,20 @@
+/* Title Article Style */
+
+.article-title {
+    font-family: "Playfair Display", serif;
+    font-weight: 900;
+    font-size: 4.5vw;
+    text-transform: uppercase;
+    display: inline-block;
+    margin-bottom: 20px;
+  }
+  
+  /* UnderTitle Style */
+  
+  .article-undertitle {
+    font-weight: 400;
+    font-style: italic;
+    font-size: 23px;
+    box-sizing: border-box;
+    padding: 10px 0 10px 0;
+  }
