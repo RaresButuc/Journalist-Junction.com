@@ -73,7 +73,7 @@ public class CommentService {
         }
 
         if (comm.getUser().getId().equals(user.getId())) {
-            if (!comm.isEdited() && comm.getContent().equals(newComment.getContent())) {
+            if (!comm.isEdited() && !comm.getContent().equals(newComment.getContent())) {
                 comm.setEdited(true);
             }
             comm.setContent(newComment.getContent());

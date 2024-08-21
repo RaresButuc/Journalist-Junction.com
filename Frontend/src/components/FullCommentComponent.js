@@ -39,6 +39,7 @@ export default function FullCommentComponent({ comment, reloadComments }) {
                       <CommentBox
                         comment={e}
                         showRepliesButton={false}
+                        mainCommId={comment?.id}
                         reloadComments={reloadComments}
                         replyPost={replyPost}
                       />

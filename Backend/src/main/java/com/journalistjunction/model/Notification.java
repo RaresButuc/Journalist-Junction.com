@@ -1,5 +1,6 @@
 package com.journalistjunction.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,11 +20,15 @@ public class Notification {
 
     @ManyToOne
     @JoinColumn
+    @JsonIgnore
     private User to;
 
     @ManyToOne
     @JoinColumn
+    @JsonIgnore
     private User from;
+
+    private Long articleId;
 
     private String message;
 

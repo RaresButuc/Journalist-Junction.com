@@ -84,7 +84,7 @@ public class MailService {
                 Wishing you success in your upcoming projects!
 
                 Best wishes,
-                The Journalist Junction Team
+                The Journalist-Junction Team
                 """;
         String formattedMessage = String.format(message, username, title);
 
@@ -127,7 +127,33 @@ public class MailService {
                 <h4 style={{color:'red'}}>*THE INVITE IS AVAILABLE FOR 48 HOURS. ONCE ACCEPTED OR REJECTED IT BECOMES UNAVAILABLE*</h4>                
                 <a href="http://localhost:3000/contribution-invite/%s" target="_blank"> Click Here To ACCEPT THE INVITE </a>
                 </div>
-                """.formatted(fromId,fromUsername, uuid),true);
+                """.formatted(fromId, fromUsername, uuid), true);
+        mailSender.send(mimeMessage);
+    }
+
+    public void sendPostNotification(String toEmail, Long articleId, String fromUsername, String toUsername) throws MessagingException {
+        MimeMessage mimeMessage = mailSender.createMimeMessage();
+        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
+        mimeMessageHelper.setTo(toEmail);
+        mimeMessageHelper.setSubject("Hurry up! %s Just Posted A New Article!".formatted(fromUsername));
+        mimeMessageHelper.setText("""
+                Hello %s,
+                                                                                                                                   
+                 We have some exciting news for you! 📰
+                 %s has just published a new article on our platform, and we think you'll find it interesting.
+                                
+                <h4><b>Don’t miss out on this opportunity to check it out! </b>📚</h4>                
+                <a href="http://localhost:3000/article/read/%s" target="_blank"> Read it now by following THIS LINK </a>
+                <br />
+                We hope you find the article both valuable and engaging!
+                <br />
+                <br />         
+                Best regards,
+                <br />
+                The Journalist-Junction Team
+                </div>
+                """.formatted(toUsername, fromUsername, articleId), true);
+
         mailSender.send(mimeMessage);
     }
 }

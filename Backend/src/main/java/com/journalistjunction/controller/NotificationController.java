@@ -14,14 +14,19 @@ public class NotificationController {
 
     private final NotificationService notificationService;
 
-    @GetMapping
-    public List<Notification> getAllNotifications() {
-        return notificationService.getAllNotifications();
+    @GetMapping(value = "/user")
+    public List<Notification> getAllNotificationsByUser() {
+        return notificationService.getAllNotificationsByUser();
     }
 
-    @PostMapping
-    public void postNewNotification(@RequestBody Notification notification) {
-        notificationService.addNotification(notification);
+    @GetMapping(value = "/seen-counter")
+    public Long getUnreadNotificationsCounter() {
+        return notificationService.getUnreadNotificationsCounter();
+    }
+
+    @PutMapping(value = "/set-seen/{id}")
+    public void setNotificationsAsSeen(@PathVariable("id") Long id) {
+        notificationService.setNotificationSeen(id);
     }
 
     @DeleteMapping("/{id}")

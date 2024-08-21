@@ -9,6 +9,7 @@ import com.journalistjunction.DTO.HomePageArticles;
 import com.journalistjunction.model.Article;
 import com.journalistjunction.model.PhotosClasses.ArticlePhoto;
 import com.journalistjunction.service.ArticleService;
+import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -120,7 +121,7 @@ public class ArticleController {
     }
 
     @PostMapping
-    public Article createNewArticle(@RequestBody Article article) {
+    public Article createNewArticle(@RequestBody Article article) throws MessagingException {
         return articleService.createArticle(article);
     }
 
@@ -130,7 +131,7 @@ public class ArticleController {
     }
 
     @PutMapping("/{id}/{decision}")
-    public ResponseEntity<String> publicOrNonPublicArticle(@PathVariable("id") Long id, @PathVariable("decision") String decision, @RequestBody Article currentVersion) {
+    public ResponseEntity<String> publicOrNonPublicArticle(@PathVariable("id") Long id, @PathVariable("decision") String decision, @RequestBody Article currentVersion) throws MessagingException {
         articleService.publishOrUnPublishArticle(id, decision, currentVersion);
 
         String message = decision.equals("true") ?
