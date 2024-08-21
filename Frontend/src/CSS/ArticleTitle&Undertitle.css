@@ -8,6 +8,24 @@
     display: inline-block;
     margin-bottom: 20px;
   }
+
+  @media (max-width: 768px) {
+    .article-title {
+      font-size: 7.5vw;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .article-title {
+      font-size: 7.5vw;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .article-title {
+      font-size: 10vw;
+    }
+  }
   
   /* UnderTitle Style */
   
@@ -18,3 +36,42 @@
     box-sizing: border-box;
     padding: 10px 0 10px 0;
   }
+
+  @media (max-width: 768px) {
+    .article-undertitle {
+      font-size: 3vw;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .article-undertitle {
+      font-size: 3.5vw;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .article-undertitle {
+      font-size: 4vw;
+    }
+  }
+
+  /* Flag Icons */
+
+  /* .img-flag {
+    max-width: 100%;
+    height: auto;
+  } */
+  
+  /* @media (max-width: 770px) {
+    .img-flag {
+      width: 30px;
+      height: 30px;
+    }
+  }
+  
+  @media (max-width: 360px) {
+    .img-flag {
+      width: 30px;
+      height: 30px;
+    }
+  } */

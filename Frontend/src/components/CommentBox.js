@@ -337,9 +337,9 @@ export default function CommentBox({
                       @{comment.parentCommData.name}
                     </a>
                   )}{" "}
-                  {comment?.content}{" "}
-                  <b>{comment?.edited ? "(edited)" : null}</b>
+                  {comment?.content}
                 </p>
+                <b>{comment?.edited ? "(edited)" : null}</b>
               </>
             )}
 
