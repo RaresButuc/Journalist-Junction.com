@@ -95,13 +95,13 @@ export default function ReadArticlePage() {
               <a
                 key={categ.id}
                 href={`/news/category/${categ.nameOfCategory}`}
-                className="btn btn-outline-success btn-sm ms-2 my-2"
+                className="btn btn-outline-success btn-lg ms-2 my-2 category-btn"
                 style={{
                   borderRadius: 10,
                   fontSize: 20,
                 }}
               >
-                {FirstLetterUppercase(categ.nameOfCategory)}
+                <b> {FirstLetterUppercase(categ.nameOfCategory)}</b>
               </a>
             ))}
           </div>

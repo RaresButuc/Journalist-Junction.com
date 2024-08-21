@@ -80,3 +80,9 @@ body {
   font-size: 12px;
   font-weight: bold;
 }
+
+/* Categories Button Fixed */
+.category-btn {
+  height: 50px; /* Adjust as needed */
+  white-space: nowrap;
+}

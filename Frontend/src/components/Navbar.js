@@ -224,7 +224,7 @@ export default function Navbar() {
                           />
                           {notifCounter > 0 ? (
                             <p className="notification-badge">
-                              <b>{notifCounter}</b>
+                              <b>{notifCounter > 100 ? "99+" : notifCounter}</b>
                             </p>
                           ) : null}
                         </button>
@@ -233,8 +233,9 @@ export default function Navbar() {
                           className="dropdown-menu dropdown-menu-end border border-danger"
                           style={{
                             overflowY: "auto",
+                            overflowX: "hidden",
                             maxHeight: "170px",
-                            // width: "auto",
+                            maxWidth: "650px",
                           }}
                         >
                           {scrollDownNotifications?.length ? (
