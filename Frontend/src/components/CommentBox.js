@@ -15,6 +15,7 @@ import defaultProfileImage from "../photos/default-profile-image.png";
 
 export default function CommentBox({
   comment,
+  mainCommId,
   isMainComm,
   showReplies,
   reloadComments,
@@ -150,6 +151,7 @@ export default function CommentBox({
 
       setEditMode(false);
       comment.content = editCommentContent.current.value;
+      comment.edited = true;
     } else {
       navigate("/login");
     }
@@ -163,7 +165,7 @@ export default function CommentBox({
 
       const headers = { Authorization: token() };
 
-      const comm = await axios.post(
+      await axios.post(
         `${DefaultURL}/comment/child-comm/${comment?.id}`,
         {
           article: { id: comment?.article?.id },
@@ -198,7 +200,7 @@ export default function CommentBox({
       }, 3000);
     }
   };
-
+  console.log(comment);
   return (
     <>
       {showAlert ? (
@@ -326,14 +328,15 @@ export default function CommentBox({
             ) : (
               <>
                 <p className="card-text">
-                  {comment?.parentCommData ? (
+                  {mainCommId ===
+                  comment?.parentCommData?.parent_data_id ? null : (
                     <a
                       href={`/profile/${comment.parentCommData.parent_data_id}`}
                       style={{ color: "red" }}
                     >
                       @{comment.parentCommData.name}
                     </a>
-                  ) : null}{" "}
+                  )}{" "}
                   {comment?.content}
                 </p>
                 <b>{comment?.edited ? "(edited)" : null}</b>

@@ -82,8 +82,7 @@ public class User implements UserDetails {
     @OneToMany
     private List<User> subscribedTo;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "to")
+    @OneToMany(mappedBy = "to", fetch = FetchType.EAGER)
     private List<Notification> notifications;
 
     @JsonIgnore

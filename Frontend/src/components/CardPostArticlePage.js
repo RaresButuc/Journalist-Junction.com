@@ -11,9 +11,9 @@ export default function CardPostArticlePage({ article, image }) {
         <img
           src={image}
           style={{
-            padding: "20px",
+            padding: "15px",
             width: "100%",
-            height: "200px",
+            height: "190px",
             borderRadius:"10"
           }}
         />

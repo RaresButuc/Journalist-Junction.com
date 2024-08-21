@@ -95,13 +95,13 @@ export default function ReadArticlePage() {
               <a
                 key={categ.id}
                 href={`/news/category/${categ.nameOfCategory}`}
-                className="btn btn-outline-success btn-sm ms-2 my-2"
+                className="btn btn-outline-success btn-lg ms-2 my-2 category-btn"
                 style={{
                   borderRadius: 10,
                   fontSize: 20,
                 }}
               >
-                {FirstLetterUppercase(categ.nameOfCategory)}
+                <b> {FirstLetterUppercase(categ.nameOfCategory)}</b>
               </a>
             ))}
           </div>
@@ -131,34 +131,38 @@ export default function ReadArticlePage() {
           </a>
         </h4>
         <div className="row mb-4">
-          <h4 className="article-undertitle col d-flex justify-content-center ms-5 mt-3">
-            Location:
-            <b className="ms-2 text-danger">
-              {FirstLetterUppercase(article?.location.country)}
-            </b>
-            <img
-              className="mx-2 img-fluid"
-              data-toggle="tooltip"
-              src={`https://flagsapi.com/${article?.location?.cca2}/flat/24.png`}
-              alt={article?.location?.cca2}
-              title={article?.location?.country}
-            />
-          </h4>
+          <div className="col-xl-6 col-md-12">
+            <h4 className="article-undertitle d-flex justify-content-center ms-5 mt-3">
+              Location:
+              <b className="ms-2 text-danger">
+                {FirstLetterUppercase(article?.location.country)}
+              </b>
+              <img
+                className="mx-2 img-fluid img-flag"
+                data-toggle="tooltip"
+                src={`https://flagsapi.com/${article?.location?.cca2}/flat/24.png`}
+                alt={article?.location?.cca2}
+                title={article?.location?.country}
+              />
+            </h4>
+          </div>
 
-          <h4 className="article-undertitle col d-flex justify-content-center me-5 mt-3">
-            Language:
-            <b className="ms-2 text-danger">
-              {FirstLetterUppercase(article?.language.languageNameEnglish)} /{" "}
-              {article?.language.languageNameNative}
-            </b>
-            <img
-              className="mx-2 img-fluid"
-              data-toggle="tooltip"
-              src={`https://flagsapi.com/${article?.language?.cca2}/flat/24.png`}
-              alt={article?.language?.cca2}
-              title={article?.language?.country}
-            />
-          </h4>
+          <div className="col-xl-6 col-md-12">
+            <h4 className="article-undertitle d-flex justify-content-center me-5 mt-3">
+              Language:
+              <b className="ms-2 text-danger">
+                {FirstLetterUppercase(article?.language.languageNameEnglish)} /{" "}
+                {article?.language.languageNameNative}
+              </b>
+              <img
+                className="mx-2 img-fluid"
+                data-toggle="tooltip"
+                src={`https://flagsapi.com/${article?.language?.cca2}/flat/24.png`}
+                alt={article?.language?.cca2}
+                title={article?.language?.country}
+              />
+            </h4>
+          </div>
         </div>
       </div>
       <hr className="border border-danger" />

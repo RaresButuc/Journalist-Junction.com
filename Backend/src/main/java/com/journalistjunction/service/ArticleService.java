@@ -8,6 +8,7 @@ import com.journalistjunction.model.*;
 import com.journalistjunction.model.PhotosClasses.ArticlePhoto;
 import com.journalistjunction.model.PhotosClasses.Photo;
 import com.journalistjunction.repository.ArticleRepository;
+import com.journalistjunction.repository.NotificationRepository;
 import com.journalistjunction.repository.PreferencesRepository;
 import com.journalistjunction.repository.UserRepository;
 import com.journalistjunction.s3.S3Buckets;
@@ -41,6 +42,7 @@ public class ArticleService {
     private final CategoryService categoryService;
     private final ArticleRepository articleRepository;
     private final ArticlePhotoService articlePhotoService;
+    private final NotificationRepository notificationRepository;
     private final ContributionInviteService contributionInviteService;
 
 
@@ -207,7 +209,7 @@ public class ArticleService {
     public List<ArticleAndThumbnailDTO> getArticlesByOwnerId(Long userId) {
         return articleRepository.findAllByOwnerIdOrderByPostTimeDesc(userId)
                 .stream()
-                .map(e -> new ArticleAndThumbnailDTO(e, getArticleThumbnail(e.getId()).getBytes()))
+                .map(e -> new ArticleAndThumbnailDTO(e, getArticleThumbnail(e.getId()) != null ? getArticleThumbnail(e.getId()).getBytes() : null))
                 .toList();
     }
 
@@ -358,7 +360,7 @@ public class ArticleService {
         destination.setLanguage(source.getLanguage());
     }
 
-    public void publishOrUnPublishArticle(Long articleId, String decision, Article articleUpdater) {
+    public void publishOrUnPublishArticle(Long articleId, String decision, Article articleUpdater) throws MessagingException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         User user = (User) auth.getPrincipal();
@@ -374,6 +376,17 @@ public class ArticleService {
 
                 copyArticleFields(articleUpdater, article);
                 article.setPublished(true);
+
+                if (!article.isRePublished()) {
+                    for (User subscriber : article.getOwner().getSubscribers()) {
+                        String message = "%s Just Posted A New Article: %s".formatted(article.getOwner().getName(), article.getTitle());
+
+                        notificationRepository.save(new Notification(0L, subscriber, article.getOwner(), articleId, message, LocalDateTime.now(), false));
+
+                        mailService.sendPostNotification(subscriber.getEmail(), article.getId(), article.getOwner().getName(), user.getName());
+                    }
+                }
+
                 if (!article.isRePublished()) {
                     mailService.articlePostedMail(article.getOwner().getEmail(), article.getOwner().getName(), article.getTitle());
                 }

@@ -34,7 +34,11 @@ export default function PostArticlePage() {
           const responseThumbnailArticlePhoto = await axios.get(
             `${DefaultURL}/article/get-article-thumbnail/${article.article.id}`
           );
-          const thumbnailImageUrl = `data:image/jpeg;base64,${responseThumbnailArticlePhoto.data.bytes}`;
+
+          let thumbnailImageUrl = null;
+          if (responseThumbnailArticlePhoto.data.bytes) {
+            thumbnailImageUrl = `data:image/jpeg;base64,${responseThumbnailArticlePhoto.data.bytes}`;
+          }
 
           return { thumbnail: thumbnailImageUrl, data: article.article };
         })
@@ -50,7 +54,10 @@ export default function PostArticlePage() {
           const responseThumbnailArticlePhoto = await axios.get(
             `${DefaultURL}/article/get-article-thumbnail/${article.article.id}`
           );
-          const thumbnailImageUrl = `data:image/jpeg;base64,${responseThumbnailArticlePhoto.data.bytes}`;
+          let thumbnailImageUrl = null;
+          if (responseThumbnailArticlePhoto.data.bytes) {
+            thumbnailImageUrl = `data:image/jpeg;base64,${responseThumbnailArticlePhoto.data.bytes}`;
+          }
 
           return { thumbnail: thumbnailImageUrl, data: article.article };
         })
