@@ -150,7 +150,7 @@ export default function EditArticlePage() {
 
     try {
       await axios.put(
-        `${DefaultURL}/article/${currentArticle.id}/${e.email}/0`,
+        `${DefaultURL}/article/${id}/${e.email}/0`,
         {},
         { headers }
       );
@@ -165,6 +165,25 @@ export default function EditArticlePage() {
       setTimeout(() => {
         setShowAlert(false);
       }, 3000);
+    } catch (err) {
+      setShowAlert(true);
+      setAlertInfos(["Error Occured!", err.response.data.message, "danger"]);
+      setTimeout(() => {
+        setShowAlert(false);
+      }, 3000);
+    }
+  };
+
+  const deleteArticle = async () => {
+    const headers = { Authorization: token() };
+
+    try {
+      const response = await axios.delete(
+        `${DefaultURL}/article/delete/${id}`,
+        { headers }
+      );
+
+      navigate(`/article/post/${response.data}`);
     } catch (err) {
       setShowAlert(true);
       setAlertInfos(["Error Occured!", err.response.data.message, "danger"]);
@@ -235,10 +254,9 @@ export default function EditArticlePage() {
       formDataNewPhotos.append("fileDTOList", JSON.stringify(file));
     });
 
-    setShowLoader(true);
-
     try {
       if (buttonTarget === "Save") {
+        setShowLoader(true);
         setLoaderMessage("Your Article Is Being Saved.");
         const putRequests = [];
 
@@ -393,6 +411,7 @@ export default function EditArticlePage() {
 
         window.scrollTo(0, 0);
       } else if (buttonTarget === "Publish") {
+        setShowLoader(true);
         setLoaderMessage(
           "Your Article Is Being Published. Wait A Few Moments.."
         );
@@ -480,6 +499,7 @@ export default function EditArticlePage() {
           }, 3000);
         });
       } else if (buttonTarget === "UnPublish") {
+        setShowLoader(true);
         setLoaderMessage(
           "Your Article Is Being Unpublished. Wait A Few Moments.."
         );
@@ -705,7 +725,7 @@ export default function EditArticlePage() {
                                   <Modal
                                     id={`modalDeleteContributor${e.id}`}
                                     title="Important!"
-                                    message={`Are you sure you want to delete ${e.name} from your list of contributors?`}
+                                    message={`Are You Sure You Want To Delete ${e.name} From Your List Of Contributors?`}
                                     onAccept={() => deleteContributor(e)}
                                   />
                                 </>
@@ -761,12 +781,28 @@ export default function EditArticlePage() {
                         <b>Save</b>
                       </button>
                       {isOwner ? (
-                        <button
-                          className={`btn btn-${publishButton.color} btn-lg col-xl-4 m-3`}
-                          type="submit"
-                        >
-                          <b>{publishButton.value}</b>
-                        </button>
+                        <>
+                          <button
+                            className={`btn btn-${publishButton.color} btn-lg col-xl-4 m-3`}
+                            type="submit"
+                          >
+                            <b>{publishButton.value}</b>
+                          </button>
+                          <button
+                            className="btn btn-outline-secondary btn-lg m-3"
+                            type="submit"
+                            data-bs-toggle="modal"
+                            data-bs-target={`#modalDeleteArticle${id}`}
+                          >
+                            <b>Delete This Article</b>
+                          </button>
+                          <Modal
+                            id={`modalDeleteArticle${id}`}
+                            title="Important!"
+                            message={`Are You Sure You Want To Permanently Delete This Article?`}
+                            onAccept={deleteArticle}
+                          />
+                        </>
                       ) : null}
                     </div>
                   </div>
@@ -775,7 +811,7 @@ export default function EditArticlePage() {
             </div>
           </form>
 
-          <div className="col-xl-6 col-md-12">
+          <div className="col-xl-6 col-md-12 mt-3">
             <h2 className="mb-3">Body *</h2>
             <BodyTextInput
               article={currentArticle}

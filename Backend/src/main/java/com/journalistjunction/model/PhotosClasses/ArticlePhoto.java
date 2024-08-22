@@ -36,4 +36,13 @@ public class ArticlePhoto extends Photo {
         this.isThumbnail = isThumbnail;
         this.article = article;
     }
+
+    @Override
+    public String toString() {
+        return "ArticlePhoto{" +
+                "id=" + id +
+                ", isThumbnail=" + isThumbnail +
+                ", article=" + article +
+                '}';
+    }
 }
