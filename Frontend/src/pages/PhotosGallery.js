@@ -61,14 +61,14 @@ export default function PhotosGallery() {
   }, [id]);
 
   return galleryPhotos ? (
-    <div className="ps-5 pe-5 ms-5 me-5">
-      <div className="mb-3">
+    <div className="container-xl">
+      <div className="mb-3 d-flex justify-content-center">
         <a
           className="d-flex justify-content-center"
           href={`/article/read/${id}`}
           style={{ textDecoration: "none" }}
         >
-          <img src={backButton} style={{ maxHeight: "40px" }} />
+          <img src={backButton} style={{ maxHeight: "35px" }} />
           <h3 className="ms-2 text-success">Back To Article</h3>
         </a>
       </div>

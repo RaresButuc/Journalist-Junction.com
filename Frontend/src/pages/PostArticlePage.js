@@ -101,17 +101,6 @@ export default function PostArticlePage() {
               <h1 className="article-title d-flex justify-content-center">
                 Owned Articles
               </h1>
-              {allOwnedArticles != null ? (
-                allOwnedArticles.map((e) => (
-                  <CardPostArticlePage
-                    article={e.data}
-                    image={e.thumbnail ? e.thumbnail : noImgIcon}
-                  />
-                ))
-              ) : (
-                <PostArticleSkeletonLoader />
-              )}
-
               <div
                 className="card border-danger col-xl-3 col-lg-4 col-sm-1 mx-auto mt-4"
                 style={{ width: "18rem" }}
@@ -137,7 +126,16 @@ export default function PostArticlePage() {
                   </div>
                 </button>
               </div>
-
+              {allOwnedArticles != null ? (
+                allOwnedArticles.map((e) => (
+                  <CardPostArticlePage
+                    article={e.data}
+                    image={e.thumbnail ? e.thumbnail : noImgIcon}
+                  />
+                ))
+              ) : (
+                <PostArticleSkeletonLoader />
+              )}
               <>
                 <h1
                   className="article-title d-flex justify-content-center"

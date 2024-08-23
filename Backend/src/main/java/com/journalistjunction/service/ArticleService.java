@@ -7,10 +7,7 @@ import com.journalistjunction.DTO.HomePageArticles;
 import com.journalistjunction.model.*;
 import com.journalistjunction.model.PhotosClasses.ArticlePhoto;
 import com.journalistjunction.model.PhotosClasses.Photo;
-import com.journalistjunction.repository.ArticleRepository;
-import com.journalistjunction.repository.NotificationRepository;
-import com.journalistjunction.repository.PreferencesRepository;
-import com.journalistjunction.repository.UserRepository;
+import com.journalistjunction.repository.*;
 import com.journalistjunction.s3.S3Buckets;
 import com.journalistjunction.s3.S3Service;
 import jakarta.mail.MessagingException;
@@ -43,6 +40,7 @@ public class ArticleService {
     private final ArticleRepository articleRepository;
     private final ArticlePhotoService articlePhotoService;
     private final NotificationRepository notificationRepository;
+    private final ArticlePhotoRepository articlePhotoRepository;
     private final ContributionInviteService contributionInviteService;
 
 
@@ -348,6 +346,9 @@ public class ArticleService {
         article.setPhotos(updatedPhotos);
 
         articleRepository.save(article);
+
+        articlePhotoRepository.deleteAll(photos);
+
         s3Service.deleteMultipleObjects(s3Buckets.getCustomer(), keys);
     }
 
@@ -532,7 +533,8 @@ public class ArticleService {
 
             if (article.getOwner() != contributor &&
                     article.getContributors().contains(contributor) &&
-                    Objects.equals(article.getOwner().getId(), Objects.requireNonNull(user).getId())) {
+                    Objects.equals(article.getOwner().getId(), Objects.requireNonNull(user).getId()) ||
+                    Objects.equals(contributor.getId(), Objects.requireNonNull(user).getId())) {
                 article.getContributors().remove(contributor);
             } else {
                 throw new IllegalStateException("User " + contributor.getName() + " cannot be deleted as a contributor!");
@@ -551,16 +553,6 @@ public class ArticleService {
         articleRepository.save(article);
     }
 
-    public void deleteArticleById(Long articleId) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
-        User user = (User) auth.getPrincipal();
-
-        if (Objects.equals(getArticleById(articleId).getOwner().getId(), user.getId())) {
-            articleRepository.deleteById(articleId);
-        }
-    }
-
     public String localDateTimeToString(Long articleId) {
         LocalDateTime articlePostTime = getArticleById(articleId).getPostTime();
 
@@ -569,4 +561,19 @@ public class ArticleService {
         return hourAndSeconds + " / " + dayAndMonth;
     }
 
+    public Long deleteArticleById(Long articleId) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        User user = (User) auth.getPrincipal();
+
+        if (Objects.equals(getArticleById(articleId).getOwner().getId(), user.getId())) {
+            deleteArticlePhotos(getArticleById(articleId).getPhotos(), articleId);
+
+            articleRepository.deleteById(articleId);
+
+            return user.getId();
+        } else {
+            throw new RuntimeException("An Error Occurred While Trying To Delete This Article! Please Try Again Later!");
+        }
+    }
 }

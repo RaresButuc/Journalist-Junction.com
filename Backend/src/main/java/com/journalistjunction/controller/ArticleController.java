@@ -189,9 +189,8 @@ public class ArticleController {
         return articleService.verifyContribInviteAndAdd(uuid);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteArticle(@PathVariable("id") Long id) {
-        articleService.deleteArticleById(id);
-        return ResponseEntity.ok("Article ID#" + id + "Was Successfully Deleted!");
+    @DeleteMapping("/delete/{id}")
+    public Long deleteArticle(@PathVariable("id") Long id) {
+        return articleService.deleteArticleById(id);
     }
 }

@@ -8,6 +8,7 @@ import Alert from "../components/Alert";
 import LoaderSaver from "../LoaderSaver";
 import closeIcon from "../photos/close.png";
 import DefaultURL from "../usefull/DefaultURL";
+import CurrentUserInfos from "../usefull/CurrentUserInfos";
 import Modal from "../components/articleFormComponents/Modal";
 import FirstLetterUppercase from "../usefull/FirstLetterUppercase";
 import TitleInput from "../components/articleFormComponents/TitleInput";
@@ -25,6 +26,8 @@ export default function EditArticlePage() {
   const photosRef = useRef([]);
 
   const navigate = useNavigate();
+
+  const currentUser = CurrentUserInfos();
 
   const [showAlert, setShowAlert] = useState(false);
   const [alertInfos, setAlertInfos] = useState(["", "", ""]);
@@ -150,21 +153,45 @@ export default function EditArticlePage() {
 
     try {
       await axios.put(
-        `${DefaultURL}/article/${currentArticle.id}/${e.email}/0`,
+        `${DefaultURL}/article/${id}/${e.email}/0`,
         {},
         { headers }
       );
-      setContributors(contributors.filter((i) => i.id != e.id));
 
+      if (isOwner) {
+        setContributors(contributors.filter((i) => i.id != e.id));
+
+        setShowAlert(true);
+        setAlertInfos([
+          "Success!",
+          `${e.name} Is No Longer A Contributor For This Article!`,
+          "success",
+        ]);
+        setTimeout(() => {
+          setShowAlert(false);
+        }, 3000);
+      } else {
+        navigate(`/article/post/${currentUser?.id}`);
+      }
+    } catch (err) {
       setShowAlert(true);
-      setAlertInfos([
-        "Success!",
-        `${e.name} Is No Longer A Contributor For This Article!`,
-        "success",
-      ]);
+      setAlertInfos(["Error Occured!", err.response.data.message, "danger"]);
       setTimeout(() => {
         setShowAlert(false);
       }, 3000);
+    }
+  };
+
+  const deleteArticle = async () => {
+    const headers = { Authorization: token() };
+
+    try {
+      const response = await axios.delete(
+        `${DefaultURL}/article/delete/${id}`,
+        { headers }
+      );
+
+      navigate(`/article/post/${response.data}`);
     } catch (err) {
       setShowAlert(true);
       setAlertInfos(["Error Occured!", err.response.data.message, "danger"]);
@@ -235,10 +262,9 @@ export default function EditArticlePage() {
       formDataNewPhotos.append("fileDTOList", JSON.stringify(file));
     });
 
-    setShowLoader(true);
-
     try {
       if (buttonTarget === "Save") {
+        setShowLoader(true);
         setLoaderMessage("Your Article Is Being Saved.");
         const putRequests = [];
 
@@ -393,6 +419,7 @@ export default function EditArticlePage() {
 
         window.scrollTo(0, 0);
       } else if (buttonTarget === "Publish") {
+        setShowLoader(true);
         setLoaderMessage(
           "Your Article Is Being Published. Wait A Few Moments.."
         );
@@ -480,6 +507,7 @@ export default function EditArticlePage() {
           }, 3000);
         });
       } else if (buttonTarget === "UnPublish") {
+        setShowLoader(true);
         setLoaderMessage(
           "Your Article Is Being Unpublished. Wait A Few Moments.."
         );
@@ -631,7 +659,7 @@ export default function EditArticlePage() {
                     <div className="form-outline mb-4">
                       <h2 className="mb-3">Categories *</h2>
                       <div className="mb-3">
-                        {categoriesCurrent.map((e) => (
+                        {categoriesCurrent?.map((e) => (
                           <div
                             className="border border-success border-3 rounded-pill ms-3 mb-2 d-inline-block"
                             key={e.id}
@@ -681,7 +709,7 @@ export default function EditArticlePage() {
                             No Contributors Added!
                           </h5>
                         ) : (
-                          contributors.map((e) => (
+                          contributors?.map((e) => (
                             <div
                               className="border border-warning border-3 rounded-pill ms-3 mb-2 d-inline-block"
                               key={e.id}
@@ -692,24 +720,29 @@ export default function EditArticlePage() {
                               >
                                 {e.name}
                               </a>
-                              {isOwner && (
-                                <>
-                                  <input
-                                    className="d-inline mt-1 me-2"
-                                    type="image"
-                                    src={closeIcon}
-                                    style={{ width: "22px" }}
-                                    data-bs-toggle="modal"
-                                    data-bs-target={`#modalDeleteContributor${e.id}`}
-                                  />
-                                  <Modal
-                                    id={`modalDeleteContributor${e.id}`}
-                                    title="Important!"
-                                    message={`Are you sure you want to delete ${e.name} from your list of contributors?`}
-                                    onAccept={() => deleteContributor(e)}
-                                  />
-                                </>
-                              )}
+                              {isOwner ||
+                                e.id == currentUser?.id ? (
+                                  <>
+                                    <input
+                                      className="d-inline mt-1 me-2"
+                                      type="image"
+                                      src={closeIcon}
+                                      style={{ width: "22px" }}
+                                      data-bs-toggle="modal"
+                                      data-bs-target={`#modalDeleteContributor${e.id}`}
+                                    />
+                                    <Modal
+                                      id={`modalDeleteContributor${e.id}`}
+                                      title="Important!"
+                                      message={
+                                        isOwner
+                                          ? `Are You Sure You Want To Delete ${e.name} From Your List Of Contributors?`
+                                          : "Are You Sure You Want To Leave This Project? You Will Be Able To Contribute To It Again Only If The Owner Will Invite You Again!"
+                                      }
+                                      onAccept={() => deleteContributor(e)}
+                                    />
+                                  </>
+                                ):null}
                             </div>
                           ))
                         )}
@@ -761,12 +794,28 @@ export default function EditArticlePage() {
                         <b>Save</b>
                       </button>
                       {isOwner ? (
-                        <button
-                          className={`btn btn-${publishButton.color} btn-lg col-xl-4 m-3`}
-                          type="submit"
-                        >
-                          <b>{publishButton.value}</b>
-                        </button>
+                        <>
+                          <button
+                            className={`btn btn-${publishButton.color} btn-lg col-xl-4 m-3`}
+                            type="submit"
+                          >
+                            <b>{publishButton.value}</b>
+                          </button>
+                          <button
+                            className="btn btn-outline-secondary btn-lg m-3"
+                            type="submit"
+                            data-bs-toggle="modal"
+                            data-bs-target={`#modalDeleteArticle${id}`}
+                          >
+                            <b>Delete This Article</b>
+                          </button>
+                          <Modal
+                            id={`modalDeleteArticle${id}`}
+                            title="Important!"
+                            message={`Are You Sure You Want To Permanently Delete This Article?`}
+                            onAccept={deleteArticle}
+                          />
+                        </>
                       ) : null}
                     </div>
                   </div>
@@ -775,7 +824,7 @@ export default function EditArticlePage() {
             </div>
           </form>
 
-          <div className="col-xl-6 col-md-12">
+          <div className="col-xl-6 col-md-12 mt-3">
             <h2 className="mb-3">Body *</h2>
             <BodyTextInput
               article={currentArticle}
