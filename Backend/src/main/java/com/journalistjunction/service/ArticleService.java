@@ -346,7 +346,7 @@ public class ArticleService {
         article.setPhotos(updatedPhotos);
 
         articleRepository.save(article);
-        
+
         articlePhotoRepository.deleteAll(photos);
 
         s3Service.deleteMultipleObjects(s3Buckets.getCustomer(), keys);
@@ -533,7 +533,8 @@ public class ArticleService {
 
             if (article.getOwner() != contributor &&
                     article.getContributors().contains(contributor) &&
-                    Objects.equals(article.getOwner().getId(), Objects.requireNonNull(user).getId())) {
+                    Objects.equals(article.getOwner().getId(), Objects.requireNonNull(user).getId()) ||
+                    Objects.equals(contributor.getId(), Objects.requireNonNull(user).getId())) {
                 article.getContributors().remove(contributor);
             } else {
                 throw new IllegalStateException("User " + contributor.getName() + " cannot be deleted as a contributor!");

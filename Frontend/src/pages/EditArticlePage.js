@@ -8,6 +8,7 @@ import Alert from "../components/Alert";
 import LoaderSaver from "../LoaderSaver";
 import closeIcon from "../photos/close.png";
 import DefaultURL from "../usefull/DefaultURL";
+import CurrentUserInfos from "../usefull/CurrentUserInfos";
 import Modal from "../components/articleFormComponents/Modal";
 import FirstLetterUppercase from "../usefull/FirstLetterUppercase";
 import TitleInput from "../components/articleFormComponents/TitleInput";
@@ -25,6 +26,8 @@ export default function EditArticlePage() {
   const photosRef = useRef([]);
 
   const navigate = useNavigate();
+
+  const currentUser = CurrentUserInfos();
 
   const [showAlert, setShowAlert] = useState(false);
   const [alertInfos, setAlertInfos] = useState(["", "", ""]);
@@ -154,17 +157,22 @@ export default function EditArticlePage() {
         {},
         { headers }
       );
-      setContributors(contributors.filter((i) => i.id != e.id));
 
-      setShowAlert(true);
-      setAlertInfos([
-        "Success!",
-        `${e.name} Is No Longer A Contributor For This Article!`,
-        "success",
-      ]);
-      setTimeout(() => {
-        setShowAlert(false);
-      }, 3000);
+      if (isOwner) {
+        setContributors(contributors.filter((i) => i.id != e.id));
+
+        setShowAlert(true);
+        setAlertInfos([
+          "Success!",
+          `${e.name} Is No Longer A Contributor For This Article!`,
+          "success",
+        ]);
+        setTimeout(() => {
+          setShowAlert(false);
+        }, 3000);
+      } else {
+        navigate(`/article/post/${currentUser?.id}`);
+      }
     } catch (err) {
       setShowAlert(true);
       setAlertInfos(["Error Occured!", err.response.data.message, "danger"]);
@@ -651,7 +659,7 @@ export default function EditArticlePage() {
                     <div className="form-outline mb-4">
                       <h2 className="mb-3">Categories *</h2>
                       <div className="mb-3">
-                        {categoriesCurrent.map((e) => (
+                        {categoriesCurrent?.map((e) => (
                           <div
                             className="border border-success border-3 rounded-pill ms-3 mb-2 d-inline-block"
                             key={e.id}
@@ -701,7 +709,7 @@ export default function EditArticlePage() {
                             No Contributors Added!
                           </h5>
                         ) : (
-                          contributors.map((e) => (
+                          contributors?.map((e) => (
                             <div
                               className="border border-warning border-3 rounded-pill ms-3 mb-2 d-inline-block"
                               key={e.id}
@@ -712,24 +720,29 @@ export default function EditArticlePage() {
                               >
                                 {e.name}
                               </a>
-                              {isOwner && (
-                                <>
-                                  <input
-                                    className="d-inline mt-1 me-2"
-                                    type="image"
-                                    src={closeIcon}
-                                    style={{ width: "22px" }}
-                                    data-bs-toggle="modal"
-                                    data-bs-target={`#modalDeleteContributor${e.id}`}
-                                  />
-                                  <Modal
-                                    id={`modalDeleteContributor${e.id}`}
-                                    title="Important!"
-                                    message={`Are You Sure You Want To Delete ${e.name} From Your List Of Contributors?`}
-                                    onAccept={() => deleteContributor(e)}
-                                  />
-                                </>
-                              )}
+                              {isOwner ||
+                                e.id == currentUser?.id ? (
+                                  <>
+                                    <input
+                                      className="d-inline mt-1 me-2"
+                                      type="image"
+                                      src={closeIcon}
+                                      style={{ width: "22px" }}
+                                      data-bs-toggle="modal"
+                                      data-bs-target={`#modalDeleteContributor${e.id}`}
+                                    />
+                                    <Modal
+                                      id={`modalDeleteContributor${e.id}`}
+                                      title="Important!"
+                                      message={
+                                        isOwner
+                                          ? `Are You Sure You Want To Delete ${e.name} From Your List Of Contributors?`
+                                          : "Are You Sure You Want To Leave This Project? You Will Be Able To Contribute To It Again Only If The Owner Will Invite You Again!"
+                                      }
+                                      onAccept={() => deleteContributor(e)}
+                                    />
+                                  </>
+                                ):null}
                             </div>
                           ))
                         )}
