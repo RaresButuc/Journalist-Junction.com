@@ -146,12 +146,18 @@ Throw this page you will be able to log into the website.
 
 Once logged into the website,as a user,you have acces to the following buttons:
 
-![13](https://github.com/RaresButuc/Journalist-Junction.com/assets/116391767/505535de-074d-4b71-b832-7e6eed1d5fed)
+![5](https://github.com/user-attachments/assets/a119bb03-ea97-4ac9-8598-71ee087490de)
 
-- `Profile` Page,where everyone can see informations about you. Also, you can subscribe to other channel, and obvously you canțt subscribe to your own one.(In the future, the users will be able to add social media platforms for a better connection with their audience);
+- `Profile` Page, where everyone can see informations about yourself. Also, you can subscribe to other channel, and obvously you can't subscribe to your own one.
 
-![14](https://github.com/RaresButuc/Journalist-Junction.com/assets/116391767/379235aa-64f6-485b-a6d3-c46dc496d207)
-![14 1](https://github.com/RaresButuc/Journalist-Junction.com/assets/116391767/e29d4c21-2869-4a3c-8a76-33c6967aebb9)
+![7](https://github.com/user-attachments/assets/9017e0fa-dc6a-47f4-939a-800b32b03cf0)
+(Your own channel)
+
+![6](https://github.com/user-attachments/assets/79a5295c-6f4c-4db3-a104-ce7cca756c3d)
+(Other people's channel)
+
+As you can see, you can see in the second image, in case you didn't choose any profile or background iimage, it will use some default ones until you will decide. Under the profile image are listed informations about yourself, contact data and social media links in case you've got any.
+And last, but not least, from this point it starts the channel's articles section, where are listed all the user's articles in chronological order (from the newest to the oldest), using an "Infinite Scroll" library that makes the scrolling more enjoyable and smoother by not loading all the data instantly on the page.
 
 - `Post New Article` Page is you general Control Panel where you can see every project you started. A button that stands out is the one on the right,that, once pressed, will initialize a new project and will redirect you to the edit page of that article;
 
