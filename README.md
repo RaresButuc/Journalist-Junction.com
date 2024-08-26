@@ -186,15 +186,28 @@ And last, but not least, from this point it starts the channel's articles sectio
 
 &nbsp;
 
-- `Post New Article` Page is you general Control Panel where you can see every project you started. A button that stands out is the one on the right,that, once pressed, will initialize a new project and will redirect you to the edit page of that article;
+- `Post New Article` Page is you general Control Panel where you can see every project you started or you are set as a contributor. A button that stands out is the one on the start,that, once pressed, will initialize a new project and will redirect you to the edit page of the new created article. Every card represents a link to the "Edit Page" of the specific article. This page is splitted into 2 parts:
 
-![15](https://github.com/RaresButuc/Journalist-Junction.com/assets/116391767/52cd627f-29d6-4bab-bd34-4961bda80bd3)
+ 1. **The Owned Articles**
+![12](https://github.com/user-attachments/assets/0e6cb7e3-8b2c-4b1f-8676-3ce1b18180ff)
 
 &nbsp;
 
-- `Edit` Page is an individual page for every article started,that represents the control panel of any of these entities. This offers us all the neccessary tools to add all kinds of informations in it,from simple text,to high quality photos. Also,you have to add informations like the language of the article,and the location where it was written from or the place it is about. Those kind of data will help the article to be easily filtered and found by people interested in the topic of it,and looking for a specific language or zone;
+2. **The Contributed Articles**
+![13](https://github.com/user-attachments/assets/64daddb3-4ae3-492f-be8d-0618c82bce77)
 
-![16](https://github.com/RaresButuc/Journalist-Junction.com/assets/116391767/35e37065-af4a-44eb-bc78-f7863889afcf)
+&nbsp;
+
+- `Edit` Page is an individual page for every article started,that represents the control panel of any of these entities. This offers us all the neccessary tools to add all kinds of informations in it,from simple text,to high quality photos. Also,you have to add informations like the language of the article,and the location where it was written from or the place it is about. Those kind of data will help the article to be easily filtered and found by people interested in the topic of it,and looking for a specific language or zone. An important aspect is that this page is different depanding on the status of the user(wheter is it the **owner** or a **contributor**)
+
+1. **Owner POV**
+   ![14](https://github.com/user-attachments/assets/ec9892a6-0b93-434a-9047-c4b9000f8944)
+
+&nbsp;
+
+2.  **Contributor POV**
+   ![15](https://github.com/user-attachments/assets/1451ed2c-cf9f-407a-b949-1ed24615ed0a)
+As you can see the differences between the two, are related with the possibility to delete and publish the article, and the input where the owner can write the email of the desired contributor, and invite him/her through an email message. Also, the owner has the possibility to delete any contributors; 
 
 &nbsp;
 
