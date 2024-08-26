@@ -85,6 +85,8 @@ Our future plans for "Journalis-Junction.com" platform include:
 
 - **Home**
 
+![1](https://github.com/user-attachments/assets/8014bce5-2b67-4eee-81cf-9c8ab38cea73)
+
 While scrolling down you can see the 5 newest articles on every category. You can read their titles, thumbnail descriptions, thumbnail image and see the categories they are included in.
 
 There are 3 posibilities regarding these sections:
@@ -103,7 +105,9 @@ c. If a category doesn't have any article included in it, this message could be 
 
 &nbsp;
 
-Also, one more aspect visible on the page is the news section. Here, when you are not logged, you can see, and access the specific random and popular articles in the world. The things are a little different when you are logged. When you read articles in specific categories, the website will save your preferences in the database and show you news tailored to the categories you're interested in, such as "Art", "Craft" etc. ;
+Also, one more aspect visible on the "Home Page" is the news section. Here, when you are not logged, you can see, and access the specific random and popular articles in the world. The things are a little different when you are logged. When you read articles in specific categories, the website will save your preferences in the database and show you news tailored to the categories you're interested in, such as "Art", "Craft" etc. ;
+
+![21](https://github.com/user-attachments/assets/85945001-7613-4212-b122-885d75f3058d)
 
 &nbsp;
 
