@@ -101,7 +101,9 @@ c. If a category doesn't have any article included in it, this message could be 
 
 ![5](https://github.com/RaresButuc/Journalist-Junction.com/assets/116391767/db0014ad-0abb-40e9-87e8-1bccc65a59a8)
 
-Also,in the near future there will be 2 more sections on the right of the screen: a mini-weather app and mini-cards below it containing recent news regarding the country the user is from;
+&nbsp;
+
+Also, one more aspect visible on the page is the news section. Here, when you are not logged, you can see, and access the specific random and popular articles in the world. The things are a little different when you are logged. When you read articles in specific categories, the website will save your preferences in the database and show you news tailored to the categories you're interested in, such as "Art", "Craft" etc. ;
 
 &nbsp;
 
@@ -117,7 +119,7 @@ This page displays all the articles with the most views, related to the period o
 
 This page will give you acces to all the public articles listed on the website;
 
-![2](https://github.com/user-attachments/assets/4d22731a-149f-4a93-83b8-5a5a39b0aa7d)
+![20](https://github.com/user-attachments/assets/c2c5bb43-0c4c-419c-bb8e-e5d9554c71fe)
 
 a. Every article can be filtered by a category mentioned above:
 
@@ -213,11 +215,14 @@ As you can see the differences between the two, are related with the possibility
 
 - `Read` Page is the final result after finishing and publishing an article. If an article is not officially published,it can't be seen, even if all the necessary fields were completed:
 
-![17](https://github.com/RaresButuc/Journalist-Junction.com/assets/116391767/77fc9be9-65b3-450e-b5ac-458af8fa9921)
-![18](https://github.com/RaresButuc/Journalist-Junction.com/assets/116391767/e61900b2-f69f-412b-8553-62fef3bc609a)
+![16](https://github.com/user-attachments/assets/ad02886b-844d-457c-bf91-b95e9b9fc320)
+![17](https://github.com/user-attachments/assets/b85d3148-0f78-4949-85ee-a6285b72bedd)
 
 If the article contains any other photos,besides the thumbnail one, they can be accessed at the end of the article,and be seen and reviewed at their natural size individually:
 
-![19](https://github.com/RaresButuc/Journalist-Junction.com/assets/116391767/ce702d49-298a-4acc-a2a8-290e9a0e93b9)
+![18](https://github.com/user-attachments/assets/513044e4-0f50-444f-b3b6-55f9e38f8aaf)
 ![20](https://github.com/RaresButuc/Journalist-Junction.com/assets/116391767/5a348ec1-1ab6-4372-bee2-aa684d79beb2)
 
+At the end of every article, you can add a comment(if you are logged), you can respond to other people's comments and even like them (all the comments are ordered depending on the number of likes). In case you wrote something wrong, you have the possibility to edit it immediately, or even delete the comment. It's important to mention that the ability to delete a comment is also available for the owner of the article in case he encounter something he doesn't like.
+
+![19](https://github.com/user-attachments/assets/2f137e70-358b-449b-b9cf-e112d2781846)
