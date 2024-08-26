@@ -111,7 +111,7 @@ This page displays all the articles with the most views, related to the period o
 
 - Search an Article
 
-Click the `Search an Article` navbar-button to acces the page where all the articles are listed;
+This page will give you acces to all the public articles listed on the website;
 
 ![2](https://github.com/user-attachments/assets/4d22731a-149f-4a93-83b8-5a5a39b0aa7d)
 
@@ -132,11 +132,15 @@ d. All articles available dependng on the sorting,filtering or keywords criteria
 ![3](https://github.com/user-attachments/assets/47316355-1b70-4ffa-bc77-47c8245414bb)
 ![10 1](https://github.com/RaresButuc/Journalist-Junction.com/assets/116391767/0d934a5c-7fc3-4353-ad12-1db78649232f)
 
-- Click the `Become a Member` navbar-button to register into the webisite(all fields must be completed).
+- Become a Member
+
+Throw this page you will be able to register into the website (all fields must be completed).
 
 ![11](https://github.com/RaresButuc/Journalist-Junction.com/assets/116391767/c1755a57-3851-40a4-bd56-93ad3c750b88)
 
-- Click the `Log In` navbar-button to log into the website.
+- Log in
+
+Throw this page you will be able to log into the website.
   
 ![12](https://github.com/RaresButuc/Journalist-Junction.com/assets/116391767/11f4d15f-2703-4f87-bd23-d4f0138e5961)
 
