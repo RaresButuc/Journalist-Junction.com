@@ -83,7 +83,7 @@ Our future plans for "Journalis-Junction.com" platform include:
 
 ## Pages
 
-- Home
+- **Home**
 
 While scrolling down you can see the 5 newest articles on every category. You can read their titles, thumbnail descriptions, thumbnail image and see the categories they are included in.
 
@@ -103,13 +103,17 @@ c. If a category doesn't have any article included in it, this message could be 
 
 Also,in the near future there will be 2 more sections on the right of the screen: a mini-weather app and mini-cards below it containing recent news regarding the country the user is from;
 
-- Trending
+&nbsp;
+
+- **Trending**
 
 This page displays all the articles with the most views, related to the period of time and the category the reader is interested in (In short, the articles that received the most interest in the last days/last week(s));
 
 ![4](https://github.com/user-attachments/assets/a1158f95-a959-4bf0-ba60-a237ff7fca4d)
 
-- Search an Article
+&nbsp;
+
+- **Search an Article**
 
 This page will give you acces to all the public articles listed on the website;
 
@@ -130,15 +134,32 @@ c. Articles can be find by title using the keyword mentioned in the input(in cas
 d. All articles available dependng on the sorting,filtering or keywords criterias will be shown on the screen. Also, you will be able to search throw all of them using the pagination buttons below:
 
 ![3](https://github.com/user-attachments/assets/47316355-1b70-4ffa-bc77-47c8245414bb)
+
 ![10 1](https://github.com/RaresButuc/Journalist-Junction.com/assets/116391767/0d934a5c-7fc3-4353-ad12-1db78649232f)
 
-- Become a Member
+&nbsp;
 
-Throw this page you will be able to register into the website (all fields must be completed).
+- **Become a Member**
 
-![11](https://github.com/RaresButuc/Journalist-Junction.com/assets/116391767/c1755a57-3851-40a4-bd56-93ad3c750b88)
+Throw this page you will be able to register into the website. All the 3 photos represent the entire form.
 
-- Log in
+![8](https://github.com/user-attachments/assets/99dd7ae6-cb67-4c3c-bb2e-0dc446ec975a)
+**The fields you see above represent the basic informations that should be completed by every user. They can't be "null", but can be modified;**
+
+&nbsp;
+
+![9](https://github.com/user-attachments/assets/b36ddf13-6199-40c8-be24-67a47a605f40)
+![11](https://github.com/user-attachments/assets/b0c21d80-a408-442c-83c9-5fc5357a2fcb)
+**These 2 inputs help the user upload the profile image and background image. The profile image maximum size is 1400 x 1400 px. The background image should at least has the size of 2100 x 423 px. After dropping it on the input, a crop window will open and will help you cut the image and select the favourite part to display on the profile page;**
+
+&nbsp;
+
+![10](https://github.com/user-attachments/assets/8ca89674-d4c5-492f-82de-6fc797fb9ddf)
+**These 3 inputs obviously aren't mandatory, but in case you will complete them, the informations will appear on the profile page next to the platform's icon;**
+
+&nbsp;
+
+- **Log in**
 
 Throw this page you will be able to log into the website.
   
@@ -148,24 +169,34 @@ Once logged into the website,as a user,you have acces to the following buttons:
 
 ![5](https://github.com/user-attachments/assets/a119bb03-ea97-4ac9-8598-71ee087490de)
 
+&nbsp;
+
 - `Profile` Page, where everyone can see informations about yourself. Also, you can subscribe to other channel, and obvously you can't subscribe to your own one.
 
 ![7](https://github.com/user-attachments/assets/9017e0fa-dc6a-47f4-939a-800b32b03cf0)
-(Your own channel)
+**(Your own channel)**
+
+&nbsp;
 
 ![6](https://github.com/user-attachments/assets/79a5295c-6f4c-4db3-a104-ce7cca756c3d)
-(Other people's channel)
+**(Other people's channel)**
 
-As you can see, you can see in the second image, in case you didn't choose any profile or background iimage, it will use some default ones until you will decide. Under the profile image are listed informations about yourself, contact data and social media links in case you've got any.
+As you can see, you can see in the second image, in case you didn't choose any profile or background image, it will use some default ones until you will decide. Under the profile image are listed informations about yourself, contact data and social media links in case you've got any.
 And last, but not least, from this point it starts the channel's articles section, where are listed all the user's articles in chronological order (from the newest to the oldest), using an "Infinite Scroll" library that makes the scrolling more enjoyable and smoother by not loading all the data instantly on the page.
+
+&nbsp;
 
 - `Post New Article` Page is you general Control Panel where you can see every project you started. A button that stands out is the one on the right,that, once pressed, will initialize a new project and will redirect you to the edit page of that article;
 
 ![15](https://github.com/RaresButuc/Journalist-Junction.com/assets/116391767/52cd627f-29d6-4bab-bd34-4961bda80bd3)
 
+&nbsp;
+
 - `Edit` Page is an individual page for every article started,that represents the control panel of any of these entities. This offers us all the neccessary tools to add all kinds of informations in it,from simple text,to high quality photos. Also,you have to add informations like the language of the article,and the location where it was written from or the place it is about. Those kind of data will help the article to be easily filtered and found by people interested in the topic of it,and looking for a specific language or zone;
 
 ![16](https://github.com/RaresButuc/Journalist-Junction.com/assets/116391767/35e37065-af4a-44eb-bc78-f7863889afcf)
+
+&nbsp;
 
 - `Read` Page is the final result after finishing and publishing an article. If an article is not officially published,it can't be seen, even if all the necessary fields were completed:
 
