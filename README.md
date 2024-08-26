@@ -3,7 +3,7 @@
 ## Project Description 
 "Journalist-Junction.com" is a vibrant and innovative space that encourages creativity and the free expression of ideas. Here, every individual has the opportunity to share captivating stories and unique opinions, covering a wide range of topics - from art and life to technology and crafts. With a diverse and enthusiastic community, Journalis Junction provides a friendly and inclusive environment where writing enthusiasts can develop their talents, share their experiences with the world, and be easily discovered by readers.
 
-![1](https://github.com/RaresButuc/Journalist-Junction.com/assets/116391767/e7b7a037-36c7-4fd1-bd65-4759ff1a28bc)
+![1](https://github.com/user-attachments/assets/8014bce5-2b67-4eee-81cf-9c8ab38cea73)
 
 ### Technologies Used
 
@@ -105,13 +105,15 @@ Also,in the near future there will be 2 more sections on the right of the screen
 
 - Trending
 
-This page will display the articles with the most views, related to the most recent period when they were posted (In short, the articles that received the most interest in the last days/last week);
+This page displays all the articles with the most views, related to the period of time and the category the reader is interested in (In short, the articles that received the most interest in the last days/last week(s));
+
+![4](https://github.com/user-attachments/assets/a1158f95-a959-4bf0-ba60-a237ff7fca4d)
 
 - Search an Article
 
 Click the `Search an Article` navbar-button to acces the page where all the articles are listed;
 
-![6](https://github.com/RaresButuc/Journalist-Junction.com/assets/116391767/59ce7f02-7c89-4080-9ba8-3099c7856f8c)
+![2](https://github.com/user-attachments/assets/4d22731a-149f-4a93-83b8-5a5a39b0aa7d)
 
 a. Every article can be filtered by a category mentioned above:
 
@@ -127,7 +129,7 @@ c. Articles can be find by title using the keyword mentioned in the input(in cas
 
 d. All articles available dependng on the sorting,filtering or keywords criterias will be shown on the screen. Also, you will be able to search throw all of them using the pagination buttons below:
 
-![10](https://github.com/RaresButuc/Journalist-Junction.com/assets/116391767/07e0d2ac-745e-4923-825d-ba8183029d2b)
+![3](https://github.com/user-attachments/assets/47316355-1b70-4ffa-bc77-47c8245414bb)
 ![10 1](https://github.com/RaresButuc/Journalist-Junction.com/assets/116391767/0d934a5c-7fc3-4353-ad12-1db78649232f)
 
 - Click the `Become a Member` navbar-button to register into the webisite(all fields must be completed).
