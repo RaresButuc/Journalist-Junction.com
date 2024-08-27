@@ -118,18 +118,45 @@ export default function ReadArticlePage() {
         </h6>
 
         <h1 className="article-title mt-4">{article?.title}</h1>
-        <h4 className="article-undertitle col d-flex justify-content-center mt-3">
-          {article?.contributors?.length ? "Contributors" : "Author"}:
-          <a
-            className="ms-2 text-danger"
-            href={`/profile/${article?.owner.id}`}
-            style={{ textDecoration: "none" }}
-          >
-            <b>
-              <u>{article?.owner.name}</u>
-            </b>
-          </a>
-        </h4>
+
+        <div className="row">
+          <div className={article?.contributors?.length ? `col-xl-6 col-md-12`: null}>
+            <h4 className="article-undertitle col d-flex justify-content-center mt-3">
+              Owner:
+              <a
+                className="ms-2 text-danger"
+                href={`/profile/${article?.owner.id}`}
+                style={{ textDecoration: "none" }}
+              >
+                <b>
+                  <u>{article?.owner.name}</u>
+                </b>
+              </a>
+            </h4>
+          </div>
+
+          {article?.contributors?.length ? (
+            <div className="col-xl-6 col-md-12">
+              <h4 className="article-undertitle col d-flex justify-content-center">
+                Contributors:
+                {article?.contributors?.map((e,index) => (
+                  <>
+                    <a
+                      className="ms-2 text-danger"
+                      href={`/profile/${e.id}`}
+                      style={{ textDecoration: "none" }}
+                    >
+                      <b>
+                        <u>{e.name}</u>
+                      </b>
+                    </a>
+                    {index == (article?.contributors?.length - 1) ? null : ", "}
+                  </>
+                ))}
+              </h4>
+            </div>
+          ) : null}
+        </div>
         <div className="row mb-4">
           <div className="col-xl-6 col-md-12">
             <h4 className="article-undertitle d-flex justify-content-center ms-5 mt-3">

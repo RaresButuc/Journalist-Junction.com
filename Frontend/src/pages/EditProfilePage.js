@@ -50,7 +50,7 @@ export default function EditProfilePage() {
     try {
       setShowLoader(true);
       setLoaderMessage(
-        "Your New Account Informations Is Being Saved.."
+        "Your New Account Informations Are Being Saved.."
       );
 
       const headers = { Authorization: token() };

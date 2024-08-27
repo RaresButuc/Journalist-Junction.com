@@ -85,7 +85,7 @@ export default function SearchArticlePage() {
 
         setPaginationDetails(dataArticles);
         setArticles(
-          dataArticles.content.length > 0 ? dataArticles.content : null
+          dataArticles.content.length > 0 ? dataArticles.content : []
         );
         setCurrentCategory(categoryParam);
 
@@ -178,7 +178,7 @@ export default function SearchArticlePage() {
         <div className="col-xl-4 mb-5">
           <CountrySelect ref={country} />
           {countryFilter !== null ? (
-            <div className="border border-success border-2 mt-3 d-inline-block">
+            <div className="border border-success rounded-pill border-2 mt-3 d-inline-block">
               <h5 className="d-inline me-2 ms-2">
                 {FirstLetterUppercase(countryFilter)}
               </h5>
@@ -198,7 +198,7 @@ export default function SearchArticlePage() {
         <div className="col-xl-4 mb-5">
           <LanguageSelect ref={language} />
           {languageFilter !== null ? (
-            <div className="border border-success border-2 mt-3 d-inline-block">
+            <div className="border border-success rounded-pill border-2 mt-3 d-inline-block">
               <h5 className="d-inline me-2 ms-2">
                 {FirstLetterUppercase(languageFilter)}
               </h5>
@@ -224,7 +224,7 @@ export default function SearchArticlePage() {
             <Pagination elements={paginationDetails} />
           </div>
         ) : (
-          <h1 style={{ marginTop: 180 }}>
+          <h1 style={{ marginTop: 180, marginBottom: 180 }}>
             <strong>No Article Found</strong>
           </h1>
         )

@@ -43,6 +43,7 @@ function CountrySelect({ article }, ref) {
       onChange={(e) =>
         ref
           ? ChangeLink(
+              true,
               "language",
               e.label.props.value.split(" ")[0].charAt(0).toLowerCase() +
                 e.label.props.value.split(" ")[0].slice(1)
@@ -54,7 +55,11 @@ function CountrySelect({ article }, ref) {
           article && article.language ? (
             <LanguageLocationOptionLabel
               cca2={article.language.cca2}
-              value={`${FirstLetterUppercase(article.language.languageNameEnglish)} (${FirstLetterUppercase(article.language.languageNameNative)})`}
+              value={`${FirstLetterUppercase(
+                article.language.languageNameEnglish
+              )} (${FirstLetterUppercase(
+                article.language.languageNameNative
+              )})`}
             />
           ) : (
             "Select The Language of The Article"

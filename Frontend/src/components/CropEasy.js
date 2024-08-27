@@ -38,6 +38,19 @@ export default function CropEasy({
   const [adjustedWidth, setAdjustedWidth] = useState(width);
   const [adjustedHeight, setAdjustedHeight] = useState(height);
 
+  const calculateMinZoom = () => {
+    if (profile) {
+      return Math.max(1, 1400 / Math.min(width, height));
+    } else if (background) {
+      const cropWidthRatio = 2100 / width;
+      const cropHeightRatio = 423 / height;
+      return Math.max(cropWidthRatio, cropHeightRatio);
+    }
+    return 1;
+  };
+
+  const [minZoom, setMinZoom] = useState(calculateMinZoom());
+
   useEffect(() => {
     const adjustDimensions = () => {
       const maxWidth = window.innerWidth * 0.6;
@@ -63,6 +76,7 @@ export default function CropEasy({
 
       setAdjustedWidth(width * ratio);
       setAdjustedHeight(height * ratio);
+      setMinZoom(calculateMinZoom());
     };
 
     adjustDimensions();
@@ -100,7 +114,7 @@ export default function CropEasy({
 
   return (
     <div className="modal-crop modal-show">
-      <div className="modal-content-crop" style={{ maxWidth: adjustedWidth + 25,padding:15 }}>
+      <div className="modal-content-crop" style={{ maxWidth: adjustedWidth + 25, padding: 15 }}>
         <DialogContent
           dividers
           sx={{
@@ -130,6 +144,7 @@ export default function CropEasy({
               width: profile ? profileCropSize : backgroundCropWidth,
               height: profile ? profileCropSize : backgroundCropHeight,
             }}
+            minZoom={minZoom}
           />
         </DialogContent>
         <DialogActions sx={{ flexDirection: "column", mx: 3, my: 2 }}>
@@ -139,7 +154,7 @@ export default function CropEasy({
               <Slider
                 valueLabelDisplay="auto"
                 valueLabelFormat={zoomPercent}
-                min={1}
+                min={minZoom}
                 max={3}
                 step={0.1}
                 value={zoom}

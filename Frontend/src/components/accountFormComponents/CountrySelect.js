@@ -38,8 +38,14 @@ function CountrySelect({ user, article }, ref) {
       name="countryInput"
       ref={ref}
       onChange={(e) =>
-        ref ? ChangeLink("country", e.label.props.value.split(" ")[0].charAt(0).toLowerCase() +
-        e.label.props.value.split(" ")[0].slice(1)) : null
+        ref
+          ? ChangeLink(
+              true,
+              "country",
+              e.label.props.value.split(" ")[0].charAt(0).toLowerCase() +
+                e.label.props.value.split(" ")[0].slice(1)
+            )
+          : null
       }
       options={allCountries}
       defaultValue={{
