@@ -221,7 +221,8 @@ export default function SearchArticlePage() {
         allArticles.length ? (
           <div>
             <ArticleBox articles={allArticles} />
-            <Pagination elements={paginationDetails} />
+            {paginationDetails?.totalElements > 10 ?             
+            <Pagination elements={paginationDetails} /> : null}
           </div>
         ) : (
           <h1 style={{ marginTop: 180, marginBottom: 180 }}>

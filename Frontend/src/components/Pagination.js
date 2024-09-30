@@ -14,7 +14,7 @@ export default function Pagination({ elements }) {
         pageCount={elements?.totalPages}
         pageRangeDisplayed={2}
         marginPagesDisplayed={2}
-        onPageChange={(e) => ChangeLink("pagenumber", e.selected + 1)}
+        onPageChange={(e) => ChangeLink(false,"pagenumber", e.selected + 1)}
         containerClassName="pagination justify-content-center"
         pageClassName="page-item"
         pageLinkClassName="page-link"
